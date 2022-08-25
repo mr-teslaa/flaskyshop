@@ -1,49 +1,52 @@
 <nav
-    id="sidebarMenu"
-    class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse"
+	id="sidebarMenu"
+	class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse"
 >
-    <div class="position-sticky pt-3 sidebar-sticky">
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a
-                    class="nav-link active nav__icon"
-                    aria-current="page"
-                    href="#"
-                >
-                    <i class="bx bx-home-alt"></i>
-                    Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link nav__icon" href="#">
-                    <i class="bx bx-file-blank"></i>
-                    Orders
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link nav__icon" href="#">
-                    <i class="bx bx-cart"></i>
-                    Products
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link nav__icon" href="#">
-                    <i class="bx bx-group"></i>
-                    Customers
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link nav__icon" href="#">
-                    <i class="bx bx-bar-chart-alt-2"></i>
-                    Reports
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link nav__icon" href="#">
-                    <i class="bx bx-layer"></i>
-                    Integrations
-                </a>
-            </li>
-        </ul>
-    </div>
+	<div class="position-sticky pt-3 sidebar-sticky">
+		<ul class="nav flex-column">
+			<li class="nav-item">
+				<a
+					class="nav-link active nav__icon"
+					aria-current="page"
+					href="{{ url_for('admin.dashboard') }}"
+				>
+					<i class="bx bx-home-alt"></i>
+					Dashboard
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link nav__icon" href="#">
+					<i class="bx bx-file-blank"></i>
+					Orders
+				</a>
+			</li>
+			<li class="nav-item">
+				<a
+					class="nav-link nav__icon"
+					href="{{ url_for('admin.products') }}"
+				>
+					<i class="bx bx-cart"></i>
+					Products
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link nav__icon" href="#">
+					<i class="bx bx-group"></i>
+					Customers
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link nav__icon" href="#">
+					<i class="bx bx-bar-chart-alt-2"></i>
+					Reports
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link nav__icon" href="#">
+					<i class="bx bx-layer"></i>
+					Integrations
+				</a>
+			</li>
+		</ul>
+	</div>
 </nav>

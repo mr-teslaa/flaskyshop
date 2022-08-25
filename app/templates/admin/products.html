@@ -1,247 +1,438 @@
 {% extends 'layouts/root-dashboard.html' %} {% block body %}
 <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
-        BM Gadget & Tech
-    </a>
-    <button
-        class="navbar-toggler position-absolute d-md-none collapsed"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#sidebarMenu"
-        aria-controls="sidebarMenu"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-    >
-        <span class="navbar-toggler-icon"> </span>
-    </button>
-    <input
-        class="form-control form-control-dark w-100 rounded-0 border-0"
-        type="text"
-        placeholder="Search"
-        aria-label="Search"
-    />
-    <div class="navbar-nav">
-        <div class="nav-item text-nowrap">
-            <a class="nav-link px-3" href="#">Sign out </a>
-        </div>
-    </div>
+	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
+		BM Gadget & Tech
+	</a>
+	<button
+		class="navbar-toggler position-absolute d-md-none collapsed"
+		type="button"
+		data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu"
+		aria-controls="sidebarMenu"
+		aria-expanded="false"
+		aria-label="Toggle navigation"
+	>
+		<span class="navbar-toggler-icon"> </span>
+	</button>
+	<input
+		class="form-control form-control-dark w-100 rounded-0 border-0"
+		type="text"
+		placeholder="Search"
+		aria-label="Search"
+	/>
+	<div class="navbar-nav">
+		<div class="nav-item text-nowrap">
+			<a class="nav-link px-3" href="#">Sign out </a>
+		</div>
+	</div>
 </header>
 <div class="container-fluid">
-    <div class="row">
-        <!-- navigation inject -->
-        {% include 'helpers/_dashboard_side_nav.html' %}
+	<div class="row">
+		<!-- navigation inject -->
+		{% include 'helpers/_dashboard_side_nav.html' %}
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div
-                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
-            >
-                <h1 class="h2">Products</h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <div class="btn-group me-2">
-                        <button
-                            type="button"
-                            class="btn btn-sm btn-outline-secondary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#addProduct"
-                        >
-                            <i class="bx bx-plus"></i>
-                            Add Products
-                        </button>
-                        <!-- <button
+		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+			<div
+				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+			>
+				<h1 class="h2">Products</h1>
+				<div class="btn-toolbar mb-2 mb-md-0">
+					<div class="btn-group me-2">
+						<button
+							type="button"
+							class="btn btn-sm btn-outline-secondary"
+							data-bs-toggle="modal"
+							data-bs-target="#addProduct"
+						>
+							<i class="bx bx-plus"></i>
+							Add Products
+						</button>
+						<!-- <button
                             type="button"
                             class="btn btn-sm btn-outline-secondary"
                         >
                             Export
                         </button> -->
-                    </div>
-                    <button
-                        type="button"
-                        class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                    >
-                        <span data-feather="calendar" class="align-text-bottom">
-                        </span>
-                        This week
-                    </button>
-                </div>
-            </div>
+					</div>
+					<button
+						type="button"
+						class="btn btn-sm btn-outline-secondary dropdown-toggle"
+					>
+						<span data-feather="calendar" class="align-text-bottom">
+						</span>
+						This week
+					</button>
+				</div>
+			</div>
 
-            <!-- add products modal -->
-            <div
-                class="modal fade"
-                id="addProduct"
-                tabindex="-1"
-                aria-labelledby="exampleModalLabel"
-                aria-hidden="true"
-            >
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content rounded-4 shadow">
-                        <div class="modal-header border-bottom-0">
-                            <h5 class="modal-title" id="exampleModalLabel">
-                                Add Product
-                            </h5>
-                            <button
-                                type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                            ></button>
-                        </div>
-                        <div class="modal-body py-0">
-                            Lorem ipsum dolor sit amet consectetur, adipisicing
-                            elit. Beatae, est!
-                        </div>
-                        <div class="modal-footer">
-                            <!-- <button
+			<!-- add products modal -->
+			<div
+				class="modal fade"
+				id="addProduct"
+				tabindex="-1"
+				aria-labelledby="AddProductModalLabel"
+				aria-hidden="true"
+			>
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content rounded-4 shadow">
+						<div class="modal-header border-bottom-0">
+							<h5 class="modal-title" id="exampleModalLabel">
+								Add Product
+							</h5>
+
+							<button
+								type="button"
+								class="btn-close"
+								data-bs-dismiss="modal"
+								aria-label="Close"
+							></button>
+						</div>
+						<div class="modal-body py-0">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-floating mb-3 mb-3">
+										<input
+											type="texxt"
+											class="form-control"
+											id="floatingProductName"
+											placeholder="+880xxxxxxx"
+										/>
+										<label for="floatingProductName">
+											Product Name
+										</label>
+									</div>
+								</div>
+
+								<div class="col-md-6">
+									<div class="form-floating mb-3">
+										<input
+											type="text"
+											class="form-control"
+											id="floatingProductID"
+											placeholder="+880xxxxxxx"
+										/>
+										<label for="floatingProductID">
+											Product ID
+										</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-floating mb-3">
+										<input
+											type="text"
+											class="form-control"
+											id="floatingProductPrice"
+											placeholder="+880xxxxxxx"
+										/>
+										<label for="floatingProductPrice">
+											Product Price
+										</label>
+									</div>
+								</div>
+
+								<div class="col-md-6">
+									<div class="form-floating mb-3">
+										<input
+											type="text"
+											class="form-control"
+											id="floatingProductQTY"
+											placeholder="+880xxxxxxx"
+										/>
+										<label for="floatingProductQTY">
+											Product Quantity
+										</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-floating mb-3">
+										<textarea
+											class="form-control"
+											placeholder="Product Description"
+											id="floatingTextarea"
+											style="height: 100px"
+										></textarea>
+
+										<label for="floatingTextarea">
+											Product Description
+										</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-floating mb-3">
+										<select
+											class="form-select"
+											id="floatingSelect"
+											aria-label="Floating label select example"
+										>
+											<option selected>
+												Select Brand
+											</option>
+											<option value="1">One</option>
+											<option value="2">Two</option>
+											<option value="3">Three</option>
+										</select>
+										<label for="floatingSelect">
+											Product Brand
+										</label>
+									</div>
+								</div>
+
+								<div class="col-md-4">
+									<div class="form-floating mb-3">
+										<select
+											class="form-select"
+											id="floatingSelect"
+											aria-label="Floating label select example"
+										>
+											<option selected>
+												Select Category
+											</option>
+											<option value="1">One</option>
+											<option value="2">Two</option>
+											<option value="3">Three</option>
+										</select>
+										<label for="floatingSelect">
+											Product Category
+										</label>
+									</div>
+								</div>
+
+								<div class="col-md-4">
+									<div class="form-floating mb-3">
+										<select
+											class="form-select"
+											id="floatingSelect"
+											aria-label="Floating label select example"
+										>
+											<option selected>
+												Select availability
+											</option>
+											<option value="1">Yes</option>
+											<option value="2">No</option>
+										</select>
+										<label for="floatingSelect">
+											Is this product available?
+										</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-12">
+									<div class="input-group mb-3">
+										<label
+											class="input-group-text"
+											for="inputGroupFile"
+										>
+											Product Image
+										</label>
+
+										<input
+											type="file"
+											class="form-control"
+											id="inputGroupFile"
+										/>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="modal-footer">
+							<!-- <button
                                 type="button"
                                 class="btn btn-secondary"
                                 data-bs-dismiss="modal"
                             >
                                 Close
                             </button> -->
-                            <button
-                                type="button"
-                                class="btn btn-lg btn-primary w-100 mx-0 mb-2"
-                            >
-                                Save
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end of add product modal -->
+							<button
+								type="button"
+								class="btn btn-lg btn-primary w-100 mx-0 mb-2"
+							>
+								Save
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- end of add product modal -->
 
-            <canvas class="my-4 w-100" id="myChart" width="900" height="380">
-            </canvas>
-            <h2>Section title</h2>
-            <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Header</th>
-                            <th scope="col">Header</th>
-                            <th scope="col">Header</th>
-                            <th scope="col">Header</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1,001</td>
-                            <td>random</td>
-                            <td>data</td>
-                            <td>placeholder</td>
-                            <td>text</td>
-                        </tr>
-                        <tr>
-                            <td>1,002</td>
-                            <td>placeholder</td>
-                            <td>irrelevant</td>
-                            <td>visual</td>
-                            <td>layout</td>
-                        </tr>
-                        <tr>
-                            <td>1,003</td>
-                            <td>data</td>
-                            <td>rich</td>
-                            <td>dashboard</td>
-                            <td>tabular</td>
-                        </tr>
-                        <tr>
-                            <td>1,003</td>
-                            <td>information</td>
-                            <td>placeholder</td>
-                            <td>illustrative</td>
-                            <td>data</td>
-                        </tr>
-                        <tr>
-                            <td>1,004</td>
-                            <td>text</td>
-                            <td>random</td>
-                            <td>layout</td>
-                            <td>dashboard</td>
-                        </tr>
-                        <tr>
-                            <td>1,005</td>
-                            <td>dashboard</td>
-                            <td>irrelevant</td>
-                            <td>text</td>
-                            <td>placeholder</td>
-                        </tr>
-                        <tr>
-                            <td>1,006</td>
-                            <td>dashboard</td>
-                            <td>illustrative</td>
-                            <td>rich</td>
-                            <td>data</td>
-                        </tr>
-                        <tr>
-                            <td>1,007</td>
-                            <td>placeholder</td>
-                            <td>tabular</td>
-                            <td>information</td>
-                            <td>irrelevant</td>
-                        </tr>
-                        <tr>
-                            <td>1,008</td>
-                            <td>random</td>
-                            <td>data</td>
-                            <td>placeholder</td>
-                            <td>text</td>
-                        </tr>
-                        <tr>
-                            <td>1,009</td>
-                            <td>placeholder</td>
-                            <td>irrelevant</td>
-                            <td>visual</td>
-                            <td>layout</td>
-                        </tr>
-                        <tr>
-                            <td>1,010</td>
-                            <td>data</td>
-                            <td>rich</td>
-                            <td>dashboard</td>
-                            <td>tabular</td>
-                        </tr>
-                        <tr>
-                            <td>1,011</td>
-                            <td>information</td>
-                            <td>placeholder</td>
-                            <td>illustrative</td>
-                            <td>data</td>
-                        </tr>
-                        <tr>
-                            <td>1,012</td>
-                            <td>text</td>
-                            <td>placeholder</td>
-                            <td>layout</td>
-                            <td>dashboard</td>
-                        </tr>
-                        <tr>
-                            <td>1,013</td>
-                            <td>dashboard</td>
-                            <td>irrelevant</td>
-                            <td>text</td>
-                            <td>visual</td>
-                        </tr>
-                        <tr>
-                            <td>1,014</td>
-                            <td>dashboard</td>
-                            <td>illustrative</td>
-                            <td>rich</td>
-                            <td>data</td>
-                        </tr>
-                        <tr>
-                            <td>1,015</td>
-                            <td>random</td>
-                            <td>tabular</td>
-                            <td>information</td>
-                            <td>text</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </main>
-    </div>
+			<!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380">
+			</canvas> -->
+
+			<!-- SUMMERY OF PRODUCTS -->
+			<div class="container">
+				<div class="row gap-2 mb-5">
+					<div class="col-lg-3">
+						<div class="border summery__box bg__papayawhip p-2">
+							<h3 class="summery__box-title fs-1 fw-bolder">
+								350
+							</h3>
+							<p class="summery__subtitle">Total Categories</p>
+						</div>
+					</div>
+
+					<div class="col-lg-3">
+						<div class="border summery__box bg__anakiwa p-2">
+							<h3 class="summery__box-title fs-1 fw-bolder">
+								350
+							</h3>
+							<p class="summery__subtitle">Total Categories</p>
+						</div>
+					</div>
+
+					<div class="col-lg-3">
+						<div class="border summery__box bg__mintgreen p-2">
+							<h3 class="summery__box-title fs-1 fw-bolder">
+								350
+							</h3>
+							<p class="summery__subtitle">Total Categories</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- PRODUCTS DETAILS -->
+			<h2>All Products</h2>
+			<hr />
+			<div class="table-responsive">
+				<table class="table table-striped table-sm">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Header</th>
+							<th scope="col">Header</th>
+							<th scope="col">Header</th>
+							<th scope="col">Header</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>1,001</td>
+							<td>random</td>
+							<td>data</td>
+							<td>placeholder</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>1,002</td>
+							<td>placeholder</td>
+							<td>irrelevant</td>
+							<td>visual</td>
+							<td>layout</td>
+						</tr>
+						<tr>
+							<td>1,003</td>
+							<td>data</td>
+							<td>rich</td>
+							<td>dashboard</td>
+							<td>tabular</td>
+						</tr>
+						<tr>
+							<td>1,003</td>
+							<td>information</td>
+							<td>placeholder</td>
+							<td>illustrative</td>
+							<td>data</td>
+						</tr>
+						<tr>
+							<td>1,004</td>
+							<td>text</td>
+							<td>random</td>
+							<td>layout</td>
+							<td>dashboard</td>
+						</tr>
+						<tr>
+							<td>1,005</td>
+							<td>dashboard</td>
+							<td>irrelevant</td>
+							<td>text</td>
+							<td>placeholder</td>
+						</tr>
+						<tr>
+							<td>1,006</td>
+							<td>dashboard</td>
+							<td>illustrative</td>
+							<td>rich</td>
+							<td>data</td>
+						</tr>
+						<tr>
+							<td>1,007</td>
+							<td>placeholder</td>
+							<td>tabular</td>
+							<td>information</td>
+							<td>irrelevant</td>
+						</tr>
+						<tr>
+							<td>1,008</td>
+							<td>random</td>
+							<td>data</td>
+							<td>placeholder</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>1,009</td>
+							<td>placeholder</td>
+							<td>irrelevant</td>
+							<td>visual</td>
+							<td>layout</td>
+						</tr>
+						<tr>
+							<td>1,010</td>
+							<td>data</td>
+							<td>rich</td>
+							<td>dashboard</td>
+							<td>tabular</td>
+						</tr>
+						<tr>
+							<td>1,011</td>
+							<td>information</td>
+							<td>placeholder</td>
+							<td>illustrative</td>
+							<td>data</td>
+						</tr>
+						<tr>
+							<td>1,012</td>
+							<td>text</td>
+							<td>placeholder</td>
+							<td>layout</td>
+							<td>dashboard</td>
+						</tr>
+						<tr>
+							<td>1,013</td>
+							<td>dashboard</td>
+							<td>irrelevant</td>
+							<td>text</td>
+							<td>visual</td>
+						</tr>
+						<tr>
+							<td>1,014</td>
+							<td>dashboard</td>
+							<td>illustrative</td>
+							<td>rich</td>
+							<td>data</td>
+						</tr>
+						<tr>
+							<td>1,015</td>
+							<td>random</td>
+							<td>tabular</td>
+							<td>information</td>
+							<td>text</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</main>
+	</div>
 </div>
 
 {% endblock %}

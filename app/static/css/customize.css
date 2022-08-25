@@ -1,5 +1,5 @@
 body {
-    font-family: "Poppins", sans-serif;
+	font-family: "Poppins", sans-serif;
 }
 
 /* .active {
@@ -12,21 +12,60 @@ body {
 } */
 
 .login__container {
-    height: 100vh;
-    display: flex;
-    align-items: center;
+	height: 100vh;
+	display: flex;
+	align-items: center;
 }
 
 .form-signin {
-    max-width: 330px;
-    padding: 15px;
+	max-width: 330px;
+	padding: 15px;
 }
 
 .nav__icon {
-    display: flex;
-    align-items: center;
+	display: flex;
+	align-items: center;
 }
 
 .nav__icon i {
-    margin-right: 0.43rem;
+	margin-right: 0.43rem;
 }
+
+.bg__mintgreen {
+	background-color: #98ff98;
+	color: #633528;
+}
+
+.bg__papayawhip {
+	background-color: #ffefd5;
+	color: #5d4e46;
+}
+
+.bg__anakiwa {
+	background-color: #9bddff;
+	color: #334046;
+}
+
+/* === STATIC BOX START === */
+.summery__box {
+	width: 100%;
+	height: 120px;
+	display: grid;
+	place-items: center;
+}
+
+.bg__mintgreen .summery__box-title,
+.bg__mintgreen .summery__subtitle {
+	color: #633528;
+}
+
+.bg__papayawhip .summery__box-title,
+.bg__papayawhip .summery__subtitle {
+	color: #5d4e46;
+}
+
+.bg__anakiwa .summery__box-title,
+.bg__anakiwa .summery__subtitle {
+	color: #334046;
+}
+/* === STATIC BOX END === */

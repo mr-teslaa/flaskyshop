@@ -19,6 +19,10 @@ from app.models import Users
 
 admin = Blueprint('admin', __name__)
 
+@admin.route('/')
+def index():
+    return render_template('admin/index.html')
+
 @admin.route('/login/')
 def admin_login():
     return render_template('admin/login.html', title="Admin Login")
