@@ -1,0 +1,111 @@
+{% extends 'layouts/root-dashboard.html' %}
+
+<!-- body -->
+{% block body %}
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
+		BM Gadget & Tech
+	</a>
+	<button
+		class="navbar-toggler position-absolute d-md-none collapsed"
+		type="button"
+		data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu"
+		aria-controls="sidebarMenu"
+		aria-expanded="false"
+		aria-label="Toggle navigation"
+	>
+		<span class="navbar-toggler-icon"> </span>
+	</button>
+	<input
+		class="form-control form-control-dark w-100 rounded-0 border-0"
+		type="text"
+		placeholder="Search"
+		aria-label="Search"
+	/>
+	<div class="navbar-nav">
+		<div class="nav-item text-nowrap">
+			<a class="nav-link px-3" href="#">Sign out </a>
+		</div>
+	</div>
+</header>
+
+<div class="container-fluid">
+	<div class="row">
+		<!-- navigation inject -->
+		{% include 'helpers/_dashboard_side_nav.html' %}
+
+		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+			<div class="align-items-center pt-3 pb-2 mb-3 border-bottom">
+				<h1 class="h2">Edit Category</h1>
+			</div>
+
+			<!-- EDI CUSTOMER -->
+			<div>
+				<form method="POST" action="">
+					{{ form.hidden_tag() }}
+					<div class="py-0">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-floating mb-3">
+									{% if form.category_name.errors %}
+									{{ form.category_name(
+										class="form-control is-invalid",
+										placeholder="Category Name"
+									) }}
+									<div class="invalid-feedback">
+										{% for error in form.category_name.errors %}
+										<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+									{% else %} 
+									{{ form.category_name(
+										class="form-control", 
+										placeholder="Category Name"
+									) }} 
+									{% endif %}
+
+									{{ form.category_name.label(class="form-control-label") }}
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-floating mb-3">
+									{% if form.category_note.errors %}
+									{{ form.category_note(
+										class="form-control is-invalid",
+										placeholder="Category Note"
+									) }}
+									<div class="invalid-feedback">
+										{% for error in form.category_note.errors %}
+										<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+									{% else %} 
+									{{ form.category_note(
+										class="form-control",
+										placeholder="Category Note"
+									) }} 
+									{% endif %}
+
+									{{ form.category_note.label(class="form-control-label") }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+						<a href="{{ url_for('dashboard.category') }}"  class="btn btn-lg btn-dark w-100 mx-0 mb-2">Cancel</a>
+						{{ form.submit(class="btn btn-lg btn-primary w-100 mx-0 mb-2") }}
+					</div>
+
+				</form>	
+			</div>
+			
+		</main>
+	</div>
+</div>
+
+{% endblock %}

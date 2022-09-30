@@ -1,0 +1,292 @@
+{% extends 'layouts/root-dashboard.html' %}
+
+<!-- body -->
+{% block body %}
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
+		BM Gadget & Tech
+	</a>
+	<button
+		class="navbar-toggler position-absolute d-md-none collapsed"
+		type="button"
+		data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu"
+		aria-controls="sidebarMenu"
+		aria-expanded="false"
+		aria-label="Toggle navigation"
+	>
+		<span class="navbar-toggler-icon"> </span>
+	</button>
+	<input
+		class="form-control form-control-dark w-100 rounded-0 border-0"
+		type="text"
+		placeholder="Search"
+		aria-label="Search"
+	/>
+	<div class="navbar-nav">
+		<div class="nav-item text-nowrap">
+			<a class="nav-link px-3" href="#">Sign out </a>
+		</div>
+	</div>
+</header>
+
+<div class="container-fluid">
+	<div class="row">
+		<!-- navigation inject -->
+		{% include 'helpers/_dashboard_side_nav.html' %}
+
+		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+			<div
+				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+			>
+				<h1 class="h2">Customer</h1>
+				<div class="btn-toolbar mb-2 mb-md-0">
+					<div class="btn-group me-2">
+						<button
+							type="button"
+							class="btn btn-sm btn-outline-secondary"
+							data-bs-toggle="modal"
+							data-bs-target="#dailysellModal"
+						>
+							<i class="bx bx-plus"></i>
+							Add Customer
+						</button>
+						<!-- <button
+                            type="button"
+                            class="btn btn-sm btn-outline-secondary"
+                        >
+                            Export
+                        </button> -->
+					</div>
+				</div>
+			</div>
+
+			<!-- add products modal -->
+			<div
+				class="modal fade"
+				id="dailysellModal"
+				tabindex="-1"
+				aria-labelledby="dailysellModalLabel"
+				aria-hidden="true"
+			>
+				<div class="modal-dialog modal-md" role="document">
+					<div class="modal-content rounded-4 shadow">
+						<div class="modal-header border-bottom-0">
+							<h5 class="modal-title" id="exampleModalLabel">
+								Add Customer
+							</h5>
+
+							<button
+								type="button"
+								class="btn-close"
+								data-bs-dismiss="modal"
+								aria-label="Close"
+							></button>
+						</div>
+
+						<form method="POST" action="">
+							{{ form.hidden_tag() }}
+							<div class="modal-body py-0">
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-floating mb-3">
+											{% if form.customer_name.errors %}
+											{{ form.customer_name(
+												class="form-control is-invalid",
+												placeholder="Customer Name"
+											) }}
+											<div class="invalid-feedback">
+												{% for error in form.customer_name.errors %}
+												<span>{{ error }}</span>
+												{% endfor %}
+											</div>
+											{% else %} 
+											{{ form.customer_name(
+												class="form-control", 
+												placeholder="Customer Name"
+											) }} 
+											{% endif %}
+
+											{{ form.customer_name.label(class="form-control-label") }}
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-floating mb-3">
+											{% if form.customer_contact_number.errors %}
+											{{ form.customer_contact_number(
+												class="form-control is-invalid",
+												placeholder="Customer Contact Number"
+											) }}
+											<div class="invalid-feedback">
+												{% for error in form.customer_contact_number.errors %}
+												<span>{{ error }}</span>
+												{% endfor %}
+											</div>
+											{% else %} 
+											{{ form.customer_contact_number(
+												class="form-control",
+												placeholder="Customer Contact Number"
+											) }} 
+											{% endif %}
+
+											{{ form.customer_contact_number.label(class="form-control-label") }}
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-floating mb-3">
+											{% if form.customer_address.errors %}
+											{{ form.customer_address(
+												class="form-control is-invalid",
+												placeholder="Customer Address",
+												style="height: 100px"
+											) }}
+											<div class="invalid-feedback">
+												{% for error in form.customer_address.errors %}
+												<span>{{ error }}</span>
+												{% endfor %}
+											</div>
+											{% else %} 
+											{{ form.customer_address(
+												class="form-control",
+												placeholder="Customer Address",
+												style="height: 100px",
+											) }} 
+											{% endif %}
+
+											{{ form.customer_address.label(class="form-control-label") }}
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="modal-footer">
+								<!-- <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                            >
+                                Close
+                            </button> -->
+								
+								{{ form.submit(class="btn btn-lg btn-primary w-100 mx-0 mb-2") }}
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- end of add product modal -->
+
+			<!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380">
+			</canvas> -->
+
+			<!-- SUMMERY OF PRODUCTS -->
+			<div class="container">
+				<div class="row gap-2 mb-5">
+					<div class="col-lg-3">
+						<div class="border summery__box bg__mintgreen p-2">
+							<h3 class="summery__box-title fs-1 fw-bolder">
+								{{ total_customer.total }}
+							</h3>
+							<p class="summery__subtitle">Total Customer</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- CUSTOMER DETAILS -->
+			<h2>All Customer</h2>
+			<hr />
+			<div class="table-responsive">
+				<table class="table table-striped table-sm">
+					<thead>
+						<tr>
+							<th scope="col" width="100">Serial No</th>
+							<th scope="col">Customer Name</th>
+							<th scope="col">Phone Number</th>
+							<th scope="col">Address</th>
+							<th scope="col">Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for customer in customers %}
+						<tr>
+							<td class="text-center counters">{{ customer.id }}</td>
+							<td>{{ customer.customer_name }}</td>
+							<td>{{ customer.customer_contact_number }}</td>
+							<td>{{ customer.customer_address }}</td>
+							<td>
+								<div class="btn-group dropstart">
+									<button
+										type="button"
+										class="btn btn-dark btn-sm dropdown-toggle"
+										data-bs-toggle="dropdown"
+										aria-expanded="false"
+									>
+										More Option
+									</button>
+									<ul
+										class="dropdown-menu bg-gradient bg-info"
+									>
+										<li>
+											<a href="{{ url_for('dashboard.edit_customer', customer_id=customer.id) }}" class="dropdown-item">
+												Edit info
+											</a>
+										</li>
+										<li>
+											<a
+												href="#"
+												class="dropdown-item bg-danger text-white"
+												data-bs-toggle="modal" data-bs-target="#deleteCustomerModal{{customer.id}}"	
+											>	
+												Delete customer
+											</a>
+										</li>
+									</ul>
+								</div>
+
+								<!-- DELETE CUSTOMER MODAL -->
+								<div class="modal fade" id="deleteCustomerModal{{customer.id}}" tabindex="-1" aria-labelledby="deleteCustomerModalLabel" aria-hidden="true">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 id="exampleModalLabel">Are you sure, want to delete the customer?</h5>
+												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+												<!-- <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> Cancel </button> -->
+												
+											</div>
+											<div class="modal-footer">
+												<button class="btn btn-sm m-1 btn-dark">Cancel</button>
+												<form action="{{ url_for('dashboard.delete_customer', customer_id=customer.id) }}" method="POST">
+													<input type="submit" class="btn btn-danger btn-sm m-1" value="Yes, delete customer" />
+												</form>
+											</div>
+										</div>
+									</div>
+								</div>
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</main>
+	</div>
+</div>
+
+<script>
+	let counter = 1;
+	const serialnos = document.querySelectorAll('.counters');
+	console.log(serialnos);
+	serialnos.forEach(serial => {
+		serial.innerText=counter;
+		counter++;
+	});
+</script>
+
+{% endblock %}

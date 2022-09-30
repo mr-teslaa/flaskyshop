@@ -1,0 +1,126 @@
+{% extends 'layouts/root-public.html' %}
+
+
+{% block body %}
+    <div class="container login__container">
+        <main class="form-signin w-100 m-auto">
+            <form action=""  method="POST">
+                {{ form.hidden_tag() }}
+                <h1 class="h3 mb-4 text-center">Register</h1>
+
+                <!-- PHONE NUMBER -->
+                <div class="form-floating mb-3">
+                    {% if form.phone.errors %}
+                    {{ form.phone(
+                        class="form-control is-invalid",
+                        placeholder="Phone number"
+                    ) }}
+                    <div class="invalid-feedback">
+                        {% for error in form.phone.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.phone(
+                        class="form-control",
+                        placeholder="Phone number"
+                    ) }} 
+                    {% endif %}
+
+                    {{ form.phone.label() }}
+                </div>
+
+                <!-- EMAIL -->
+                <div class="form-floating mb-3">
+                    {% if form.email.errors %}
+                    {{ form.email(
+                        class="form-control is-invalid",
+                        placeholder="Email"
+                    ) }}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.email(
+                        class="form-control",
+                        placeholder="Email"
+                    ) }} 
+                    {% endif %}
+
+                    {{ form.email.label() }}
+                </div>
+
+                <!-- USERNAME -->
+                <div class="form-floating mb-3">
+                    {% if form.username.errors %}
+                    {{ form.username(
+                        class="form-control is-invalid",
+                        placeholder="Username"
+                    ) }}
+                    <div class="invalid-feedback">
+                        {% for error in form.username.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.username(
+                        class="form-control",
+                        placeholder="Username"
+                    ) }} 
+                    {% endif %}
+
+                    {{ form.username.label() }}
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="form-floating mb-3">
+                    {% if form.password.errors %}
+                    {{ form.password(
+                        class="form-control is-invalid",
+                        placeholder="Password"
+                    ) }}
+                    <div class="invalid-feedback">
+                        {% for error in form.password.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.password(
+                        class="form-control",
+                        placeholder="Password"
+                    ) }} 
+                    {% endif %}
+
+                    {{ form.password.label() }}
+                </div>
+
+                <!-- CONFIRM PASSWORD -->
+                <div class="form-floating mb-3">
+                    {% if form.confirm_password.errors %}
+                    {{ form.confirm_password(
+                        class="form-control is-invalid",
+                        placeholder="Confirm Password"
+                    ) }}
+                    <div class="invalid-feedback">
+                        {% for error in form.confirm_password.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.confirm_password(
+                        class="form-control",
+                        placeholder="Confirm Password"
+                    ) }} 
+                    {% endif %}
+
+                    {{ form.confirm_password.label() }}
+                </div>
+
+                <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+                <p class="mt-5 mb-3 text-muted">&copy; 2017–2022 | all right reserved</p>
+            </form>
+        </main>
+    </div>
+{% endblock %}

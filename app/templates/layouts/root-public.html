@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
         {% if title %}
-            {{ title }} | Dashboard
+            {{ title }} | BM Shop
         {% else %}
-            Dashboard
+            BM Shop
         {% endif %}
     </title>
 
@@ -27,14 +27,12 @@
   </head>
 </head>
 <body>
+    
     <!-- flash message -->
     {% with messages=get_flashed_messages(with_categories=true)%}
     {% if messages %}
         {% for category, message in messages %}
-            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert" style="margin-bottom: 0">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+            <div class="alert alert-{{ category }}">{{ message }}</div>
         {% endfor %} 
     {% endif %}
     {% endwith %} 

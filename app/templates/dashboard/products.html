@@ -1,0 +1,420 @@
+{% extends 'layouts/root-dashboard.html' %} {% block body %}
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
+		BM Gadget & Tech
+	</a>
+	<button
+		class="navbar-toggler position-absolute d-md-none collapsed"
+		type="button"
+		data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu"
+		aria-controls="sidebarMenu"
+		aria-expanded="false"
+		aria-label="Toggle navigation"
+	>
+		<span class="navbar-toggler-icon"> </span>
+	</button>
+	<input
+		class="form-control form-control-dark w-100 rounded-0 border-0"
+		type="text"
+		placeholder="Search"
+		aria-label="Search"
+	/>
+	<div class="navbar-nav">
+		<div class="nav-item text-nowrap">
+			<a class="nav-link px-3" href="#">Sign out </a>
+		</div>
+	</div>
+</header>
+<div class="container-fluid">
+	<div class="row">
+		<!-- navigation inject -->
+		{% include 'helpers/_dashboard_side_nav.html' %}
+
+		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+			<div
+				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+			>
+				<h1 class="h2">Products</h1>
+				<div class="btn-toolbar mb-2 mb-md-0">
+					<div class="btn-group me-2">
+						<button
+							type="button"
+							class="btn btn-sm btn-outline-secondary"
+							data-bs-toggle="modal"
+							data-bs-target="#addProduct"
+						>
+							<i class="bx bx-plus"></i>
+							Add Products
+						</button>
+						<!-- <button
+                            type="button"
+                            class="btn btn-sm btn-outline-secondary"
+                        >
+                            Export
+                        </button> -->
+					</div>
+				</div>
+			</div>
+
+			<!-- add products modal -->
+			<div
+				class="modal fade"
+				id="addProduct"
+				tabindex="-1"
+				aria-labelledby="AddProductModalLabel"
+				aria-hidden="true"
+			>
+				<form method="POST" action="">
+					{{ form.hidden_tag() }}
+					<div class="modal-dialog modal-lg" role="document">
+						<div class="modal-content rounded-4 shadow">
+							<div class="modal-header border-bottom-0">
+								<h5 class="modal-title" id="exampleModalLabel">
+									Add Product
+								</h5>
+
+								<button
+									type="button"
+									class="btn-close"
+									data-bs-dismiss="modal"
+									aria-label="Close"
+								></button>
+							</div>
+							<div class="modal-body py-0">
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-floating mb-3 mb-3">
+											{% if form.product_name.errors %}
+											{{ form.product_name(
+												class="form-control is-invalid",
+												placeholder="Product Name"
+											) }}
+											<div class="invalid-feedback">
+												{% for error in form.product_name.errors %}
+												<span>{{ error }}</span>
+												{% endfor %}
+											</div>
+											{% else %} 
+												{{ form.product_name(
+													class="form-control",
+													placeholder="Product Name"
+												) }} 
+											{% endif %}
+
+											{{ form.product_name.label(class="form-control-label") }}
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<div class="form-floating mb-3">
+											{% if form.product_id.errors %}
+											{{ form.product_id(
+												class="form-control is-invalid",
+												placeholder="Product Description"
+											) }}
+											<div class="invalid-feedback">
+												{% for error in form.product_id.errors %}
+												<span>{{ error }}</span>
+												{% endfor %}
+											</div>
+											{% else %} 
+												{{ form.product_id(
+													class="form-control",
+													placeholder="Product Description"
+												) }} 
+											{% endif %}
+
+											{{ form.product_id.label(class="form-control-label") }}
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-floating mb-3">
+											{% if form.product_price.errors %}
+											{{ form.product_price(
+												class="form-control is-invalid",
+												placeholder="Product Price"
+											) }}
+											<div class="invalid-feedback">
+												{% for error in form.product_price.errors %}
+												<span>{{ error }}</span>
+												{% endfor %}
+											</div>
+											{% else %} 
+												{{ form.product_price(
+													class="form-control",
+													placeholder="Product Price"
+												) }} 
+											{% endif %}
+
+											{{ form.product_price.label(class="form-control-label") }}
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<div class="form-floating mb-3">
+											{% if form.product_quantity.errors %}
+											{{ form.product_quantity(
+												class="form-control is-invalid",
+												placeholder="Product Quantity"
+											) }}
+											<div class="invalid-feedback">
+												{% for error in form.product_quantity.errors %}
+												<span>{{ error }}</span>
+												{% endfor %}
+											</div>
+											{% else %} 
+												{{ form.product_quantity(
+													class="form-control",
+													placeholder="Product Quantity"
+												) }} 
+											{% endif %}
+
+											{{ form.product_quantity.label(class="form-control-label") }}
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-floating mb-3">
+											{% if form.product_description.errors %}
+											{{ form.product_description(
+												class="form-control is-invalid",
+												placeholder="Product Description",
+												style="height: 100px"
+											) }}
+											<div class="invalid-feedback">
+												{% for error in form.product_description.errors %}
+												<span>{{ error }}</span>
+												{% endfor %}
+											</div>
+											{% else %} 
+												{{ form.product_description(
+													class="form-control",
+													placeholder="Product Description",
+													style="height: 100px",
+												) }} 
+											{% endif %}
+
+											{{ form.product_description.label(class="form-control-label") }}
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-floating py-5">
+											{{ form.product_brand.label() }}
+
+											{% if form.product_brand.errors %}
+											{{ form.product_brand(
+												class="form-select is-invalid",
+												placeholder="Product Brand",
+												id="selectbrand"
+											) }}
+											<div class="invalid-feedback">
+												{% for error in form.product_brand.errors %}
+												<span>{{ error }}</span>
+												{% endfor %}
+											</div>
+											{% else %} 
+												{{ form.product_brand(
+													class="form-select",
+													placeholder="Product Brand",
+													id="selectbrand"
+												) }} 
+											{% endif %}
+										</div>
+									</div>
+
+									<div class="col-md-4">
+										<div class="form-floating py-5">
+											{{ form.product_category.label() }}
+
+											{% if form.product_category.errors %}
+											{{ form.product_category(
+												class="form-select is-invalid",
+												placeholder="Product Category",
+												id="selectcategory"
+											) }}
+											<div class="invalid-feedback">
+												{% for error in form.product_category.errors %}
+												<span>{{ error }}</span>
+												{% endfor %}
+											</div>
+											{% else %} 
+												{{ form.product_category(
+													class="form-select",
+													placeholder="Product Category",
+													id="selectcategory"
+												) }} 
+											{% endif %}
+
+											<!-- <select
+												class="form-select"
+												id="floatingSelect"
+												aria-label="Floating label select example"
+											>
+												<option selected>
+													Select Category
+												</option>
+												<option value="1">One</option>
+												<option value="2">Two</option>
+												<option value="3">Three</option>
+											</select>
+											<label for="floatingSelect">
+												Product Category
+											</label> -->
+										</div>
+									</div>
+
+									<div class="col-md-4">
+										<div class="py-3">
+											{{ form.product_available.label(class="form-label") }}
+
+											{% if form.product_available.errors %}
+											{{ form.product_available(
+												class="form-select is-invalid",
+												placeholder="Product Available?"
+											) }}
+											<div class="invalid-feedback">
+												{% for error in form.product_available.errors %}
+												<span>{{ error }}</span>
+												{% endfor %}
+											</div>
+											{% else %} 
+												{{ form.product_available(
+													class="form-select",
+													placeholder="Product Available?"
+												) }} 
+											{% endif %}
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-12">
+										<div class="input-group mb-3">
+											
+											{{ form.product_image.label(class="input-group-text") }}
+
+											{% if form.product_image.errors %}
+											{{ form.product_image(
+												class="form-control is-invalid",
+												placeholder="Product Image"
+											) }}
+											<div class="invalid-feedback">
+												{% for error in form.product_image.errors %}
+												<span>{{ error }}</span>
+												{% endfor %}
+											</div>
+											{% else %} 
+												{{ form.product_image(
+													class="form-control",
+													placeholder="Product Image"
+												) }} 
+											{% endif %}
+
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="modal-footer">
+								{{ form.submit(class="btn btn-lg btn-primary w-100 mx-0 mb-2") }}
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<!-- end of add product modal -->
+
+			<!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380">
+			</canvas> -->
+
+			<!-- SUMMERY OF PRODUCTS -->
+			<div class="container">
+				<div class="row gap-2 mb-5">
+					<div class="col-lg-3">
+						<div class="border summery__box bg__papayawhip p-2">
+							<h3 class="summery__box-title fs-1 fw-bolder">
+								350
+							</h3>
+							<p class="summery__subtitle">Total Product</p>
+						</div>
+					</div>
+
+					<div class="col-lg-3">
+						<div class="border summery__box bg__anakiwa p-2">
+							<h3 class="summery__box-title fs-1 fw-bolder">
+								350
+							</h3>
+							<p class="summery__subtitle">Total Brand</p>
+						</div>
+					</div>
+
+					<div class="col-lg-3">
+						<div class="border summery__box bg__mintgreen p-2">
+							<h3 class="summery__box-title fs-1 fw-bolder">
+								350
+							</h3>
+							<p class="summery__subtitle">Total Category</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- PRODUCTS DETAILS -->
+			<h2>All Products</h2>
+			<hr />
+			<div class="table-responsive">
+				<table class="table table-striped table-sm">
+					<thead>
+						<tr>
+							<th scope="col" width="100">Serial No</th>
+							<th scope="col">Product Name</th>
+							<th scope="col">Brand</th>
+							<th scope="col">Category</th>
+							<th scope="col">Product Image</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>1,001</td>
+							<td>text</td>
+							<td>text</td>
+							<td>text</td>
+							<td>text</td>
+						</tr>
+						<tr>
+							<td>1,001</td>
+							<td>text</td>
+							<td>text</td>
+							<td>text</td>
+							<td>text</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</main>
+	</div>
+</div>
+
+<script src="{{ url_for('static', filename='js/dselect.js') }}"></script>
+
+<script>
+	const searchbrand = document.querySelector("#selectbrand");
+	const selectcategory = document.querySelector("#selectcategory");
+	dselect(searchbrand, {
+		search: true,
+	});
+	dselect(selectcategory, {
+		search: true,
+	});
+</script>
+
+{% endblock %}

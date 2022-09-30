@@ -8,43 +8,68 @@
 				<a
 					class="nav-link active nav__icon"
 					aria-current="page"
-					href="{{ url_for('admin.dashboard') }}"
+					href="{{ url_for('dashboard.admin_dashboard') }}"
 				>
 					<i class="bx bx-home-alt"></i>
 					Dashboard
 				</a>
 			</li>
-			<li class="nav-item">
-				<a class="nav-link nav__icon" href="#">
-					<i class="bx bx-file-blank"></i>
-					Orders
-				</a>
-			</li>
+
 			<li class="nav-item">
 				<a
 					class="nav-link nav__icon"
-					href="{{ url_for('admin.products') }}"
+					href="{{ url_for('dashboard.todaysell') }}"
+				>
+					<i class="bx bx-file-blank"></i>
+					Today's Sell
+				</a>
+			</li>
+
+			<li class="nav-item">
+				<a
+					class="nav-link nav__icon"
+					href="{{ url_for('dashboard.brand') }}"
+				>
+					<i class="bx bx-file-blank"></i>
+					Brand
+				</a>
+			</li>
+
+			<li class="nav-item">
+				<a
+					class="nav-link nav__icon"
+					href="{{ url_for('dashboard.category') }}"
+				>
+					<i class="bx bx-file-blank"></i>
+					Category
+				</a>
+			</li>
+
+			<li class="nav-item">
+				<a
+					class="nav-link nav__icon"
+					href="{{ url_for('dashboard.products') }}"
 				>
 					<i class="bx bx-cart"></i>
 					Products
 				</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link nav__icon" href="#">
+				<a
+					class="nav-link nav__icon"
+					href="{{ url_for('dashboard.customer') }}"
+				>
 					<i class="bx bx-group"></i>
 					Customers
 				</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link nav__icon" href="#">
-					<i class="bx bx-bar-chart-alt-2"></i>
-					Reports
-				</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link nav__icon" href="#">
-					<i class="bx bx-layer"></i>
-					Integrations
+				<a
+					class="nav-link nav__icon"
+					href="{{ url_for('dashboard.report') }}"
+				>
+					<i class="bx bx-group"></i>
+					Report
 				</a>
 			</li>
 		</ul>

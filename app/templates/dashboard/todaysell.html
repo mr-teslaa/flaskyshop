@@ -1,0 +1,333 @@
+{% extends 'layouts/root-dashboard.html' %}
+
+<!-- body -->
+{% block body %}
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
+		BM Gadget & Tech
+	</a>
+	<button
+		class="navbar-toggler position-absolute d-md-none collapsed"
+		type="button"
+		data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu"
+		aria-controls="sidebarMenu"
+		aria-expanded="false"
+		aria-label="Toggle navigation"
+	>
+		<span class="navbar-toggler-icon"> </span>
+	</button>
+	<input
+		class="form-control form-control-dark w-100 rounded-0 border-0"
+		type="text"
+		placeholder="Search"
+		aria-label="Search"
+	/>
+	<div class="navbar-nav">
+		<div class="nav-item text-nowrap">
+			<a class="nav-link px-3" href="#">Sign out </a>
+		</div>
+	</div>
+</header>
+
+<div class="container-fluid">
+	<div class="row">
+		<!-- navigation inject -->
+		{% include 'helpers/_dashboard_side_nav.html' %}
+
+		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+			<div
+				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+			>
+				<h1 class="h2">Today's Sell</h1>
+				<div class="btn-toolbar mb-2 mb-md-0">
+					<div class="btn-group me-2">
+						<button
+							type="button"
+							class="btn btn-sm btn-outline-secondary"
+							data-bs-toggle="modal"
+							data-bs-target="#dailysellModal"
+						>
+							<i class="bx bx-plus"></i>
+							New Sell
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- add products modal -->
+			<div
+				class="modal fade"
+				id="dailysellModal"
+				tabindex="-1"
+				aria-labelledby="dailysellModalLabel"
+				aria-hidden="true"
+			>
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content rounded-4 shadow">
+						<div class="modal-header border-bottom-0">
+							<h5 class="modal-title">Add Sell</h5>
+
+							<button
+								type="button"
+								class="btn-close"
+								data-bs-dismiss="modal"
+								aria-label="Close"
+							></button>
+						</div>
+						<div class="modal-body py-0">
+							<div class="row">
+								<div class="col-md-6 px-3 py-2">
+									{{ form.customer_name.label() }}
+
+									{% if form.customer_name.errors %}
+										{{ form.customer_name(
+										class="form-select text-uppercase is-invalid",
+										placeholder="Customer Name",
+										id="selectcustomer"
+									) }}
+									<div class="invalid-feedback">
+										{% for error in form.customer_name.errors %}
+										<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+									{% else %} 
+										{{ form.customer_name(
+											class="form-select text-uppercase",
+											placeholder="Customer Name",
+											id="selectcustomer"
+										) }} 
+									{% endif %}
+
+								</div>
+
+								<div class="col-md-6 px-3 py-2">
+									<label> Product Name </label>
+									<select
+										class="form-select"
+										aria-label="Default select"
+										id="selectproduct"
+									>
+										<option>Select Product</option>
+										<option value="1">One product</option>
+										<option value="2">Two product</option>
+										<option value="3">Three product</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-4 px-3 py-2">
+									<label> Quantity </label>
+									<input
+										type="number"
+										class="form-control"
+										id="floatingQuantity"
+										placeholder="Enter Quantity"
+									/>
+								</div>
+
+								<div class="col-md-4 px-3 py-2">
+									<label> Discount (in taka) </label>
+									<input
+										class="form-control"
+										type="number"
+										value="00"
+										aria-label="Disabled input"
+									/>
+								</div>
+
+								<div class="col-md-4 px-3 py-2">
+									<label> Price (in taka) </label>
+									<input
+										class="form-control"
+										type="number"
+										value="00"
+										aria-label="Disabled input"
+										readonly
+									/>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-6 px-3 py-2">
+									<label> Payment Status </label>
+									<select
+										class="form-select"
+										aria-label="Default select"
+										id="selectproduct"
+									>
+										<option>Select Payment</option>
+										<option value="1">Cash</option>
+										<option value="2">Card</option>
+										<option value="3">
+											Online (bkash/nagad)
+										</option>
+									</select>
+								</div>
+
+								<div class="col-md-6 px-3 py-2">
+									<label>
+										Transaction ID
+										<small class="text-muted"
+											>(optional)</small
+										>
+									</label>
+									<input
+										class="form-control"
+										type="text"
+										placeholder="Trx id"
+									/>
+								</div>
+							</div>
+						</div>
+
+						<div class="modal-footer mt-4">
+							<!-- <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                            >
+                                Close
+                            </button> -->
+							<button
+								type="button"
+								class="btn btn-lg btn-primary w-100 mx-0 mb-2"
+							>
+								Confirm
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- end of add product modal -->
+
+			<!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380">
+			</canvas> -->
+
+			<!-- SUMMERY OF PRODUCTS -->
+			<div class="container">
+				<div class="row gap-2 mb-5">
+					<div class="col-lg-3">
+						<div class="border summery__box bg__anakiwa p-2">
+							<h3 class="summery__box-title fs-1 fw-bolder">
+								350
+							</h3>
+							<p class="summery__subtitle">
+								Total Selled Product
+							</p>
+						</div>
+					</div>
+
+					<div class="col-lg-3">
+						<div class="border summery__box bg__papayawhip p-2">
+							<h3 class="summery__box-title fs-1 fw-bolder">
+								350
+								<small>
+									<sup class="fs-6">Taka</sup>
+								</small>
+							</h3>
+							<p class="summery__subtitle">Total Pending</p>
+						</div>
+					</div>
+
+					<div class="col-lg-3">
+						<div class="border summery__box bg__mintgreen p-2">
+							<h3 class="summery__box-title fs-1 fw-bolder">
+								350
+								<small>
+									<sup class="fs-6">Taka</sup>
+								</small>
+							</h3>
+							<p class="summery__subtitle">Total Earning</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- PRODUCTS DETAILS -->
+			<h2>All Sells</h2>
+			<hr />
+			<div class="table-responsive">
+				<table class="table table-striped table-sm">
+					<thead>
+						<tr>
+							<th scope="col" width="100">Serial No</th>
+							<th scope="col">Product Name</th>
+							<th scope="col">Product ID</th>
+							<th scope="col">Customer Name</th>
+							<th scope="col">Quantity</th>
+							<th scope="col">Payment</th>
+							<th scope="col">Price</th>
+							<th scope="col">Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="text-center">1,001</td>
+							<td>random</td>
+							<td>data</td>
+							<td>placeholder</td>
+							<td>text</td>
+							<td>
+								<small
+									class="d-inline-flex px-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2"
+								>
+									Complete
+								</small>
+							</td>
+							<td>text</td>
+							<td>
+								<button
+									type="button"
+									class="btn btn-dark btn-sm"
+									aria-expanded="false"
+								>
+									Details
+								</button>
+							</td>
+						</tr>
+						<tr>
+							<td class="text-center">1,002</td>
+							<td>placeholder</td>
+							<td>irrelevant</td>
+							<td>viseual</td>
+							<td>layout</td>
+							<td>
+								<small
+									class="d-inline-flex px-2 py-1 fw-semibold text-warning bg-warning bg-gradient bg-opacity-10 border border-success border-opacity-10 rounded-2"
+								>
+									Pending
+								</small>
+							</td>
+							<td>layout</td>
+							<td>
+								<button
+									type="button"
+									class="btn btn-dark btn-sm"
+									aria-expanded="false"
+								>
+									Details
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</main>
+	</div>
+</div>
+
+<script src="{{ url_for('static', filename='js/dselect.js') }}"></script>
+
+<script>
+	const searcustomer = document.querySelector("#selectcustomer");
+	const selectproduct = document.querySelector("#selectproduct");
+	dselect(searcustomer, {
+		search: true,
+	});
+	dselect(selectproduct, {
+		search: true,
+	});
+</script>
+{% endblock %}

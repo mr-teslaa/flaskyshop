@@ -6,6 +6,10 @@ production=True
 class Config:
     SECRET_KEY='248fb9a5bdffa13c0bc136504ebf75c2'
     SQLALCHEMY_DATABASE_URI='sqlite:///shop.db'
+
+    # set optional bootswatch theme
+    FLASK_ADMIN_SWATCH = 'cerulean'
+    
     # SQLALCHEMY_TRACK_MODIFICATIONS=True
     # MAIL_SERVER = 'mail.hossainfoysal.com'
     # MAIL_PORT = 587

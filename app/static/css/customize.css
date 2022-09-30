@@ -52,6 +52,7 @@ body {
 	height: 120px;
 	display: grid;
 	place-items: center;
+	border-radius: 0.75rem;
 }
 
 .bg__mintgreen .summery__box-title,
@@ -69,3 +70,9 @@ body {
 	color: #334046;
 }
 /* === STATIC BOX END === */
+
+/* === SMALL LOGO | BRAND LOGO === */
+.avatar__logo {
+	width: 50px;
+	border-radius: 0.5rem;
+}
