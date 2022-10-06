@@ -21,6 +21,20 @@ def save_logo(form_picture):
 
     return picture_fn
 
+#   SAVE PRODUCT IMAGE
+def save_product(form_picture):
+    random_hex = secrets.token_hex(22)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(current_app.root_path, 'static/productimages', picture_fn)
+
+    output_size = (300, 500)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
+
 
 # #   sending email
 # def send_reset_email(user):

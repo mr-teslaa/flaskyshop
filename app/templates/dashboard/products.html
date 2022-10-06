@@ -65,7 +65,7 @@
 				aria-labelledby="AddProductModalLabel"
 				aria-hidden="true"
 			>
-				<form method="POST" action="">
+				<form method="POST" action="" enctype="multipart/form-data">
 					{{ form.hidden_tag() }}
 					<div class="modal-dialog modal-lg" role="document">
 						<div class="modal-content rounded-4 shadow">
@@ -380,23 +380,37 @@
 							<th scope="col">Brand</th>
 							<th scope="col">Category</th>
 							<th scope="col">Product Image</th>
+							<th scope="col">Action</th>
 						</tr>
 					</thead>
+
 					<tbody>
-						<tr>
-							<td>1,001</td>
-							<td>text</td>
-							<td>text</td>
-							<td>text</td>
-							<td>text</td>
+						{% for product in existingproduct %}
+						<tr class="align-middle">
+							<td>{{ product.id }}</td>
+							<td>{{ product.name }}</td>
+							<td>{{ product.brand.name }}</td>
+							<td>{{ product.category.name }}</td>
+							<td>
+								{% if product.image1 %}
+								<img 
+									src="{{ product.image1 }}" 
+									alt=""
+									class="img-fluid avatar__logo"	
+								/>
+								{% else %}
+								<img 
+									src="{{ url_for('static', filename='logos/default.jpg') }}" 
+									alt=""
+									class="img-fluid avatar__logo"	
+								/>
+								{% endif %}
+							</td>
+							<td>
+								<button class="btn btn-sm btn-dark">Details</button>
+							</td>
 						</tr>
-						<tr>
-							<td>1,001</td>
-							<td>text</td>
-							<td>text</td>
-							<td>text</td>
-							<td>text</td>
-						</tr>
+						{% endfor %}
 					</tbody>
 				</table>
 			</div>

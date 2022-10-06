@@ -32,10 +32,9 @@ from app.dashboard.forms import AddCategoryForm
 from app.dashboard.forms import AddProductForm
 from app.dashboard.forms import AddTodaySellForm
 
-from app.models import Customers
-
 #   CUSTOM MODULE
 from app.dashboard.utils import save_logo
+from app.dashboard.utils import save_product
 
 dashboard = Blueprint('dashboard', __name__)
 
@@ -113,7 +112,7 @@ def brand():
         if form.brand_logo.data:
             picture_file = save_logo(form.brand_logo.data)
             brand_logo = url_for('static', filename='brandlogo/' + picture_file)
-            brand = Brands(name=form.brand_name.data, logo=picture_file, note=form.brand_note.data)
+            brand = Brands(name=form.brand_name.data, logo=brand_logo, note=form.brand_note.data)
         else:
             brand = Brands(name=form.brand_name.data, note=form.brand_note.data)
         db.session.add(brand)
@@ -132,7 +131,9 @@ def edit_brand(brand_id):
     if form.validate_on_submit():
         if form.brand_logo.data:
             brand.name = form.brand_name.data
-            brand.logo = form.brand_logo.data
+            picture_file = save_logo(form.brand_logo.data)
+            brandlogo = url_for('static', filename='brandlogo/' + picture_file)
+            brand.logo = brandlogo
             brand.note = form.brand_note.data
             db.session.commit()
             flash('Brand details has been updated ✅', 'success')
@@ -223,21 +224,22 @@ def products():
         productname = form.product_name.data
         productID = form.product_id.data
         productprice = form.product_price.data
-        if existingproduct:
-            productquantity = form.product_quantity.data + existingproduct.stock
-        else:
-            productquantity = form.product_quantity.data
+        productquantity = form.product_quantity.data
+        # if existingproduct:
+        #     productquantity = form.product_quantity.data + existingproduct.stock
+        # else:
+        #     productquantity = form.product_quantity.data
         productdescription = form.product_description.data
         productbrand = form.product_brand.data
         productcategory = form.product_category.data
         productimage = form.product_image.data
 
         if productimage:
-            picture_file = save_logo(productimage)
+            picture_file = save_product(productimage)
             imagefile = url_for('static', filename='productimages/' + picture_file)
             product = Products(name=productname, productid=productID, price=productprice, 
-                                stock=productquantity, description= productdescription, brand= productbrand, 
-                                category= productcategory, image1=productimage)  
+                                stock=productquantity, description= productdescription, brand_id=productbrand, 
+                                category_id= productcategory, image1=imagefile)  
             # STORING IN DB
             db.session.add(product)
             db.session.commit()
@@ -252,7 +254,7 @@ def products():
 
         return redirect(url_for('dashboard.products'))
 
-    return render_template('dashboard/products.html', title='Products', form=form)
+    return render_template('dashboard/products.html', title='Products', form=form, existingproduct=existingproduct)
 
 
 #   ORDERS

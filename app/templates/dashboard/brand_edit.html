@@ -42,7 +42,7 @@
 
 			<!-- EDI CUSTOMER -->
 			<div>
-				<form method="POST" action="">
+				<form method="POST" action="" enctype="multipart/form-data">
 					{{ form.hidden_tag() }}
 					
 					<div class="py-0">
@@ -101,7 +101,7 @@
 								<!-- {{ brand.logo }} -->
 								<img
 									class="img-fluid avatar__logo"
-									src="{{ url_for('static', filename='brandlogo/' + brand.logo) }}"
+									src="{{ brand.logo }}"
 								/>
 							</div>
 						</div>

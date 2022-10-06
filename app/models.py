@@ -11,7 +11,6 @@ from app import db
 from app import login_manager
 from flask_login import UserMixin
 
-from app.dashboard.views import brand, category
 
 #   making sure that the user is logged in
 @login_manager.user_loader
@@ -34,15 +33,12 @@ class Brands(db.Model):
     name = db.Column(db.String(), nullable=False, unique=True)
     logo = db.Column(db.String(), default='default.jpg')
     note = db.Column(db.String())
-    # product_id = db.Column(db.Integer, db.ForeignKey('products.id'))
 
 
 class Categories(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), nullable=False, unique=True)
     note = db.Column(db.String())
-    # product_id = db.Column(db.Integer, db.ForeignKey('products.id'))
-
 
 class Customers(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -50,20 +46,21 @@ class Customers(db.Model, UserMixin):
     customer_contact_number = db.Column(db.String())
     customer_address = db.Column(db.String())
 
-
 class Products(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
     productid = db.Column(db.String(), nullable=False)
     price = db.Column(db.String(), nullable=False)
-    discount = db.Column(db.Integer, default=0)
     stock = db.Column(db.Integer, nullable=False, default='00')
     colors = db.Column(db.Text())
     description = db.Column(db.Text())
     pub_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-    # brand = db.relationship('Brands', backref=db.backref('product', lazy=True))
-    # category = db.relationship('Categories', backref=db.backref('product', lazy=True))
+    brand_id = db.Column(db.Integer, db.ForeignKey('brands.id'), nullable=False)
+    brand = db.relationship('Brands', backref=db.backref('product', lazy=True))
+    
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
+    category = db.relationship('Categories', backref=db.backref('product', lazy=True))
 
     image1 = db.Column(db.String(), nullable=False, default='image1.jpeg')
     image2 = db.Column(db.String(), default='image2.jpeg')
