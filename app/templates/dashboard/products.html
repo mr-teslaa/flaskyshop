@@ -253,22 +253,6 @@
 													id="selectcategory"
 												) }} 
 											{% endif %}
-
-											<!-- <select
-												class="form-select"
-												id="floatingSelect"
-												aria-label="Floating label select example"
-											>
-												<option selected>
-													Select Category
-												</option>
-												<option value="1">One</option>
-												<option value="2">Two</option>
-												<option value="3">Three</option>
-											</select>
-											<label for="floatingSelect">
-												Product Category
-											</label> -->
 										</div>
 									</div>
 
@@ -377,8 +361,8 @@
 						<tr>
 							<th scope="col" width="100">Serial No</th>
 							<th scope="col">Product Name</th>
+							<th scope="col">Price <small>(Taka)</small> </th>
 							<th scope="col">Brand</th>
-							<th scope="col">Category</th>
 							<th scope="col">Product Image</th>
 							<th scope="col">Action</th>
 						</tr>
@@ -389,8 +373,12 @@
 						<tr class="align-middle">
 							<td>{{ product.id }}</td>
 							<td>{{ product.name }}</td>
+							<td>
+								<small class="fs-5 d-inline-flex px-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2">
+									{{ product.price }}
+								</small>
+							</td>
 							<td>{{ product.brand.name }}</td>
-							<td>{{ product.category.name }}</td>
 							<td>
 								{% if product.image1 %}
 								<img 
@@ -407,7 +395,95 @@
 								{% endif %}
 							</td>
 							<td>
-								<button class="btn btn-sm btn-dark">Details</button>
+								<a
+									href="#"
+									class="btn btn-sm btn-dark"
+									data-bs-toggle="modal" data-bs-target="#detailProductModal{{product.id}}"
+								>
+									Details
+								</a>
+
+								<!-- DELETE BRAND MODAL -->
+								<div class="modal fade modal-lg" id="detailProductModal{{product.id}}" tabindex="-1" aria-labelledby="detailProductModalLabel" aria-hidden="true">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 id="detailProductModalLabel">{{ product.name }} Details</h5>
+												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+											</div>
+											<div class="modal-body">
+												<div class="table-responsive">
+													<table class="table table-bordered table-striped table-hover">
+														<tbody>
+															<tr>
+																<th>
+																	Product ID
+																</th>
+																<td>
+																	{{ product.productid }}
+																</td>
+															</tr>
+															<tr>
+																<th>Product Name</th>
+																<td>{{ product.name }}</td>
+															</tr>
+															<tr>
+																<th>Product Details</th>
+																<td>{{ product.description }}</td>
+															</tr>
+															<tr>
+																<th>Brand</th>
+																<td>{{ product.brand.name }}</td>
+															</tr>
+															<tr>
+																<th>Category</th>
+																<td>{{ product.category.name }}</td>
+															</tr>
+															<tr>
+																<th>Price <small>(Taka)</small></th>
+																<td class="fs-5 d-inline-flex m-2 px-2 py-1 fw-semibold text-primary bg-primary bg-opacity-10 border border-primary border-opacity-10 rounded-2">
+																	{{ product.price }} Taka
+																</td>
+															</tr>
+															<tr>
+																<th>Stock</th>
+																<td>
+																	{{ product.stock }}
+																	<span class="d-inline-flex px-2 ms-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2">
+																		<small>Available</small>
+																	</span>
+																</td>
+															</tr>
+															{% if product.colors %}
+															<tr>
+																<th>Colors</th>
+																<td> {{ product.colors }} </td>
+															</tr>
+															{% endif %}
+															<tr>
+																<th>Last updated</th>
+																<td> {{ product.pub_date.strftime('%H:%M:%S - %d %b, %Y') }} </td>
+															</tr>
+															<tr>
+																<th>Prodcut Images</th>
+																<td class="text-center">
+																	<img src="{{ product.image1 }}" alt="" />
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+											<div class="modal-footer">
+												<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+													<button class="btn btn-sm m-1 btn-danger me-md-2">Delete Product</button>
+													<a href="{{ url_for('dashboard.edit_product', product_id=product.id) }}" class="btn btn-sm m-1 btn-primary me-md-2">Edit Product</a>
+													<button class="btn btn-sm m-1 btn-dark" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 							</td>
 						</tr>
 						{% endfor %}

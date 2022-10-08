@@ -178,6 +178,62 @@ class AddProductForm(FlaskForm):
 
     submit = SubmitField('Save')
 
+
+# ADD PRODUCT FORM
+class EditProductForm(FlaskForm):
+    product_name = StringField(
+        'Product Name',
+        validators=[DataRequired()]
+    )
+
+    product_id = StringField(
+        'Product ID',
+        validators=[DataRequired()]
+    )
+
+    product_price = IntegerField(
+        'Product Price',
+        validators=[DataRequired()]
+    )
+
+    product_quantity = IntegerField(
+        'Product Quantity',
+        validators=[DataRequired()]
+    )
+
+    product_description = TextAreaField('Product Description')
+    
+    product_brand = SelectField(
+        'Product Brand', 
+        choices=[],
+        validators=[DataRequired()]
+    )
+
+    product_category = SelectField(
+        'Product Category', 
+        choices=[],
+        validators=[DataRequired()]
+    )
+
+    product_available = SelectField(
+        'Is this product available?',
+        choices=[
+            ('yes', 'Yes' ),
+            ('no', 'No' )
+        ],
+        validators=[DataRequired()] 
+    ) 
+
+    product_image = FileField(
+            'Product Image',
+            validators = [
+                FileAllowed(['jpg', 'png', 'webp', 'jpeg'])
+            ]
+    )
+
+    submit = SubmitField('Save')
+
+
 # ADD CUSTOMER FORM
 class AddCustomerForm(FlaskForm):
     customer_name = StringField(

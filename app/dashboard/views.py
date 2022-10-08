@@ -257,6 +257,49 @@ def products():
     return render_template('dashboard/products.html', title='Products', form=form, existingproduct=existingproduct)
 
 
+#   EDIT PRODUCTS
+@dashboard.route("/dashboard/product/<int:product_id>/update/", methods=['GET', 'POST'])
+# @login_required
+def edit_product(product_id):
+    product = Products.query.get_or_404(product_id)
+    form = AddProductForm()
+    if form.validate_on_submit():
+        productname = form.product_name.data
+        productID = form.product_id.data
+        productprice = form.product_price.data
+        productquantity = form.product_quantity.data
+        productdescription = form.product_description.data
+        productbrand = form.product_brand.data
+        productcategory = form.product_category.data
+        productimage = form.product_image.data
+        #   CHECK IF NEW IMAGE ADDED
+        if productimage:
+            picture_file = save_logo(productimage)
+            productlogo = url_for('static', filename='productimages/' + picture_file)
+            product.image1 = productlogo
+        
+        product.name = productname
+        product.productid = productID
+        product.price = productprice
+        product.stock = productquantity
+        product.description = productdescription
+        product.brand.name = productbrand
+        product.category = productcategory
+        db.session.commit()
+        flash('Product details has been updated ✅', 'success')
+        return redirect(url_for('dashboard.products'))
+
+    if request.method == 'GET':
+        form.product_name.data = product.name
+        form.product_id.data = product.productid
+        form.product_price.data = product.price 
+        form.product_quantity.data = product.stock 
+        form.product_description.data = product.description 
+        form.product_brand.choices = [(brand.id, brand.name) for brand in Brands.query.all()]
+        form.product_category.choices = [(category.id, category.name) for category in Categories.query.all()] 
+    return render_template('dashboard/product_edit.html', form=form, product=product)
+
+
 #   ORDERS
 @dashboard.route('/dashboard/orders/', methods=['GET', 'POST'])
 # @login_required

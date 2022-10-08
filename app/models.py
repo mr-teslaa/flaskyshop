@@ -1,7 +1,5 @@
 #   importing  necessary module
 from datetime import datetime
-from email.policy import default
-from itertools import product
 from flask import current_app
 
 #   importing dataase
@@ -63,8 +61,6 @@ class Products(db.Model):
     category = db.relationship('Categories', backref=db.backref('product', lazy=True))
 
     image1 = db.Column(db.String(), nullable=False, default='image1.jpeg')
-    image2 = db.Column(db.String(), default='image2.jpeg')
-    image3 = db.Column(db.String(), default='image3.jpeg')
 
 class DailySells(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -1,0 +1,320 @@
+{% extends 'layouts/root-dashboard.html' %}
+
+<!-- body -->
+{% block body %}
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
+		BM Gadget & Tech
+	</a>
+	<button
+		class="navbar-toggler position-absolute d-md-none collapsed"
+		type="button"
+		data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu"
+		aria-controls="sidebarMenu"
+		aria-expanded="false"
+		aria-label="Toggle navigation"
+	>
+		<span class="navbar-toggler-icon"> </span>
+	</button>
+	<input
+		class="form-control form-control-dark w-100 rounded-0 border-0"
+		type="text"
+		placeholder="Search"
+		aria-label="Search"
+	/>
+	<div class="navbar-nav">
+		<div class="nav-item text-nowrap">
+			<a class="nav-link px-3" href="#">Sign out </a>
+		</div>
+	</div>
+</header>
+
+<div class="container-fluid">
+	<div class="row">
+		<!-- navigation inject -->
+		{% include 'helpers/_dashboard_side_nav.html' %}
+
+		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+			<div class="align-items-center pt-3 pb-2 mb-3 border-bottom">
+				<h1 class="h2">Edit Prodcut</h1>
+			</div>
+
+			<!-- EDI CUSTOMER -->
+			<div>
+				<form method="POST" action="" enctype="multipart/form-data">
+					{{ form.hidden_tag() }}
+
+					<div class="py-0">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-floating mb-3 mb-3">
+									{% if form.product_name.errors %}
+									{{ form.product_name(
+										class="form-control is-invalid",
+										placeholder="Product Name"
+									) }}
+									<div class="invalid-feedback">
+										{% for error in form.product_name.errors %}
+										<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+									{% else %} 
+										{{ form.product_name(
+											class="form-control",
+											placeholder="Product Name"
+										) }} 
+									{% endif %}
+
+									{{ form.product_name.label(class="form-control-label") }}
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div class="form-floating mb-3">
+									{% if form.product_id.errors %}
+									{{ form.product_id(
+										class="form-control is-invalid",
+										placeholder="Product Description"
+									) }}
+									<div class="invalid-feedback">
+										{% for error in form.product_id.errors %}
+										<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+									{% else %} 
+										{{ form.product_id(
+											class="form-control",
+											placeholder="Product Description"
+										) }} 
+									{% endif %}
+
+									{{ form.product_id.label(class="form-control-label") }}
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-floating mb-3">
+									{% if form.product_price.errors %}
+									{{ form.product_price(
+										class="form-control is-invalid",
+										placeholder="Product Price"
+									) }}
+									<div class="invalid-feedback">
+										{% for error in form.product_price.errors %}
+										<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+									{% else %} 
+										{{ form.product_price(
+											class="form-control",
+											placeholder="Product Price"
+										) }} 
+									{% endif %}
+
+									{{ form.product_price.label(class="form-control-label") }}
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div class="form-floating mb-3">
+									{% if form.product_quantity.errors %}
+									{{ form.product_quantity(
+										class="form-control is-invalid",
+										placeholder="Product Quantity"
+									) }}
+									<div class="invalid-feedback">
+										{% for error in form.product_quantity.errors %}
+										<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+									{% else %} 
+										{{ form.product_quantity(
+											class="form-control",
+											placeholder="Product Quantity"
+										) }} 
+									{% endif %}
+
+									{{ form.product_quantity.label(class="form-control-label") }}
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-floating mb-3">
+									{% if form.product_description.errors %}
+									{{ form.product_description(
+										class="form-control is-invalid",
+										placeholder="Product Description",
+										style="height: 100px"
+									) }}
+									<div class="invalid-feedback">
+										{% for error in form.product_description.errors %}
+										<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+									{% else %} 
+										{{ form.product_description(
+											class="form-control",
+											placeholder="Product Description",
+											style="height: 100px",
+										) }} 
+									{% endif %}
+
+									{{ form.product_description.label(class="form-control-label") }}
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-4">
+								<div>
+									<label>Current Brand</label>
+									<input type="text" class="form-control" value="{{ product.brand.name }}" disabled>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div>
+									<label>Current Category</label>
+									<input type="text" class="form-control" value="{{ product.category.name }}" disabled>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-floating py-5">
+									<label>Update Brand</label>
+
+									{% if form.product_brand.errors %}
+									{{ form.product_brand(
+										class="form-select is-invalid",
+										placeholder="Product Brand",
+										id="selectbrand"
+									) }}
+									<div class="invalid-feedback">
+										{% for error in form.product_brand.errors %}
+										<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+									{% else %} 
+										{{ form.product_brand(
+											class="form-select",
+											placeholder="Product Brand",
+											id="selectbrand"
+										) }} 
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<div class="form-floating py-5">
+									<label>Update Category</label>
+
+									{% if form.product_category.errors %}
+									{{ form.product_category(
+										class="form-select is-invalid",
+										placeholder="Product Category",
+										id="selectcategory"
+									) }}
+									<div class="invalid-feedback">
+										{% for error in form.product_category.errors %}
+										<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+									{% else %} 
+										{{ form.product_category(
+											class="form-select",
+											placeholder="Product Category",
+											id="selectcategory"
+										) }} 
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<div class="py-3">
+									{{ form.product_available.label(class="form-label") }}
+
+									{% if form.product_available.errors %}
+									{{ form.product_available(
+										class="form-select is-invalid",
+										placeholder="Product Available?"
+									) }}
+									<div class="invalid-feedback">
+										{% for error in form.product_available.errors %}
+										<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+									{% else %} 
+										{{ form.product_available(
+											class="form-select",
+											placeholder="Product Available?"
+										) }} 
+									{% endif %}
+								</div>
+							</div>
+						</div>
+
+						<div class="row mb-3">
+							<div class="col-md-6">
+								<div class="input-group mb-3">
+									
+									{{ form.product_image.label(class="input-group-text") }}
+
+									{% if form.product_image.errors %}
+									{{ form.product_image(
+										class="form-control is-invalid",
+										placeholder="Product Image"
+									) }}
+									<div class="invalid-feedback">
+										{% for error in form.product_image.errors %}
+										<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+									{% else %} 
+										{{ form.product_image(
+											class="form-control",
+											placeholder="Product Image"
+										) }} 
+									{% endif %}
+
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<label class="d-block text-start">Current Product Image</label>
+								<img src=" {{ product.image1 }} " class="img-thumbnail mt-2" alt="">
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						{{ form.submit(class="btn btn-lg btn-primary w-100 mx-0 mb-2") }}
+					</div>
+				</form>
+			</div>
+			
+		</main>
+	</div>
+</div>
+
+
+<script src="{{ url_for('static', filename='js/dselect.js') }}"></script>
+
+<script>
+	const searchbrand = document.querySelector("#selectbrand");
+	const selectcategory = document.querySelector("#selectcategory");
+	dselect(searchbrand, {
+		search: true,
+	});
+	dselect(selectcategory, {
+		search: true,
+	});
+</script>
+
+
+{% endblock %}
