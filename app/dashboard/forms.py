@@ -179,40 +179,34 @@ class AddProductForm(FlaskForm):
     submit = SubmitField('Save')
 
 
-# ADD PRODUCT FORM
+# EDIT PRODUCT FORM
 class EditProductForm(FlaskForm):
     product_name = StringField(
-        'Product Name',
-        validators=[DataRequired()]
+        'Product Name'
     )
 
     product_id = StringField(
-        'Product ID',
-        validators=[DataRequired()]
+        'Product ID'
     )
 
     product_price = IntegerField(
-        'Product Price',
-        validators=[DataRequired()]
+        'Product Price'
     )
 
     product_quantity = IntegerField(
-        'Product Quantity',
-        validators=[DataRequired()]
+        'Product Quantity'
     )
 
     product_description = TextAreaField('Product Description')
     
     product_brand = SelectField(
         'Product Brand', 
-        choices=[],
-        validators=[DataRequired()]
+        choices=[]
     )
 
     product_category = SelectField(
         'Product Category', 
-        choices=[],
-        validators=[DataRequired()]
+        choices=[]
     )
 
     product_available = SelectField(

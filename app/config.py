@@ -1,7 +1,7 @@
 import os
 
-production=True
-# production=False
+# production=True
+production=False
 
 class Config:
     SECRET_KEY='248fb9a5bdffa13c0bc136504ebf75c2'

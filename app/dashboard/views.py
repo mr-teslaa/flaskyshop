@@ -1,5 +1,4 @@
 #   importing basic flask module
-from email.mime import image
 from flask import Blueprint
 from flask import redirect
 from flask import render_template
@@ -8,6 +7,8 @@ from flask import url_for
 from flask import flash
 from flask import abort
 from flask import current_app
+
+from datetime import datetime
 
 #   importing module from flask login
 from flask_login import current_user
@@ -30,6 +31,7 @@ from app.dashboard.forms import AddCustomerForm
 from app.dashboard.forms import AddBrandForm
 from app.dashboard.forms import AddCategoryForm 
 from app.dashboard.forms import AddProductForm
+from app.dashboard.forms import EditProductForm
 from app.dashboard.forms import AddTodaySellForm
 
 #   CUSTOM MODULE
@@ -262,16 +264,31 @@ def products():
 # @login_required
 def edit_product(product_id):
     product = Products.query.get_or_404(product_id)
-    form = AddProductForm()
+    print('==== PRODUCT FOUND =======')
+    
+    form = EditProductForm()
+    form.product_brand.choices = [(brand.id, brand.name) for brand in Brands.query.all()]
+    form.product_category.choices = [(category.id, category.name) for category in Categories.query.all()]
+    
     if form.validate_on_submit():
+        print("===== FORM SUBMITTED ENTER ==========")
         productname = form.product_name.data
         productID = form.product_id.data
         productprice = form.product_price.data
         productquantity = form.product_quantity.data
         productdescription = form.product_description.data
-        productbrand = form.product_brand.data
-        productcategory = form.product_category.data
+        if form.product_brand.data:
+            print(f'We have product brand: {form.product_brand.data}')
+            productbrand = form.product_brand.data
+        else:
+            print('we do not have product brand')
+
+        if form.product_category.data:
+            print(f'we have product category: {form.product_category.data}')
+            productcategory = form.product_category.data
+        
         productimage = form.product_image.data
+
         #   CHECK IF NEW IMAGE ADDED
         if productimage:
             picture_file = save_logo(productimage)
@@ -283,20 +300,20 @@ def edit_product(product_id):
         product.price = productprice
         product.stock = productquantity
         product.description = productdescription
-        product.brand.name = productbrand
-        product.category = productcategory
+        product.brand_id = productbrand
+        product.category_id = productcategory
+        product.pub_date = datetime.utcnow()
         db.session.commit()
         flash('Product details has been updated ✅', 'success')
         return redirect(url_for('dashboard.products'))
 
     if request.method == 'GET':
+        print('======== FORM SUMIT GET METHOD =======')
         form.product_name.data = product.name
         form.product_id.data = product.productid
         form.product_price.data = product.price 
         form.product_quantity.data = product.stock 
         form.product_description.data = product.description 
-        form.product_brand.choices = [(brand.id, brand.name) for brand in Brands.query.all()]
-        form.product_category.choices = [(category.id, category.name) for category in Categories.query.all()] 
     return render_template('dashboard/product_edit.html', form=form, product=product)
 
 

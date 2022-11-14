@@ -3,23 +3,12 @@
 	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
 		BM Gadget & Tech
 	</a>
-	<button
-		class="navbar-toggler position-absolute d-md-none collapsed"
-		type="button"
-		data-bs-toggle="collapse"
-		data-bs-target="#sidebarMenu"
-		aria-controls="sidebarMenu"
-		aria-expanded="false"
-		aria-label="Toggle navigation"
-	>
+	<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"> </span>
 	</button>
-	<input
-		class="form-control form-control-dark w-100 rounded-0 border-0"
-		type="text"
-		placeholder="Search"
-		aria-label="Search"
-	/>
+	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
+		aria-label="Search" />
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
 			<a class="nav-link px-3" href="#">Sign out </a>
@@ -33,17 +22,12 @@
 
 		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 			<div
-				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
-			>
+				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h1 class="h2">Products</h1>
 				<div class="btn-toolbar mb-2 mb-md-0">
 					<div class="btn-group me-2">
-						<button
-							type="button"
-							class="btn btn-sm btn-outline-secondary"
-							data-bs-toggle="modal"
-							data-bs-target="#addProduct"
-						>
+						<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+							data-bs-target="#addProduct">
 							<i class="bx bx-plus"></i>
 							Add Products
 						</button>
@@ -58,13 +42,8 @@
 			</div>
 
 			<!-- add products modal -->
-			<div
-				class="modal fade"
-				id="addProduct"
-				tabindex="-1"
-				aria-labelledby="AddProductModalLabel"
-				aria-hidden="true"
-			>
+			<div class="modal fade" id="addProduct" tabindex="-1" aria-labelledby="AddProductModalLabel"
+				aria-hidden="true">
 				<form method="POST" action="" enctype="multipart/form-data">
 					{{ form.hidden_tag() }}
 					<div class="modal-dialog modal-lg" role="document">
@@ -74,12 +53,8 @@
 									Add Product
 								</h5>
 
-								<button
-									type="button"
-									class="btn-close"
-									data-bs-dismiss="modal"
-									aria-label="Close"
-								></button>
+								<button type="button" class="btn-close" data-bs-dismiss="modal"
+									aria-label="Close"></button>
 							</div>
 							<div class="modal-body py-0">
 								<div class="row">
@@ -95,11 +70,11 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
-											{% else %} 
-												{{ form.product_name(
+											{% else %}
+											{{ form.product_name(
 													class="form-control",
 													placeholder="Product Name"
-												) }} 
+												) }}
 											{% endif %}
 
 											{{ form.product_name.label(class="form-control-label") }}
@@ -118,11 +93,11 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
-											{% else %} 
-												{{ form.product_id(
+											{% else %}
+											{{ form.product_id(
 													class="form-control",
 													placeholder="Product Description"
-												) }} 
+												) }}
 											{% endif %}
 
 											{{ form.product_id.label(class="form-control-label") }}
@@ -143,11 +118,11 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
-											{% else %} 
-												{{ form.product_price(
+											{% else %}
+											{{ form.product_price(
 													class="form-control",
 													placeholder="Product Price"
-												) }} 
+												) }}
 											{% endif %}
 
 											{{ form.product_price.label(class="form-control-label") }}
@@ -166,11 +141,11 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
-											{% else %} 
-												{{ form.product_quantity(
+											{% else %}
+											{{ form.product_quantity(
 													class="form-control",
 													placeholder="Product Quantity"
-												) }} 
+												) }}
 											{% endif %}
 
 											{{ form.product_quantity.label(class="form-control-label") }}
@@ -192,12 +167,12 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
-											{% else %} 
-												{{ form.product_description(
+											{% else %}
+											{{ form.product_description(
 													class="form-control",
 													placeholder="Product Description",
 													style="height: 100px",
-												) }} 
+												) }}
 											{% endif %}
 
 											{{ form.product_description.label(class="form-control-label") }}
@@ -221,12 +196,12 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
-											{% else %} 
-												{{ form.product_brand(
+											{% else %}
+											{{ form.product_brand(
 													class="form-select",
 													placeholder="Product Brand",
 													id="selectbrand"
-												) }} 
+												) }}
 											{% endif %}
 										</div>
 									</div>
@@ -246,12 +221,12 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
-											{% else %} 
-												{{ form.product_category(
+											{% else %}
+											{{ form.product_category(
 													class="form-select",
 													placeholder="Product Category",
 													id="selectcategory"
-												) }} 
+												) }}
 											{% endif %}
 										</div>
 									</div>
@@ -270,11 +245,11 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
-											{% else %} 
-												{{ form.product_available(
+											{% else %}
+											{{ form.product_available(
 													class="form-select",
 													placeholder="Product Available?"
-												) }} 
+												) }}
 											{% endif %}
 										</div>
 									</div>
@@ -283,7 +258,7 @@
 								<div class="row">
 									<div class="col-md-12">
 										<div class="input-group mb-3">
-											
+
 											{{ form.product_image.label(class="input-group-text") }}
 
 											{% if form.product_image.errors %}
@@ -296,11 +271,11 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
-											{% else %} 
-												{{ form.product_image(
+											{% else %}
+											{{ form.product_image(
 													class="form-control",
 													placeholder="Product Image"
-												) }} 
+												) }}
 											{% endif %}
 
 										</div>
@@ -374,42 +349,35 @@
 							<td>{{ product.id }}</td>
 							<td>{{ product.name }}</td>
 							<td>
-								<small class="fs-5 d-inline-flex px-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2">
+								<small
+									class="fs-5 d-inline-flex px-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2">
 									{{ product.price }}
 								</small>
 							</td>
 							<td>{{ product.brand.name }}</td>
 							<td>
 								{% if product.image1 %}
-								<img 
-									src="{{ product.image1 }}" 
-									alt=""
-									class="img-fluid avatar__logo"	
-								/>
+								<img src="{{ product.image1 }}" alt="" class="img-fluid avatar__logo" />
 								{% else %}
-								<img 
-									src="{{ url_for('static', filename='logos/default.jpg') }}" 
-									alt=""
-									class="img-fluid avatar__logo"	
-								/>
+								<img src="{{ url_for('static', filename='logos/default.jpg') }}" alt=""
+									class="img-fluid avatar__logo" />
 								{% endif %}
 							</td>
 							<td>
-								<a
-									href="#"
-									class="btn btn-sm btn-dark"
-									data-bs-toggle="modal" data-bs-target="#detailProductModal{{product.id}}"
-								>
+								<a href="#" class="btn btn-sm btn-dark" data-bs-toggle="modal"
+									data-bs-target="#detailProductModal{{product.id}}">
 									Details
 								</a>
 
 								<!-- DELETE BRAND MODAL -->
-								<div class="modal fade modal-lg" id="detailProductModal{{product.id}}" tabindex="-1" aria-labelledby="detailProductModalLabel" aria-hidden="true">
+								<div class="modal fade modal-lg" id="detailProductModal{{product.id}}" tabindex="-1"
+									aria-labelledby="detailProductModalLabel" aria-hidden="true">
 									<div class="modal-dialog">
 										<div class="modal-content">
 											<div class="modal-header">
 												<h5 id="detailProductModalLabel">{{ product.name }} Details</h5>
-												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+												<button type="button" class="btn-close" data-bs-dismiss="modal"
+													aria-label="Close"></button>
 											</div>
 											<div class="modal-body">
 												<div class="table-responsive">
@@ -441,7 +409,8 @@
 															</tr>
 															<tr>
 																<th>Price <small>(Taka)</small></th>
-																<td class="fs-5 d-inline-flex m-2 px-2 py-1 fw-semibold text-primary bg-primary bg-opacity-10 border border-primary border-opacity-10 rounded-2">
+																<td
+																	class="fs-5 d-inline-flex m-2 px-2 py-1 fw-lighter text-white bg-dark border border-dark border-opacity-10 rounded-2">
 																	{{ product.price }} Taka
 																</td>
 															</tr>
@@ -449,7 +418,8 @@
 																<th>Stock</th>
 																<td>
 																	{{ product.stock }}
-																	<span class="d-inline-flex px-2 ms-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2">
+																	<span
+																		class="d-inline-flex px-2 ms-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2">
 																		<small>Available</small>
 																	</span>
 																</td>
@@ -462,7 +432,7 @@
 															{% endif %}
 															<tr>
 																<th>Last updated</th>
-																<td> {{ product.pub_date.strftime('%H:%M:%S - %d %b, %Y') }} </td>
+																<td> {{ product.pub_date.strftime('%d %b, %Y') }} </td>
 															</tr>
 															<tr>
 																<th>Prodcut Images</th>
@@ -476,9 +446,12 @@
 											</div>
 											<div class="modal-footer">
 												<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-													<button class="btn btn-sm m-1 btn-danger me-md-2">Delete Product</button>
-													<a href="{{ url_for('dashboard.edit_product', product_id=product.id) }}" class="btn btn-sm m-1 btn-primary me-md-2">Edit Product</a>
-													<button class="btn btn-sm m-1 btn-dark" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+													<button class="btn btn-sm m-1 btn-danger me-md-2">Delete
+														Product</button>
+													<a href="{{ url_for('dashboard.edit_product', product_id=product.id) }}"
+														class="btn btn-sm m-1 btn-primary me-md-2">Edit Product</a>
+													<button class="btn btn-sm m-1 btn-dark" data-bs-dismiss="modal"
+														aria-label="Close">Cancel</button>
 												</div>
 											</div>
 										</div>

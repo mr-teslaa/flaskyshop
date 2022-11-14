@@ -6,23 +6,12 @@
 	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
 		BM Gadget & Tech
 	</a>
-	<button
-		class="navbar-toggler position-absolute d-md-none collapsed"
-		type="button"
-		data-bs-toggle="collapse"
-		data-bs-target="#sidebarMenu"
-		aria-controls="sidebarMenu"
-		aria-expanded="false"
-		aria-label="Toggle navigation"
-	>
+	<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"> </span>
 	</button>
-	<input
-		class="form-control form-control-dark w-100 rounded-0 border-0"
-		type="text"
-		placeholder="Search"
-		aria-label="Search"
-	/>
+	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
+		aria-label="Search" />
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
 			<a class="nav-link px-3" href="#">Sign out </a>
@@ -59,11 +48,11 @@
 										<span>{{ error }}</span>
 										{% endfor %}
 									</div>
-									{% else %} 
-										{{ form.product_name(
+									{% else %}
+									{{ form.product_name(
 											class="form-control",
 											placeholder="Product Name"
-										) }} 
+										) }}
 									{% endif %}
 
 									{{ form.product_name.label(class="form-control-label") }}
@@ -82,11 +71,11 @@
 										<span>{{ error }}</span>
 										{% endfor %}
 									</div>
-									{% else %} 
-										{{ form.product_id(
+									{% else %}
+									{{ form.product_id(
 											class="form-control",
 											placeholder="Product Description"
-										) }} 
+										) }}
 									{% endif %}
 
 									{{ form.product_id.label(class="form-control-label") }}
@@ -107,11 +96,11 @@
 										<span>{{ error }}</span>
 										{% endfor %}
 									</div>
-									{% else %} 
-										{{ form.product_price(
+									{% else %}
+									{{ form.product_price(
 											class="form-control",
 											placeholder="Product Price"
-										) }} 
+										) }}
 									{% endif %}
 
 									{{ form.product_price.label(class="form-control-label") }}
@@ -130,11 +119,11 @@
 										<span>{{ error }}</span>
 										{% endfor %}
 									</div>
-									{% else %} 
-										{{ form.product_quantity(
+									{% else %}
+									{{ form.product_quantity(
 											class="form-control",
 											placeholder="Product Quantity"
-										) }} 
+										) }}
 									{% endif %}
 
 									{{ form.product_quantity.label(class="form-control-label") }}
@@ -156,12 +145,12 @@
 										<span>{{ error }}</span>
 										{% endfor %}
 									</div>
-									{% else %} 
-										{{ form.product_description(
+									{% else %}
+									{{ form.product_description(
 											class="form-control",
 											placeholder="Product Description",
 											style="height: 100px",
-										) }} 
+										) }}
 									{% endif %}
 
 									{{ form.product_description.label(class="form-control-label") }}
@@ -173,13 +162,14 @@
 							<div class="col-md-4">
 								<div>
 									<label>Current Brand</label>
-									<input type="text" class="form-control" value="{{ product.brand.name }}" disabled>
+									<input type="text" class="form-control" value="{{ product.brand.name }}" readonly>
 								</div>
 							</div>
 							<div class="col-md-4">
 								<div>
 									<label>Current Category</label>
-									<input type="text" class="form-control" value="{{ product.category.name }}" disabled>
+									<input type="text" class="form-control" value="{{ product.category.name }}"
+										readonly>
 								</div>
 							</div>
 						</div>
@@ -200,12 +190,12 @@
 										<span>{{ error }}</span>
 										{% endfor %}
 									</div>
-									{% else %} 
-										{{ form.product_brand(
+									{% else %}
+									{{ form.product_brand(
 											class="form-select",
 											placeholder="Product Brand",
 											id="selectbrand"
-										) }} 
+										) }}
 									{% endif %}
 								</div>
 							</div>
@@ -225,12 +215,12 @@
 										<span>{{ error }}</span>
 										{% endfor %}
 									</div>
-									{% else %} 
-										{{ form.product_category(
+									{% else %}
+									{{ form.product_category(
 											class="form-select",
 											placeholder="Product Category",
 											id="selectcategory"
-										) }} 
+										) }}
 									{% endif %}
 								</div>
 							</div>
@@ -249,11 +239,11 @@
 										<span>{{ error }}</span>
 										{% endfor %}
 									</div>
-									{% else %} 
-										{{ form.product_available(
+									{% else %}
+									{{ form.product_available(
 											class="form-select",
 											placeholder="Product Available?"
-										) }} 
+										) }}
 									{% endif %}
 								</div>
 							</div>
@@ -262,7 +252,7 @@
 						<div class="row mb-3">
 							<div class="col-md-6">
 								<div class="input-group mb-3">
-									
+
 									{{ form.product_image.label(class="input-group-text") }}
 
 									{% if form.product_image.errors %}
@@ -275,11 +265,11 @@
 										<span>{{ error }}</span>
 										{% endfor %}
 									</div>
-									{% else %} 
-										{{ form.product_image(
+									{% else %}
+									{{ form.product_image(
 											class="form-control",
 											placeholder="Product Image"
-										) }} 
+										) }}
 									{% endif %}
 
 								</div>
@@ -297,7 +287,7 @@
 					</div>
 				</form>
 			</div>
-			
+
 		</main>
 	</div>
 </div>
