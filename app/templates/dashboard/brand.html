@@ -6,23 +6,12 @@
 	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
 		BM Gadget & Tech
 	</a>
-	<button
-		class="navbar-toggler position-absolute d-md-none collapsed"
-		type="button"
-		data-bs-toggle="collapse"
-		data-bs-target="#sidebarMenu"
-		aria-controls="sidebarMenu"
-		aria-expanded="false"
-		aria-label="Toggle navigation"
-	>
+	<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"> </span>
 	</button>
-	<input
-		class="form-control form-control-dark w-100 rounded-0 border-0"
-		type="text"
-		placeholder="Search"
-		aria-label="Search"
-	/>
+	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
+		aria-label="Search" />
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
 			<a class="nav-link px-3" href="#">Sign out </a>
@@ -37,17 +26,12 @@
 
 		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 			<div
-				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
-			>
+				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h1 class="h2">Brand</h1>
 				<div class="btn-toolbar mb-2 mb-md-0">
 					<div class="btn-group me-2">
-						<button
-							type="button"
-							class="btn btn-sm btn-outline-secondary"
-							data-bs-toggle="modal"
-							data-bs-target="#brandModal"
-						>
+						<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+							data-bs-target="#brandModal">
 							<i class="bx bx-plus"></i>
 							Add Brand
 						</button>
@@ -62,15 +46,9 @@
 			</div>
 
 			<!-- add brand modal -->
-			<div
-				class="modal fade"
-				id="brandModal"
-				tabindex="-1"
-				aria-labelledby="brandModalLabel"
-				aria-hidden="true"
-			>
+			<div class="modal fade" id="brandModal" tabindex="-1" aria-labelledby="brandModalLabel" aria-hidden="true">
 				<form method="POST" action="" enctype="multipart/form-data">
-				{{ form.hidden_tag() }}
+					{{ form.hidden_tag() }}
 					<div class="modal-dialog modal-md" role="document">
 						<div class="modal-content rounded-4 shadow">
 							<div class="modal-header border-bottom-0">
@@ -78,12 +56,8 @@
 									Add Brand
 								</h5>
 
-								<button
-									type="button"
-									class="btn-close"
-									data-bs-dismiss="modal"
-									aria-label="Close"
-								></button>
+								<button type="button" class="btn-close" data-bs-dismiss="modal"
+									aria-label="Close"></button>
 							</div>
 
 							<div class="modal-body py-0">
@@ -100,11 +74,11 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
-											{% else %} 
+											{% else %}
 											{{ form.brand_name(
 												class="form-control",
 												placeholder="Brand Name"
-											) }} 
+											) }}
 											{% endif %}
 
 											{{ form.brand_name.label(class="form-control-label") }}
@@ -116,7 +90,7 @@
 									<div class="col-md-12">
 										<div class="input-group mb-3">
 											{{ form.brand_logo.label(class="input-group-text") }}
-												
+
 											{% if form.brand_logo.errors %}
 											{{ form.brand_logo(
 												class="form-control is-invalid",
@@ -131,7 +105,7 @@
 											{{ form.brand_logo(
 												class="form-control",
 												placeholder="Brand Logo"
-											) }} 
+											) }}
 											{% endif %}
 
 										</div>
@@ -152,12 +126,12 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
-											{% else %} 
+											{% else %}
 											{{ form.brand_note(
 												class="form-control",
 												placeholder="Brand Note",
 												style="height: 100px",
-											) }} 
+											) }}
 											{% endif %}
 
 											{{ form.brand_note.label(class="form-control-label") }}
@@ -181,7 +155,7 @@
 					<div class="col-lg-3">
 						<div class="border summery__box bg__anakiwa p-2">
 							<h3 class="summery__box-title fs-1 fw-bolder">
-								{{ total_brand.total }}
+								{{ brands|length }}
 							</h3>
 							<p class="summery__subtitle">Total Brand</p>
 						</div>
@@ -192,6 +166,7 @@
 			<!-- BRAND DETAILS -->
 			<h2>All Brand</h2>
 			<hr />
+			{% if brands %}
 			<div class="table-responsive">
 				<table class="table table-striped table-sm">
 					<thead>
@@ -210,44 +185,30 @@
 							<td>{{ brand.name }}</td>
 							<td>
 								{% if brand.logo %}
-								<img 
-									src="{{ brand.logo }}" 
-									alt=""
-									class="img-fluid avatar__logo"	
-								/>
+								<img src="{{ url_for('static', filename='brandlogo/' + brand.logo) }}" alt=""
+									class="img-fluid avatar__logo" />
 								{% else %}
-								<img 
-									src="{{ url_for('static', filename='brandlogo/default.jpg') }}" 
-									alt=""
-									class="img-fluid avatar__logo"	
-								/>
+								<img src="{{ url_for('static', filename='brandlogo/default.jpg') }}" alt=""
+									class="img-fluid avatar__logo" />
 								{% endif %}
 							</td>
 							<td>{{ brand.note }}</td>
 							<td>
 								<div class="btn-group dropstart">
-									<button
-										type="button"
-										class="btn btn-dark btn-sm dropdown-toggle"
-										data-bs-toggle="dropdown"
-										aria-expanded="false"
-									>
+									<button type="button" class="btn btn-dark btn-sm dropdown-toggle"
+										data-bs-toggle="dropdown" aria-expanded="false">
 										More Option
 									</button>
-									<ul
-										class="dropdown-menu bg-gradient bg-info"
-									>
+									<ul class="dropdown-menu bg-gradient bg-info">
 										<li>
-											<a href="{{ url_for('dashboard.edit_brand', brand_id=brand.id) }}" class="dropdown-item">
+											<a href="{{ url_for('dashboard.edit_brand', brand_id=brand.id) }}"
+												class="dropdown-item">
 												Edit info
 											</a>
 										</li>
 										<li>
-											<a
-												href="#"
-												class="dropdown-item bg-danger text-white"
-												data-bs-toggle="modal" data-bs-target="#deleteBrandModal{{brand.id}}"
-											>
+											<a href="#" class="dropdown-item bg-danger text-white"
+												data-bs-toggle="modal" data-bs-target="#deleteBrandModal{{brand.id}}">
 												Delete brand
 											</a>
 										</li>
@@ -255,17 +216,24 @@
 								</div>
 
 								<!-- DELETE BRAND MODAL -->
-								<div class="modal fade" id="deleteBrandModal{{brand.id}}" tabindex="-1" aria-labelledby="deleteBrandModalLabel" aria-hidden="true">
+								<div class="modal fade" id="deleteBrandModal{{brand.id}}" tabindex="-1"
+									aria-labelledby="deleteBrandModalLabel" aria-hidden="true">
 									<div class="modal-dialog">
 										<div class="modal-content">
 											<div class="modal-header">
-												<h5 id="exampleModalLabel">Are you sure, want to delete this BRAND {{ brand.id }}?</h5>
-												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+												<h5 id="exampleModalLabel">Are you sure, want to delete this BRAND
+													{{ brand.id }}?
+												</h5>
+												<button type="button" class="btn-close" data-bs-dismiss="modal"
+													aria-label="Close"></button>
 											</div>
 											<div class="modal-footer">
 												<button class="btn btn-sm m-1 btn-dark">Cancel</button>
-												<form action="{{ url_for('dashboard.delete_brand', brand_id=brand.id) }}" method="POST">
-													<input type="submit" class="btn btn-danger btn-sm m-1" value="Yes, delete BRAND" />
+												<form
+													action="{{ url_for('dashboard.delete_brand', brand_id=brand.id) }}"
+													method="POST">
+													<input type="submit" class="btn btn-danger btn-sm m-1"
+														value="Yes, delete BRAND" />
 												</form>
 											</div>
 										</div>
@@ -277,6 +245,16 @@
 					</tbody>
 				</table>
 			</div>
+			{% else %}
+			<h5>
+				No brand added yet.
+				<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+					data-bs-target="#brandModal">
+					<i class="bx bx-plus"></i>
+					Add Brand
+				</button>
+			</h5>
+			{% endif %}
 		</main>
 	</div>
 </div>
@@ -286,7 +264,7 @@
 	const serialnos = document.querySelectorAll('.counters');
 	console.log(serialnos);
 	serialnos.forEach(serial => {
-		serial.innerText=counter;
+		serial.innerText = counter;
 		counter++;
 	});
 </script>

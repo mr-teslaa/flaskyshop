@@ -250,34 +250,31 @@
 						</div>
 
 						<div class="row mb-3">
-							<div class="col-md-6">
-								<div class="input-group mb-3">
+							<div class="col-md-6 mb-3">
+								{{ form.product_image.label(class="d-block text-start mb-2") }}
 
-									{{ form.product_image.label(class="input-group-text") }}
-
-									{% if form.product_image.errors %}
-									{{ form.product_image(
-										class="form-control is-invalid",
+								{% if form.product_image.errors %}
+								{{ form.product_image(
+									class="form-control is-invalid",
+									placeholder="Product Image"
+								) }}
+								<div class="invalid-feedback">
+									{% for error in form.product_image.errors %}
+									<span>{{ error }}</span>
+									{% endfor %}
+								</div>
+								{% else %}
+								{{ form.product_image(
+										class="form-control",
 										placeholder="Product Image"
 									) }}
-									<div class="invalid-feedback">
-										{% for error in form.product_image.errors %}
-										<span>{{ error }}</span>
-										{% endfor %}
-									</div>
-									{% else %}
-									{{ form.product_image(
-											class="form-control",
-											placeholder="Product Image"
-										) }}
-									{% endif %}
-
-								</div>
+								{% endif %}
 							</div>
 
 							<div class="col-md-6">
 								<label class="d-block text-start">Current Product Image</label>
-								<img src=" {{ product.image1 }} " class="img-thumbnail mt-2" alt="">
+								<img src="{{ url_for('static', filename='productimages/' + product.image1) }}" alt=""
+									class="img-thumbnail mt-2" />
 							</div>
 						</div>
 					</div>

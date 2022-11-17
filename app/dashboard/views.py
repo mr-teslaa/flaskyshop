@@ -1,3 +1,5 @@
+import os
+
 #   importing basic flask module
 from flask import Blueprint
 from flask import redirect
@@ -106,22 +108,20 @@ def todaysell():
 def brand():
     #   FETCHING EXISTING BRAND
     brands = Brands.query.all()
-    total_brand = Brands.query.paginate()
 
     #   ADDING NEW BRAND
     form = AddBrandForm()
     if form.validate_on_submit():
         if form.brand_logo.data:
             picture_file = save_logo(form.brand_logo.data)
-            brand_logo = url_for('static', filename='brandlogo/' + picture_file)
-            brand = Brands(name=form.brand_name.data, logo=brand_logo, note=form.brand_note.data)
+            brand = Brands(name=form.brand_name.data, logo=picture_file, note=form.brand_note.data)
         else:
             brand = Brands(name=form.brand_name.data, note=form.brand_note.data)
         db.session.add(brand)
         db.session.commit()
         flash(f'Brand "{form.brand_name.data}" added successfully ✅', 'success')
         return redirect(url_for('dashboard.brand'))
-    return render_template('dashboard/brand.html', title='Brand', form=form, brands=brands, total_brand=total_brand)
+    return render_template('dashboard/brand.html', title='Brand', form=form, brands=brands)
 
 
 #   EDIT BRAND
@@ -134,8 +134,8 @@ def edit_brand(brand_id):
         if form.brand_logo.data:
             brand.name = form.brand_name.data
             picture_file = save_logo(form.brand_logo.data)
-            brandlogo = url_for('static', filename='brandlogo/' + picture_file)
-            brand.logo = brandlogo
+            # brandlogo = url_for('static', filename='brandlogo/' + picture_file)
+            brand.logo = picture_file
             brand.note = form.brand_note.data
             db.session.commit()
             flash('Brand details has been updated ✅', 'success')
@@ -157,6 +157,8 @@ def edit_brand(brand_id):
 # @login_required
 def delete_brand(brand_id):
     brand = Brands.query.get_or_404(brand_id)
+    if brand.logo:
+        os.unlink(os.path.join(current_app.root_path,'static/brandlogo/' +  brand.logo))
     db.session.delete(brand)
     db.session.commit()
     flash(f'Brand "{brand.name}" has been deleted ✅', 'success')
@@ -169,7 +171,6 @@ def delete_brand(brand_id):
 def category():
     #   FETCHING EXISTING CATEGORY
     categories = Categories.query.all()
-    total_category = Categories.query.paginate()
 
     #   ADDING NEW CATEGORY
     form = AddCategoryForm()
@@ -179,7 +180,7 @@ def category():
         db.session.commit()
         flash(f'Category "{form.category_name.data}" added successfully ✅', 'success')
         return redirect(url_for('dashboard.category'))
-    return render_template('dashboard/category.html', title='Category', form=form, categories=categories, total_category=total_category)
+    return render_template('dashboard/category.html', title='Category', form=form, categories=categories)
 
 
 #   EDIT CATEGORY
@@ -219,6 +220,9 @@ def products():
     form.product_brand.choices = [(brand.id, brand.name) for brand in Brands.query.all()]
     form.product_category.choices = [(category.id, category.name) for category in Categories.query.all()]
     
+    brands = Brands.query.all()
+    categories = Categories.query.all()
+
     #   fetch existing product
     existingproduct = Products.query.all()
 
@@ -235,13 +239,15 @@ def products():
         productbrand = form.product_brand.data
         productcategory = form.product_category.data
         productimage = form.product_image.data
+        productStatus = form.product_available.data
+        print(f'Product status: {productStatus}')
 
         if productimage:
             picture_file = save_product(productimage)
-            imagefile = url_for('static', filename='productimages/' + picture_file)
+            # imagefile = url_for('static', filename='productimages/' + picture_file)
             product = Products(name=productname, productid=productID, price=productprice, 
                                 stock=productquantity, description= productdescription, brand_id=productbrand, 
-                                category_id= productcategory, image1=imagefile)  
+                                category_id= productcategory, image1=picture_file, available_status=productStatus)  
             # STORING IN DB
             db.session.add(product)
             db.session.commit()
@@ -249,14 +255,14 @@ def products():
 
         product = Products(name=productname, productid=productID, price=productprice, 
                             stock=productquantity, description= productdescription,  brand= productbrand, 
-                            category= productcategory)
+                            category= productcategory, available_status=productStatus)
         # STORING IN DB
         db.session.add(product)
         db.session.commit()
 
         return redirect(url_for('dashboard.products'))
 
-    return render_template('dashboard/products.html', title='Products', form=form, existingproduct=existingproduct)
+    return render_template('dashboard/products.html', title='Products', form=form, existingproduct=existingproduct, brands=brands, categories=categories)
 
 
 #   EDIT PRODUCTS
@@ -264,36 +270,32 @@ def products():
 # @login_required
 def edit_product(product_id):
     product = Products.query.get_or_404(product_id)
-    print('==== PRODUCT FOUND =======')
     
     form = EditProductForm()
     form.product_brand.choices = [(brand.id, brand.name) for brand in Brands.query.all()]
     form.product_category.choices = [(category.id, category.name) for category in Categories.query.all()]
     
     if form.validate_on_submit():
-        print("===== FORM SUBMITTED ENTER ==========")
         productname = form.product_name.data
         productID = form.product_id.data
         productprice = form.product_price.data
         productquantity = form.product_quantity.data
         productdescription = form.product_description.data
+        productStatus = form.product_available.data
         if form.product_brand.data:
-            print(f'We have product brand: {form.product_brand.data}')
             productbrand = form.product_brand.data
-        else:
-            print('we do not have product brand')
 
         if form.product_category.data:
-            print(f'we have product category: {form.product_category.data}')
             productcategory = form.product_category.data
         
         productimage = form.product_image.data
 
         #   CHECK IF NEW IMAGE ADDED
         if productimage:
-            picture_file = save_logo(productimage)
-            productlogo = url_for('static', filename='productimages/' + picture_file)
-            product.image1 = productlogo
+            if product.image1:
+                os.unlink(os.path.join(current_app.root_path,'static/productimages/' +  product.image1))
+            picture_file = save_product(productimage)
+            product.image1 = picture_file
         
         product.name = productname
         product.productid = productID
@@ -302,19 +304,33 @@ def edit_product(product_id):
         product.description = productdescription
         product.brand_id = productbrand
         product.category_id = productcategory
+        product.available_status = productStatus
         product.pub_date = datetime.utcnow()
         db.session.commit()
         flash('Product details has been updated ✅', 'success')
         return redirect(url_for('dashboard.products'))
 
     if request.method == 'GET':
-        print('======== FORM SUMIT GET METHOD =======')
         form.product_name.data = product.name
         form.product_id.data = product.productid
         form.product_price.data = product.price 
         form.product_quantity.data = product.stock 
         form.product_description.data = product.description 
+        form.product_available.data = product.available_status
     return render_template('dashboard/product_edit.html', form=form, product=product)
+
+
+#   route for deleting a post
+@dashboard.route("/dashboard/product/<int:product_id>/delete/", methods=['POST'])
+# @login_required
+def delete_product(product_id):
+    product = Products.query.get_or_404(product_id)
+    if product.image1:
+        os.unlink(os.path.join(current_app.root_path,'static/productimages/' +  product.image1))
+    db.session.delete(product)
+    db.session.commit()
+    flash('Your product has been deleted ✅', 'success')
+    return redirect(url_for('dashboard.products'))
 
 
 #   ORDERS

@@ -1,4 +1,3 @@
-from wsgiref.validate import validator
 from flask_wtf import FlaskForm
 
 from wtforms import StringField
@@ -219,7 +218,7 @@ class EditProductForm(FlaskForm):
     ) 
 
     product_image = FileField(
-            'Product Image',
+            'Upload New Image',
             validators = [
                 FileAllowed(['jpg', 'png', 'webp', 'jpeg'])
             ]

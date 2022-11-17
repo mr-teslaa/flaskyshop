@@ -29,7 +29,7 @@ class Users(db.Model, UserMixin):
 class Brands(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False, unique=True)
-    logo = db.Column(db.String(), default='default.jpg')
+    logo = db.Column(db.String())
     note = db.Column(db.String())
 
 
@@ -53,7 +53,7 @@ class Products(db.Model):
     colors = db.Column(db.Text())
     description = db.Column(db.Text())
     pub_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    # available_status = db.Column(db.Boolean())
+    available_status = db.Column(db.String(), default='yes')
 
     brand_id = db.Column(db.Integer, db.ForeignKey('brands.id'), nullable=False)
     brand = db.relationship('Brands', backref=db.backref('product', lazy=True))

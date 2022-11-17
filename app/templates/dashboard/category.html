@@ -6,23 +6,12 @@
 	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
 		BM Gadget & Tech
 	</a>
-	<button
-		class="navbar-toggler position-absolute d-md-none collapsed"
-		type="button"
-		data-bs-toggle="collapse"
-		data-bs-target="#sidebarMenu"
-		aria-controls="sidebarMenu"
-		aria-expanded="false"
-		aria-label="Toggle navigation"
-	>
+	<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"> </span>
 	</button>
-	<input
-		class="form-control form-control-dark w-100 rounded-0 border-0"
-		type="text"
-		placeholder="Search"
-		aria-label="Search"
-	/>
+	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
+		aria-label="Search" />
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
 			<a class="nav-link px-3" href="#">Sign out </a>
@@ -37,17 +26,12 @@
 
 		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 			<div
-				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
-			>
+				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h1 class="h2">Categories</h1>
 				<div class="btn-toolbar mb-2 mb-md-0">
 					<div class="btn-group me-2">
-						<button
-							type="button"
-							class="btn btn-sm btn-outline-secondary"
-							data-bs-toggle="modal"
-							data-bs-target="#categoryModal"
-						>
+						<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+							data-bs-target="#categoryModal">
 							<i class="bx bx-plus"></i>
 							Add Category
 						</button>
@@ -56,35 +40,26 @@
 			</div>
 
 			<!-- add products modal -->
-			<div
-				class="modal fade"
-				id="categoryModal"
-				tabindex="-1"
-				aria-labelledby="categoryModalLabel"
-				aria-hidden="true"
-			>
-			<form method="POST" action="">
-				{{ form.hidden_tag() }}
-				<div class="modal-dialog modal-md" role="document">
-					<div class="modal-content rounded-4 shadow">
-						<div class="modal-header border-bottom-0">
-							<h5 class="modal-title" id="exampleModalLabel">
-								Add Category
-							</h5>
+			<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel"
+				aria-hidden="true">
+				<form method="POST" action="">
+					{{ form.hidden_tag() }}
+					<div class="modal-dialog modal-md" role="document">
+						<div class="modal-content rounded-4 shadow">
+							<div class="modal-header border-bottom-0">
+								<h5 class="modal-title" id="exampleModalLabel">
+									Add Category
+								</h5>
 
-							<button
-								type="button"
-								class="btn-close"
-								data-bs-dismiss="modal"
-								aria-label="Close"
-							></button>
-						</div>
+								<button type="button" class="btn-close" data-bs-dismiss="modal"
+									aria-label="Close"></button>
+							</div>
 
-						<div class="modal-body py-0">
-							<div class="row">
-								<div class="col-md-12">
-									<div class="form-floating mb-3">
-										{% if form.category_name.errors %}
+							<div class="modal-body py-0">
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-floating mb-3">
+											{% if form.category_name.errors %}
 											{{ form.category_name(
 												class="form-control is-invalid",
 												placeholder="Customer Address"
@@ -94,22 +69,22 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
-										{% else %}
-										{{ form.category_name(
+											{% else %}
+											{{ form.category_name(
 											class="form-control",
 											placeholder="Brand Name"
-										) }} 
-										{% endif %}
+										) }}
+											{% endif %}
 
-										{{ form.category_name.label(class="form-control-label") }} 
+											{{ form.category_name.label(class="form-control-label") }}
+										</div>
 									</div>
 								</div>
-							</div>
 
-							<div class="row">
-								<div class="col-md-12">
-									<div class="form-floating mb-3">
-										{% if form.category_note.errors %}
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-floating mb-3">
+											{% if form.category_note.errors %}
 											{{ form.category_note(
 												class="form-control is-invalid",
 												placeholder="Customer Address",
@@ -120,26 +95,26 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
-										{% else %} 
+											{% else %}
 											{{ form.category_note(
 												class="form-control",
 												placeholder="Customer Address",
 												style="height: 100px",
-											) }} 
-										{% endif %}
+											) }}
+											{% endif %}
 
-										{{ form.category_note.label(class="form-control-label") }}
+											{{ form.category_note.label(class="form-control-label") }}
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
 
-						<div class="modal-footer">
-							{{ form.submit(class="btn btn-lg btn-primary w-100 mx-0 mb-2") }}
+							<div class="modal-footer">
+								{{ form.submit(class="btn btn-lg btn-primary w-100 mx-0 mb-2") }}
+							</div>
 						</div>
 					</div>
-				</div>
-			</form>
+				</form>
 			</div>
 			<!-- end of add product modal -->
 
@@ -149,7 +124,7 @@
 					<div class="col-lg-3">
 						<div class="border summery__box bg__anakiwa p-2">
 							<h3 class="summery__box-title fs-1 fw-bolder">
-								{{ total_category.total }}
+								{{ categories|length }}
 							</h3>
 							<p class="summery__subtitle">Total Category</p>
 						</div>
@@ -158,8 +133,9 @@
 			</div>
 
 			<!-- BRAND DETAILS -->
-			<h2>All Brand</h2>
+			<h2>All Category</h2>
 			<hr />
+			{% if categories %}
 			<div class="table-responsive">
 				<table class="table table-striped table-sm">
 					<thead>
@@ -178,28 +154,21 @@
 							<td>{{ category.note }}</td>
 							<td>
 								<div class="btn-group dropstart">
-									<button
-										type="button"
-										class="btn btn-dark btn-sm dropdown-toggle"
-										data-bs-toggle="dropdown"
-										aria-expanded="false"
-									>
+									<button type="button" class="btn btn-dark btn-sm dropdown-toggle"
+										data-bs-toggle="dropdown" aria-expanded="false">
 										More Option
 									</button>
-									<ul
-										class="dropdown-menu bg-gradient bg-info"
-									>
+									<ul class="dropdown-menu bg-gradient bg-info">
 										<li>
-											<a href="{{ url_for('dashboard.edit_category', category_id=category.id) }}" class="dropdown-item">
+											<a href="{{ url_for('dashboard.edit_category', category_id=category.id) }}"
+												class="dropdown-item">
 												Edit info
 											</a>
 										</li>
 										<li>
-											<a
-												href="#"
-												class="dropdown-item bg-danger text-white"
-												data-bs-toggle="modal" data-bs-target="#deleteCategoryModal{{category.id}}"
-											>
+											<a href="#" class="dropdown-item bg-danger text-white"
+												data-bs-toggle="modal"
+												data-bs-target="#deleteCategoryModal{{category.id}}">
 												Delete categroy
 											</a>
 										</li>
@@ -207,17 +176,22 @@
 								</div>
 
 								<!-- DELETE CATEGORY MODAL -->
-								<div class="modal fade" id="deleteCategoryModal{{category.id}}" tabindex="-1" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+								<div class="modal fade" id="deleteCategoryModal{{category.id}}" tabindex="-1"
+									aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
 									<div class="modal-dialog">
 										<div class="modal-content">
 											<div class="modal-header">
 												<h5>Are you sure, want to delete this category?</h5>
-												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+												<button type="button" class="btn-close" data-bs-dismiss="modal"
+													aria-label="Close"></button>
 											</div>
 											<div class="modal-footer">
 												<button class="btn btn-sm m-1 btn-dark">Cancel</button>
-												<form action="{{ url_for('dashboard.delete_category', category_id=category.id) }}" method="POST">
-													<input type="submit" class="btn btn-danger btn-sm m-1" value="Yes, delete category" />
+												<form
+													action="{{ url_for('dashboard.delete_category', category_id=category.id) }}"
+													method="POST">
+													<input type="submit" class="btn btn-danger btn-sm m-1"
+														value="Yes, delete category" />
 												</form>
 											</div>
 										</div>
@@ -229,6 +203,16 @@
 					</tbody>
 				</table>
 			</div>
+			{% else %}
+			<h5>
+				No category added yet.
+				<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+					data-bs-target="#categoryModal">
+					<i class="bx bx-plus"></i>
+					Add Category
+				</button>
+			</h5>
+			{% endif %}
 		</main>
 	</div>
 </div>
@@ -239,7 +223,7 @@
 	const serialnos = document.querySelectorAll('.counters');
 	console.log(serialnos);
 	serialnos.forEach(serial => {
-		serial.innerText=counter;
+		serial.innerText = counter;
 		counter++;
 	});
 </script>
