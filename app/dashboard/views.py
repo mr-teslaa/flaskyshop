@@ -98,9 +98,11 @@ def admin_dashboard():
 @dashboard.route('/dashboard/todaysell/', methods=['GET', 'POST'])
 @login_required
 def todaysell():
+    sells = DailySells.query.all()
+
     form=AddTodaySellForm()
     form.customer_name.choices = [(customer.id, customer.customer_name) for customer in Customers.query.all()]
-    form.product_name.choices = [(product.productid, product.name) for product in Products.query.all()]
+    form.product_name.choices = [(product.id, product.name) for product in Products.query.all()]
     
     if form.validate_on_submit():
         customer = form.customer_name.data
@@ -112,35 +114,15 @@ def todaysell():
         tranx_id = form.trnx_id.data
         notedata = form.note.data
         userid = current_user.id
-        
-        print(f'Customer: {customer}')
-        print(f'Product: {product}')
-        print(f'quantity: {quantitydata}')
-        print(f'discount: {discountdata}')
-        print(f'price: {pricedata}')
-        print(f'payment: {payment}')
-        print(f'transaction: {tranx_id}')
-        print(f'note: {notedata}')
-        print(f'user: {userid}')
-
+    
         today_sell = DailySells(customer_id= customer, product_id= product, quantity= quantitydata, discount= discountdata, price= pricedata, payment_status= payment, trnx_id= tranx_id, note= notedata, user_id=userid)
-        if today_sell:
-            print('success')
-            flash('succesful', 'success')
-        else:
-            print('failed')
-            flash('failed', 'danger')
+
         db.session.add(today_sell)
         db.session.commit()
 
         return redirect(url_for('dashboard.todaysell'))
-    
-    
-    # else:
-    #     flash('Failed. Click "New Sale +" and check the form again please', 'danger')
-    # if request.method == 'GET':
-    #     customer
-    return render_template('dashboard/todaysell.html', title='Today\'s Sell', form=form)
+
+    return render_template('dashboard/todaysell.html', title='Today\'s Sell', form=form, sells=sells)
 
 
 #   BRAND

@@ -337,6 +337,27 @@
 								</button>
 							</td>
 						</tr>
+						{% for sell in sells %}
+						<tr>
+							<td class="text-center">{{ sell.id }}</td>
+							<td>placeholder</td>
+							<td>irrelevant</td>
+							<td>viseual</td>
+							<td>layout</td>
+							<td>
+								<small
+									class="d-inline-flex px-2 py-1 fw-semibold text-warning bg-warning bg-gradient bg-opacity-10 border border-success border-opacity-10 rounded-2">
+									Pending
+								</small>
+							</td>
+							<td>layout</td>
+							<td>
+								<button type="button" class="btn btn-dark btn-sm" aria-expanded="false">
+									Details
+								</button>
+							</td>
+						</tr>
+						{% endfor %}
 					</tbody>
 				</table>
 			</div>
