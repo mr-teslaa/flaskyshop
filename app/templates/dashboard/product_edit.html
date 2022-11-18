@@ -279,7 +279,10 @@
 						</div>
 					</div>
 
-					<div class="modal-footer">
+
+					<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+						<a href="{{ url_for('dashboard.products') }}"
+							class="btn btn-lg btn-dark w-100 mx-0 mb-2">Cancel</a>
 						{{ form.submit(class="btn btn-lg btn-primary w-100 mx-0 mb-2") }}
 					</div>
 				</form>

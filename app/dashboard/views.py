@@ -26,6 +26,7 @@ from app.models import Categories
 from app.models import Products
 from app.models import Users
 from app.models import Customers
+from app.models import DailySells
 
 from app.dashboard.forms import LoginForm 
 from app.dashboard.forms import RegistrationForm
@@ -88,23 +89,63 @@ def user_logout():
 
 #   ADMIN DASHBOARD
 @dashboard.route('/dashboard/')
-# @login_required
+@login_required
 def admin_dashboard():
     return render_template('dashboard/dashboard.html', title='Dashboard')
 
 
 #   DAILY SELL
 @dashboard.route('/dashboard/todaysell/', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def todaysell():
     form=AddTodaySellForm()
     form.customer_name.choices = [(customer.id, customer.customer_name) for customer in Customers.query.all()]
+    form.product_name.choices = [(product.productid, product.name) for product in Products.query.all()]
+    
+    if form.validate_on_submit():
+        customer = form.customer_name.data
+        product = form.product_name.data
+        quantitydata = form.quantity.data
+        discountdata = form.discount.data
+        pricedata = form.price.data
+        payment = form.payment_status.data
+        tranx_id = form.trnx_id.data
+        notedata = form.note.data
+        userid = current_user.id
+        
+        print(f'Customer: {customer}')
+        print(f'Product: {product}')
+        print(f'quantity: {quantitydata}')
+        print(f'discount: {discountdata}')
+        print(f'price: {pricedata}')
+        print(f'payment: {payment}')
+        print(f'transaction: {tranx_id}')
+        print(f'note: {notedata}')
+        print(f'user: {userid}')
+
+        today_sell = DailySells(customer_id= customer, product_id= product, quantity= quantitydata, discount= discountdata, price= pricedata, payment_status= payment, trnx_id= tranx_id, note= notedata, user_id=userid)
+        if today_sell:
+            print('success')
+            flash('succesful', 'success')
+        else:
+            print('failed')
+            flash('failed', 'danger')
+        db.session.add(today_sell)
+        db.session.commit()
+
+        return redirect(url_for('dashboard.todaysell'))
+    
+    
+    # else:
+    #     flash('Failed. Click "New Sale +" and check the form again please', 'danger')
+    # if request.method == 'GET':
+    #     customer
     return render_template('dashboard/todaysell.html', title='Today\'s Sell', form=form)
 
 
 #   BRAND
 @dashboard.route('/dashboard/brand/', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def brand():
     #   FETCHING EXISTING BRAND
     brands = Brands.query.all()
@@ -126,7 +167,7 @@ def brand():
 
 #   EDIT BRAND
 @dashboard.route("/dashboard/brand/<int:brand_id>/update/", methods=['GET', 'POST'])
-# @login_required
+@login_required
 def edit_brand(brand_id):
     brand = Brands.query.get_or_404(brand_id)
     form = AddBrandForm()
@@ -154,7 +195,7 @@ def edit_brand(brand_id):
 
 #   DELETE BRAND
 @dashboard.route("/dashboard/brand/<int:brand_id>/delete/", methods=['POST'])
-# @login_required
+@login_required
 def delete_brand(brand_id):
     brand = Brands.query.get_or_404(brand_id)
     if brand.logo:
@@ -167,7 +208,7 @@ def delete_brand(brand_id):
 
 #   CATEGORY
 @dashboard.route('/dashboard/category/', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def category():
     #   FETCHING EXISTING CATEGORY
     categories = Categories.query.all()
@@ -185,7 +226,7 @@ def category():
 
 #   EDIT CATEGORY
 @dashboard.route("/dashboard/category/<int:category_id>/update/", methods=['GET', 'POST'])
-# @login_required
+@login_required
 def edit_category(category_id):
     category = Categories.query.get_or_404(category_id)
     form = AddCategoryForm()
@@ -203,7 +244,7 @@ def edit_category(category_id):
 
 #   DELETE CATEGORY
 @dashboard.route("/dashboard/category/<int:category_id>/delete/", methods=['POST'])
-# @login_required
+@login_required
 def delete_category(category_id):
     category = Categories.query.get_or_404(category_id)
     db.session.delete(category)
@@ -214,7 +255,7 @@ def delete_category(category_id):
 
 #   PRODUCTS
 @dashboard.route('/dashboard/products/', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def products():
     form=AddProductForm()
     form.product_brand.choices = [(brand.id, brand.name) for brand in Brands.query.all()]
@@ -267,7 +308,7 @@ def products():
 
 #   EDIT PRODUCTS
 @dashboard.route("/dashboard/product/<int:product_id>/update/", methods=['GET', 'POST'])
-# @login_required
+@login_required
 def edit_product(product_id):
     product = Products.query.get_or_404(product_id)
     
@@ -322,7 +363,7 @@ def edit_product(product_id):
 
 #   route for deleting a post
 @dashboard.route("/dashboard/product/<int:product_id>/delete/", methods=['POST'])
-# @login_required
+@login_required
 def delete_product(product_id):
     product = Products.query.get_or_404(product_id)
     if product.image1:
@@ -335,13 +376,13 @@ def delete_product(product_id):
 
 #   ORDERS
 @dashboard.route('/dashboard/orders/', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def orders():
     return render_template('dashboard/orders.html', title='Orders')
 
 #   CUSTOMER
 @dashboard.route('/dashboard/customer/', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def customer():
     #   FETCHING EXISTING CUSTOMER
     customers = Customers.query.all()
@@ -360,7 +401,7 @@ def customer():
 
 #   EDIT CUSTOMER
 @dashboard.route("/dashboard/customer/<int:customer_id>/update/", methods=['GET', 'POST'])
-# @login_required
+@login_required
 def edit_customer(customer_id):
     customer = Customers.query.get_or_404(customer_id)
     form = AddCustomerForm()
@@ -380,7 +421,7 @@ def edit_customer(customer_id):
 
 #   DELETE CUSTOMER
 @dashboard.route("/dashboard/customer/<int:customer_id>/delete/", methods=['POST'])
-# @login_required
+@login_required
 def delete_customer(customer_id):
     customer = Customers.query.get_or_404(customer_id)
     db.session.delete(customer)
@@ -391,6 +432,6 @@ def delete_customer(customer_id):
 
 #   REPORT
 @dashboard.route('/dashboard/report/', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def report():
     return render_template('dashboard/report.html', title='Report')

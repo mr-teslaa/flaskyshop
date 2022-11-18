@@ -6,23 +6,12 @@
 	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
 		BM Gadget & Tech
 	</a>
-	<button
-		class="navbar-toggler position-absolute d-md-none collapsed"
-		type="button"
-		data-bs-toggle="collapse"
-		data-bs-target="#sidebarMenu"
-		aria-controls="sidebarMenu"
-		aria-expanded="false"
-		aria-label="Toggle navigation"
-	>
+	<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"> </span>
 	</button>
-	<input
-		class="form-control form-control-dark w-100 rounded-0 border-0"
-		type="text"
-		placeholder="Search"
-		aria-label="Search"
-	/>
+	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
+		aria-label="Search" />
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
 			<a class="nav-link px-3" href="#">Sign out </a>
@@ -44,7 +33,7 @@
 			<div>
 				<form method="POST" action="" enctype="multipart/form-data">
 					{{ form.hidden_tag() }}
-					
+
 					<div class="py-0">
 						<div class="row">
 							<div class="col-md-12">
@@ -59,11 +48,11 @@
 										<span>{{ error }}</span>
 										{% endfor %}
 									</div>
-									{% else %} 
+									{% else %}
 									{{ form.brand_name(
 										class="form-control",
 										placeholder="Brand Name"
-									) }} 
+									) }}
 									{% endif %}
 
 									{{ form.brand_name.label(class="form-control-label") }}
@@ -76,7 +65,7 @@
 								<p>New Brand Logo</p>
 								<div class="input-group mb-3">
 									{{ form.brand_logo.label(class="input-group-text") }}
-										
+
 									{% if form.brand_logo.errors %}
 									{{ form.brand_logo(
 										class="form-control is-invalid",
@@ -91,7 +80,7 @@
 									{{ form.brand_logo(
 										class="form-control",
 										placeholder="Brand Logo"
-									) }} 
+									) }}
 									{% endif %}
 
 								</div>
@@ -99,10 +88,8 @@
 							<div class="col-md-6">
 								<p>Current Brand Logo</p>
 								<!-- {{ brand.logo }} -->
-								<img
-									class="img-fluid avatar__logo"
-									src="{{ brand.logo }}"
-								/>
+								<img class="img-fluid avatar__logo"
+									src="{{ url_for('static', filename='brandlogo/' + brand.logo) }}" />
 							</div>
 						</div>
 
@@ -120,12 +107,12 @@
 										<span>{{ error }}</span>
 										{% endfor %}
 									</div>
-									{% else %} 
+									{% else %}
 									{{ form.brand_note(
 										class="form-control",
 										placeholder="Customer Address",
 										style="height: 100px",
-									) }} 
+									) }}
 									{% endif %}
 
 									{{ form.brand_note.label(class="form-control-label") }}
@@ -133,15 +120,16 @@
 							</div>
 						</div>
 					</div>
-								
+
 					<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-						<a href="{{ url_for('dashboard.brand') }}"  class="btn btn-lg btn-dark w-100 mx-0 mb-2">Cancel</a>
+						<a href="{{ url_for('dashboard.brand') }}"
+							class="btn btn-lg btn-dark w-100 mx-0 mb-2">Cancel</a>
 						{{ form.submit(class="btn btn-lg btn-primary w-100 mx-0 mb-2") }}
 					</div>
-				
+
 				</form>
 			</div>
-			
+
 		</main>
 	</div>
 </div>

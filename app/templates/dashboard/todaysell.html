@@ -6,23 +6,12 @@
 	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
 		BM Gadget & Tech
 	</a>
-	<button
-		class="navbar-toggler position-absolute d-md-none collapsed"
-		type="button"
-		data-bs-toggle="collapse"
-		data-bs-target="#sidebarMenu"
-		aria-controls="sidebarMenu"
-		aria-expanded="false"
-		aria-label="Toggle navigation"
-	>
+	<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"> </span>
 	</button>
-	<input
-		class="form-control form-control-dark w-100 rounded-0 border-0"
-		type="text"
-		placeholder="Search"
-		aria-label="Search"
-	/>
+	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
+		aria-label="Search" />
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
 			<a class="nav-link px-3" href="#">Sign out </a>
@@ -37,17 +26,12 @@
 
 		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 			<div
-				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
-			>
+				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h1 class="h2">Today's Sell</h1>
 				<div class="btn-toolbar mb-2 mb-md-0">
 					<div class="btn-group me-2">
-						<button
-							type="button"
-							class="btn btn-sm btn-outline-secondary"
-							data-bs-toggle="modal"
-							data-bs-target="#dailysellModal"
-						>
+						<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+							data-bs-target="#dailysellModal">
 							<i class="bx bx-plus"></i>
 							New Sell
 						</button>
@@ -56,149 +40,201 @@
 			</div>
 
 			<!-- add products modal -->
-			<div
-				class="modal fade"
-				id="dailysellModal"
-				tabindex="-1"
-				aria-labelledby="dailysellModalLabel"
-				aria-hidden="true"
-			>
-				<div class="modal-dialog modal-lg" role="document">
-					<div class="modal-content rounded-4 shadow">
-						<div class="modal-header border-bottom-0">
-							<h5 class="modal-title">Add Sell</h5>
+			<div class="modal fade" id="dailysellModal" tabindex="-1" aria-labelledby="dailysellModalLabel"
+				aria-hidden="true">
+				<form method="POST" action="" enctype="multipart/form-data">
+					{{ form.hidden_tag() }}
+					<div class="modal-dialog modal-lg" role="document">
+						<div class="modal-content rounded-4 shadow">
+							<div class="modal-header border-bottom-0">
+								<h5 class="modal-title">Add Sell</h5>
 
-							<button
-								type="button"
-								class="btn-close"
-								data-bs-dismiss="modal"
-								aria-label="Close"
-							></button>
-						</div>
-						<div class="modal-body py-0">
-							<div class="row">
-								<div class="col-md-6 px-3 py-2">
-									{{ form.customer_name.label() }}
+								<button type="button" class="btn-close" data-bs-dismiss="modal"
+									aria-label="Close"></button>
+							</div>
+							<div class="modal-body py-0">
+								<div class="row">
+									<div class="col-md-6 px-3 py-2">
+										{{ form.customer_name.label() }}
 
-									{% if form.customer_name.errors %}
+										{% if form.customer_name.errors %}
 										{{ form.customer_name(
-										class="form-select text-uppercase is-invalid",
-										placeholder="Customer Name",
-										id="selectcustomer"
-									) }}
-									<div class="invalid-feedback">
-										{% for error in form.customer_name.errors %}
-										<span>{{ error }}</span>
-										{% endfor %}
-									</div>
-									{% else %} 
-										{{ form.customer_name(
-											class="form-select text-uppercase",
+											class="form-select text-uppercase is-invalid",
 											placeholder="Customer Name",
 											id="selectcustomer"
-										) }} 
-									{% endif %}
+										) }}
+										<div class="invalid-feedback">
+											{% for error in form.customer_name.errors %}
+											<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+										{% else %}
+										{{ form.customer_name(
+												class="form-select text-uppercase",
+												placeholder="Customer Name",
+												id="selectcustomer"
+											) }}
+										{% endif %}
 
+									</div>
+
+									<div class="col-md-6 px-3 py-2">
+										{{ form.product_name.label() }}
+
+										{% if form.product_name.errors %}
+										{{ form.product_name(
+											class="form-select text-uppercase is-invalid",
+											placeholder="Product Name",
+											id="selectproduct"
+										) }}
+										<div class="invalid-feedback">
+											{% for error in form.product_name.errors %}
+											<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+										{% else %}
+										{{ form.product_name(
+												class="form-select text-uppercase",
+												placeholder="Product Name",
+												id="selectproduct"
+											) }}
+										{% endif %}
+									</div>
 								</div>
 
-								<div class="col-md-6 px-3 py-2">
-									<label> Product Name </label>
-									<select
-										class="form-select"
-										aria-label="Default select"
-										id="selectproduct"
-									>
-										<option>Select Product</option>
-										<option value="1">One product</option>
-										<option value="2">Two product</option>
-										<option value="3">Three product</option>
-									</select>
+								<div class="row">
+									<div class="col-md-4 px-3 py-2">
+										{{ form.quantity.label() }}
+
+										{% if form.quantity.errors %}
+										{{ form.quantity(
+											class="form-select text-uppercase is-invalid",
+											placeholder="00"
+										) }}
+										<div class="invalid-feedback">
+											{% for error in form.quantity.errors %}
+											<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+										{% else %}
+										{{ form.quantity(
+												class="form-select text-uppercase",
+												placeholder="00"
+											) }}
+										{% endif %}
+									</div>
+
+									<div class="col-md-4 px-3 py-2">
+										{{ form.discount.label() }}
+
+										{% if form.discount.errors %}
+										{{ form.discount(
+											class="form-select text-uppercase is-invalid",
+											placeholder="00"
+										) }}
+										<div class="invalid-feedback">
+											{% for error in form.discount.errors %}
+											<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+										{% else %}
+										{{ form.discount(
+												class="form-select text-uppercase",
+												placeholder="00"
+											) }}
+										{% endif %}
+									</div>
+
+									<div class="col-md-4 px-3 py-2">
+										{{ form.price.label() }}
+
+										{% if form.price.errors %}
+										{{ form.price(
+											class="form-select text-uppercase is-invalid",
+											placeholder="00"
+										) }}
+										<div class="invalid-feedback">
+											{% for error in form.price.errors %}
+											<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+										{% else %}
+										{{ form.price(
+												class="form-select text-uppercase",
+												placeholder="00"
+											) }}
+										{% endif %}
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-6 px-3 py-2">
+										{{ form.payment_status.label() }}
+
+										{% if form.payment_status.errors %}
+										{{ form.payment_status(
+											class="form-select text-uppercase is-invalid"
+										) }}
+										<div class="invalid-feedback">
+											{% for error in form.payment_status.errors %}
+											<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+										{% else %}
+										{{ form.payment_status(
+												class="form-select text-uppercase"
+											) }}
+										{% endif %}
+									</div>
+
+									<div class="col-md-6 px-3 py-2">
+										{{ form.trnx_id.label() }}
+
+										{% if form.trnx_id.errors %}
+										{{ form.trnx_id(
+											class="form-select text-uppercase is-invalid",
+											placeholder="TRXXX ID"
+										) }}
+										<div class="invalid-feedback">
+											{% for error in form.trnx_id.errors %}
+											<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+										{% else %}
+										{{ form.trnx_id(
+												class="form-select text-uppercase",
+												placeholder='TRXXX ID'
+											) }}
+										{% endif %}
+									</div>
+
+									<div class="col-md-12 px-3 py-2">
+										{{ form.note.label() }}
+
+										{% if form.note.errors %}
+										{{ form.note(
+											class="form-select text-uppercase is-invalid"
+										) }}
+										<div class="invalid-feedback">
+											{% for error in form.note.errors %}
+											<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+										{% else %}
+										{{ form.note(
+												class="form-select text-uppercase"
+											) }}
+										{% endif %}
+									</div>
 								</div>
 							</div>
 
-							<div class="row">
-								<div class="col-md-4 px-3 py-2">
-									<label> Quantity </label>
-									<input
-										type="number"
-										class="form-control"
-										id="floatingQuantity"
-										placeholder="Enter Quantity"
-									/>
-								</div>
-
-								<div class="col-md-4 px-3 py-2">
-									<label> Discount (in taka) </label>
-									<input
-										class="form-control"
-										type="number"
-										value="00"
-										aria-label="Disabled input"
-									/>
-								</div>
-
-								<div class="col-md-4 px-3 py-2">
-									<label> Price (in taka) </label>
-									<input
-										class="form-control"
-										type="number"
-										value="00"
-										aria-label="Disabled input"
-										readonly
-									/>
-								</div>
+							<div class="modal-footer mt-4">
+								{{ form.submit(class="btn btn-lg btn-primary w-100 mx-0 mb-2") }}
 							</div>
-
-							<div class="row">
-								<div class="col-md-6 px-3 py-2">
-									<label> Payment Status </label>
-									<select
-										class="form-select"
-										aria-label="Default select"
-										id="selectproduct"
-									>
-										<option>Select Payment</option>
-										<option value="1">Cash</option>
-										<option value="2">Card</option>
-										<option value="3">
-											Online (bkash/nagad)
-										</option>
-									</select>
-								</div>
-
-								<div class="col-md-6 px-3 py-2">
-									<label>
-										Transaction ID
-										<small class="text-muted"
-											>(optional)</small
-										>
-									</label>
-									<input
-										class="form-control"
-										type="text"
-										placeholder="Trx id"
-									/>
-								</div>
-							</div>
-						</div>
-
-						<div class="modal-footer mt-4">
-							<!-- <button
-                                type="button"
-                                class="btn btn-secondary"
-                                data-bs-dismiss="modal"
-                            >
-                                Close
-                            </button> -->
-							<button
-								type="button"
-								class="btn btn-lg btn-primary w-100 mx-0 mb-2"
-							>
-								Confirm
-							</button>
 						</div>
 					</div>
-				</div>
+				</form>
 			</div>
 			<!-- end of add product modal -->
 
@@ -271,18 +307,13 @@
 							<td>text</td>
 							<td>
 								<small
-									class="d-inline-flex px-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2"
-								>
+									class="d-inline-flex px-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2">
 									Complete
 								</small>
 							</td>
 							<td>text</td>
 							<td>
-								<button
-									type="button"
-									class="btn btn-dark btn-sm"
-									aria-expanded="false"
-								>
+								<button type="button" class="btn btn-dark btn-sm" aria-expanded="false">
 									Details
 								</button>
 							</td>
@@ -295,18 +326,13 @@
 							<td>layout</td>
 							<td>
 								<small
-									class="d-inline-flex px-2 py-1 fw-semibold text-warning bg-warning bg-gradient bg-opacity-10 border border-success border-opacity-10 rounded-2"
-								>
+									class="d-inline-flex px-2 py-1 fw-semibold text-warning bg-warning bg-gradient bg-opacity-10 border border-success border-opacity-10 rounded-2">
 									Pending
 								</small>
 							</td>
 							<td>layout</td>
 							<td>
-								<button
-									type="button"
-									class="btn btn-dark btn-sm"
-									aria-expanded="false"
-								>
+								<button type="button" class="btn btn-dark btn-sm" aria-expanded="false">
 									Details
 								</button>
 							</td>
@@ -317,6 +343,14 @@
 		</main>
 	</div>
 </div>
+
+
+<script>
+	let error = document.querySelector('.invalid-feedback');
+	if (error) {
+		alert("Failed, check the form again")
+	}
+</script>
 
 <script src="{{ url_for('static', filename='js/dselect.js') }}"></script>
 

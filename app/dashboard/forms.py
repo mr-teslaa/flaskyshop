@@ -266,8 +266,7 @@ class AddTodaySellForm(FlaskForm):
     )
 
     discount = IntegerField(
-        'Discount (in taka)', 
-        validators=[DataRequired()]
+        'Discount (in taka)'
     )
 
     price = IntegerField(
@@ -280,7 +279,8 @@ class AddTodaySellForm(FlaskForm):
         choices = [
             ('cash', 'Cash' ),
             ('card', 'Card' ),
-            ('online(bkash/nagad)', 'Online (bKash/Nagad)' )
+            ('online(bkash/nagad)', 'Online (bKash/Nagad)' ),
+            ('pending', 'Pending')
         ],
         validators = [
             DataRequired()
@@ -290,3 +290,5 @@ class AddTodaySellForm(FlaskForm):
     trnx_id = StringField('Transaction ID (optional)')
 
     note = TextAreaField('Note (Optional)')
+
+    submit = SubmitField('Confirm')
