@@ -222,8 +222,8 @@
 										</div>
 										{% else %}
 										{{ form.note(
-												class="form-select text-uppercase"
-											) }}
+											class="form-select text-uppercase"
+										) }}
 										{% endif %}
 									</div>
 								</div>
@@ -290,16 +290,16 @@
 						<tr>
 							<th scope="col" width="100">Serial No</th>
 							<th scope="col">Product Name</th>
+							<th scope="col">Price</th>
 							<th scope="col">Product ID</th>
 							<th scope="col">Customer Name</th>
 							<th scope="col">Quantity</th>
 							<th scope="col">Payment</th>
-							<th scope="col">Price</th>
 							<th scope="col">Action</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
+						<!-- <tr>
 							<td class="text-center">1,001</td>
 							<td>random</td>
 							<td>data</td>
@@ -336,21 +336,29 @@
 									Details
 								</button>
 							</td>
-						</tr>
+						</tr> -->
 						{% for sell in sells %}
 						<tr>
 							<td class="text-center">{{ sell.id }}</td>
-							<td>{{ sell. }}</td>
-							<td>irrelevant</td>
-							<td>viseual</td>
-							<td>layout</td>
+							<td>{{ sell.product_name.name }}</td>
+							<td>{{ sell.product_name.price }}</td>
+							<td>{{ sell.product_name.productid }}</td>
+							<td>{{ sell.customer.customer_name }}</td>
+							<td>{{ sell.quantity }}</td>
 							<td>
+								{% if sell.payment_status == 'pending' %}
 								<small
 									class="d-inline-flex px-2 py-1 fw-semibold text-warning bg-warning bg-gradient bg-opacity-10 border border-success border-opacity-10 rounded-2">
 									Pending
 								</small>
+								{% else %}
+								<small
+									class="text-uppercase d-inline-flex px-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2">
+									Paid - {{ sell.payment_status }}
+								</small>
+								{% endif %}
 							</td>
-							<td>layout</td>
+
 							<td>
 								<button type="button" class="btn btn-dark btn-sm" aria-expanded="false">
 									Details
