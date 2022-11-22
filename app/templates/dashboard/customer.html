@@ -6,23 +6,12 @@
 	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
 		BM Gadget & Tech
 	</a>
-	<button
-		class="navbar-toggler position-absolute d-md-none collapsed"
-		type="button"
-		data-bs-toggle="collapse"
-		data-bs-target="#sidebarMenu"
-		aria-controls="sidebarMenu"
-		aria-expanded="false"
-		aria-label="Toggle navigation"
-	>
+	<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"> </span>
 	</button>
-	<input
-		class="form-control form-control-dark w-100 rounded-0 border-0"
-		type="text"
-		placeholder="Search"
-		aria-label="Search"
-	/>
+	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
+		aria-label="Search" />
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
 			<a class="nav-link px-3" href="#">Sign out </a>
@@ -37,17 +26,12 @@
 
 		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 			<div
-				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
-			>
+				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h1 class="h2">Customer</h1>
 				<div class="btn-toolbar mb-2 mb-md-0">
 					<div class="btn-group me-2">
-						<button
-							type="button"
-							class="btn btn-sm btn-outline-secondary"
-							data-bs-toggle="modal"
-							data-bs-target="#dailysellModal"
-						>
+						<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+							data-bs-target="#dailysellModal">
 							<i class="bx bx-plus"></i>
 							Add Customer
 						</button>
@@ -62,13 +46,8 @@
 			</div>
 
 			<!-- add products modal -->
-			<div
-				class="modal fade"
-				id="dailysellModal"
-				tabindex="-1"
-				aria-labelledby="dailysellModalLabel"
-				aria-hidden="true"
-			>
+			<div class="modal fade" id="dailysellModal" tabindex="-1" aria-labelledby="dailysellModalLabel"
+				aria-hidden="true">
 				<div class="modal-dialog modal-md" role="document">
 					<div class="modal-content rounded-4 shadow">
 						<div class="modal-header border-bottom-0">
@@ -76,12 +55,7 @@
 								Add Customer
 							</h5>
 
-							<button
-								type="button"
-								class="btn-close"
-								data-bs-dismiss="modal"
-								aria-label="Close"
-							></button>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 
 						<form method="POST" action="">
@@ -100,11 +74,11 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
-											{% else %} 
+											{% else %}
 											{{ form.customer_name(
 												class="form-control", 
 												placeholder="Customer Name"
-											) }} 
+											) }}
 											{% endif %}
 
 											{{ form.customer_name.label(class="form-control-label") }}
@@ -125,11 +99,11 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
-											{% else %} 
+											{% else %}
 											{{ form.customer_contact_number(
 												class="form-control",
 												placeholder="Customer Contact Number"
-											) }} 
+											) }}
 											{% endif %}
 
 											{{ form.customer_contact_number.label(class="form-control-label") }}
@@ -151,12 +125,12 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
-											{% else %} 
+											{% else %}
 											{{ form.customer_address(
 												class="form-control",
 												placeholder="Customer Address",
 												style="height: 100px",
-											) }} 
+											) }}
 											{% endif %}
 
 											{{ form.customer_address.label(class="form-control-label") }}
@@ -173,7 +147,7 @@
                             >
                                 Close
                             </button> -->
-								
+
 								{{ form.submit(class="btn btn-lg btn-primary w-100 mx-0 mb-2") }}
 							</div>
 						</form>
@@ -202,6 +176,7 @@
 			<!-- CUSTOMER DETAILS -->
 			<h2>All Customer</h2>
 			<hr />
+			{% if customers %}
 			<div class="table-responsive">
 				<table class="table table-striped table-sm">
 					<thead>
@@ -222,28 +197,21 @@
 							<td>{{ customer.customer_address }}</td>
 							<td>
 								<div class="btn-group dropstart">
-									<button
-										type="button"
-										class="btn btn-dark btn-sm dropdown-toggle"
-										data-bs-toggle="dropdown"
-										aria-expanded="false"
-									>
+									<button type="button" class="btn btn-dark btn-sm dropdown-toggle"
+										data-bs-toggle="dropdown" aria-expanded="false">
 										More Option
 									</button>
-									<ul
-										class="dropdown-menu bg-gradient bg-info"
-									>
+									<ul class="dropdown-menu bg-gradient bg-info">
 										<li>
-											<a href="{{ url_for('dashboard.edit_customer', customer_id=customer.id) }}" class="dropdown-item">
+											<a href="{{ url_for('dashboard.edit_customer', customer_id=customer.id) }}"
+												class="dropdown-item">
 												Edit info
 											</a>
 										</li>
 										<li>
-											<a
-												href="#"
-												class="dropdown-item bg-danger text-white"
-												data-bs-toggle="modal" data-bs-target="#deleteCustomerModal{{customer.id}}"	
-											>	
+											<a href="#" class="dropdown-item bg-danger text-white"
+												data-bs-toggle="modal"
+												data-bs-target="#deleteCustomerModal{{customer.id}}">
 												Delete customer
 											</a>
 										</li>
@@ -251,19 +219,25 @@
 								</div>
 
 								<!-- DELETE CUSTOMER MODAL -->
-								<div class="modal fade" id="deleteCustomerModal{{customer.id}}" tabindex="-1" aria-labelledby="deleteCustomerModalLabel" aria-hidden="true">
+								<div class="modal fade" id="deleteCustomerModal{{customer.id}}" tabindex="-1"
+									aria-labelledby="deleteCustomerModalLabel" aria-hidden="true">
 									<div class="modal-dialog">
 										<div class="modal-content">
 											<div class="modal-header">
-												<h5 id="exampleModalLabel">Are you sure, want to delete the customer?</h5>
-												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+												<h5 id="exampleModalLabel">Are you sure, want to delete the customer?
+												</h5>
+												<button type="button" class="btn-close" data-bs-dismiss="modal"
+													aria-label="Close"></button>
 												<!-- <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"> Cancel </button> -->
-												
+
 											</div>
 											<div class="modal-footer">
 												<button class="btn btn-sm m-1 btn-dark">Cancel</button>
-												<form action="{{ url_for('dashboard.delete_customer', customer_id=customer.id) }}" method="POST">
-													<input type="submit" class="btn btn-danger btn-sm m-1" value="Yes, delete customer" />
+												<form
+													action="{{ url_for('dashboard.delete_customer', customer_id=customer.id) }}"
+													method="POST">
+													<input type="submit" class="btn btn-danger btn-sm m-1"
+														value="Yes, delete customer" />
 												</form>
 											</div>
 										</div>
@@ -275,6 +249,16 @@
 					</tbody>
 				</table>
 			</div>
+			{% else %}
+			<h5>
+				No product sells yet.
+				<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+					data-bs-target="#dailysellModal">
+					<i class="bx bx-plus"></i>
+					Add Customer
+				</button>
+			</h5>
+			{% endif %}
 		</main>
 	</div>
 </div>
@@ -284,7 +268,7 @@
 	const serialnos = document.querySelectorAll('.counters');
 	console.log(serialnos);
 	serialnos.forEach(serial => {
-		serial.innerText=counter;
+		serial.innerText = counter;
 		counter++;
 	});
 </script>

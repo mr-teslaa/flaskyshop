@@ -284,6 +284,7 @@
 			<!-- PRODUCTS DETAILS -->
 			<h2>All Sells</h2>
 			<hr />
+			{% if sells %}
 			<div class="table-responsive">
 				<table class="table table-striped table-sm">
 					<thead>
@@ -292,56 +293,24 @@
 							<th scope="col">Product Name</th>
 							<th scope="col">Price</th>
 							<th scope="col">Product ID</th>
-							<th scope="col">Customer Name</th>
+							<th scope="col">Buyer</th>
 							<th scope="col">Quantity</th>
 							<th scope="col">Payment</th>
+							<th scope="col">Date</th>
 							<th scope="col">Action</th>
 						</tr>
 					</thead>
 					<tbody>
-						<!-- <tr>
-							<td class="text-center">1,001</td>
-							<td>random</td>
-							<td>data</td>
-							<td>placeholder</td>
-							<td>text</td>
-							<td>
-								<small
-									class="d-inline-flex px-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2">
-									Complete
-								</small>
-							</td>
-							<td>text</td>
-							<td>
-								<button type="button" class="btn btn-dark btn-sm" aria-expanded="false">
-									Details
-								</button>
-							</td>
-						</tr>
-						<tr>
-							<td class="text-center">1,002</td>
-							<td>placeholder</td>
-							<td>irrelevant</td>
-							<td>viseual</td>
-							<td>layout</td>
-							<td>
-								<small
-									class="d-inline-flex px-2 py-1 fw-semibold text-warning bg-warning bg-gradient bg-opacity-10 border border-success border-opacity-10 rounded-2">
-									Pending
-								</small>
-							</td>
-							<td>layout</td>
-							<td>
-								<button type="button" class="btn btn-dark btn-sm" aria-expanded="false">
-									Details
-								</button>
-							</td>
-						</tr> -->
 						{% for sell in sells %}
-						<tr>
-							<td class="text-center">{{ sell.id }}</td>
+						<tr class="align-middle">
+							<td class="text-center counters">{{ sell.id }}</td>
 							<td>{{ sell.product_name.name }}</td>
-							<td>{{ sell.product_name.price }}</td>
+							<td>
+								<small
+									class="fs-6 d-inline-flex px-2 py-1 fw-lighter text-white bg-dark border border-dark border-opacity-10 rounded-2">
+									{{ sell.price }}
+								</small>
+							</td>
 							<td>{{ sell.product_name.productid }}</td>
 							<td>{{ sell.customer.customer_name }}</td>
 							<td>{{ sell.quantity }}</td>
@@ -360,6 +329,10 @@
 							</td>
 
 							<td>
+								{{ sell.pub_date.strftime('%d %b, %Y') }}
+							</td>
+
+							<td>
 								<button type="button" class="btn btn-dark btn-sm" aria-expanded="false">
 									Details
 								</button>
@@ -369,6 +342,16 @@
 					</tbody>
 				</table>
 			</div>
+			{% else %}
+			<h5>
+				No product sells yet.
+				<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+					data-bs-target="#dailysellModal">
+					<i class="bx bx-plus"></i>
+					New Sell
+				</button>
+			</h5>
+			{% endif %}
 		</main>
 	</div>
 </div>
@@ -381,8 +364,16 @@
 	}
 </script>
 
-<script src="{{ url_for('static', filename='js/dselect.js') }}"></script>
+<script>
+	let counter = 1;
+	const serialnos = document.querySelectorAll('.counters');
+	serialnos.forEach(serial => {
+		serial.innerText = counter;
+		counter++;
+	});
+</script>
 
+<script src="{{ url_for('static', filename='js/dselect.js') }}"></script>
 <script>
 	const searcustomer = document.querySelector("#selectcustomer");
 	const selectproduct = document.querySelector("#selectproduct");

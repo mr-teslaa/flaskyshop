@@ -64,7 +64,7 @@ def index():
 @dashboard.route('/login/', methods=['GET', 'POST'])
 def admin_login():
     if current_user.is_authenticated:
-        return redirect(url_for('users.user_dashboard'))
+        return redirect(url_for('dashboard.admin_dashboard'))
     form = LoginForm()
     if form.validate_on_submit():
         user = Users.query.filter_by(phone=form.phone.data).first()
@@ -243,6 +243,7 @@ def products():
     form.product_brand.choices = [(brand.id, brand.name) for brand in Brands.query.all()]
     form.product_category.choices = [(category.id, category.name) for category in Categories.query.all()]
     
+    products = Products.query.all()
     brands = Brands.query.all()
     categories = Categories.query.all()
 
@@ -285,7 +286,7 @@ def products():
 
         return redirect(url_for('dashboard.products'))
 
-    return render_template('dashboard/products.html', title='Products', form=form, existingproduct=existingproduct, brands=brands, categories=categories)
+    return render_template('dashboard/products.html', title='Products', form=form, existingproduct=existingproduct, brands=brands, categories=categories, products=products)
 
 
 #   EDIT PRODUCTS

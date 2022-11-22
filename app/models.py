@@ -77,4 +77,5 @@ class DailySells(db.Model):
     payment_status = db.Column(db.String(), nullable=False, default='cash')
     trnx_id = db.Column(db.String())
     note = db.Column(db.String())
+    pub_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
