@@ -1,0 +1,17 @@
+{
+    "products": [
+        {
+            "productname": "Huawei P30",
+            "productid": "BX-62829",
+            "price": "500",
+            "quantity": "1"
+        },
+        {
+            "productname": "sadf",
+            "productid": "sadf",
+            "price": "120000",
+            "quantity": "2"
+        }
+    ],
+    "cashier": { "subtotal": "240500", "discount": "500", "total": "240000" }
+}

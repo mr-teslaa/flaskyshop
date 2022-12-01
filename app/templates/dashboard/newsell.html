@@ -1,0 +1,149 @@
+{% extends 'layouts/root-dashboard.html' %}
+
+<!-- body -->
+{% block body %}
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
+		BM Gadget & Tech
+	</a>
+	<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"> </span>
+	</button>
+	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
+		aria-label="Search" />
+	<div class="navbar-nav">
+		<div class="nav-item text-nowrap">
+			<a class="nav-link px-3" href="#">Sign out </a>
+		</div>
+	</div>
+</header>
+
+<div class="container-fluid">
+	<div class="row">
+		<!-- navigation inject -->
+		{% include 'helpers/_dashboard_side_nav.html' %}
+
+		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+			<div
+				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+				<h1 class="h2">New Sell</h1>
+				<div class="btn-toolbar mb-2 mb-md-0">
+					<div class="d-grid gap-2 d-md-block">
+						<!-- <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+							data-bs-target="#dailysellModal">
+							<i class="bx bx-plus"></i>
+							New Sell
+						</button> -->
+						<button class="btn btn-primary">
+							Print
+						</button>
+						<button class="btn btn-dark" id="sellcompletebtn">
+							Complete
+						</button>
+					</div>
+				</div>
+			</div>
+
+
+			<!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380">
+			</canvas> -->
+
+			<!-- NEW SELL -->
+			<div class="row">
+				<section class="col-md-4">
+					<form id="form">
+						<div class="mb-3">
+							<label class="form-label">Product Name</label>
+							<input type="text" required name="productname" id="productname" class="form-control"
+								value="Huawei P30">
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label">Product ID</label>
+							<input type="text" required name="productname" id="productid" class="form-control"
+								value="BX-62829">
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label">Price</label>
+							<input type="number" step="any" required name="price" id="price" class="form-control"
+								value="500">
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label">Quantity Name</label>
+							<input type="number" required name="quantity" id="quantity" class="form-control" value="1">
+						</div>
+
+						<button class="btn btn-sm btn-dark" id="addCartButton">Submit</button>
+					</form>
+				</section>
+
+				<section class="col-md-8">
+					<form id="orderForm">
+						<table class="table">
+							<thead>
+								<tr>
+									<th scope="col">Product Name</th>
+									<th scope="col">Product ID</th>
+									<th scope="col">Unit Price</th>
+									<th scope="col">Unit</th>
+									<th scope="col">Total</th>
+									<th scope="col">Action</th>
+								</tr>
+							</thead>
+							<tbody id="carttable">
+
+							</tbody>
+						</table>
+
+						<table class="ms-auto">
+							<tr>
+								<th>
+									<p class="m-auto me-2">Sub Total Ammount</p>
+								</th>
+								<td>
+									<input type="number" required name="subtotal" id="subtotal" class="col form-control"
+										value="00">
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<p class="m-auto me-2">Discount</p>
+								</th>
+								<td>
+									<input type="number" required name="discount" id="discount" class="col form-control"
+										value="00">
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<p class="m-auto me-2">Total Ammount</p>
+								</th>
+								<td>
+									<input type="number" required name="totalammount" id="totalammount"
+										class="col form-control" value="00">
+								</td>
+							</tr>
+						</table>
+					</form>
+				</section>
+			</div>
+
+		</main>
+	</div>
+</div>
+
+
+<script>
+	// let counter = 1;
+	// const serialnos = document.querySelectorAll('.counters');
+	// serialnos.forEach(serial => {
+	// 	serial.innerText = counter;
+	// 	counter++;
+	// });
+</script>
+
+<script src="{{ url_for('static', filename='js/newsell.js') }}"></script>
+{% endblock %}

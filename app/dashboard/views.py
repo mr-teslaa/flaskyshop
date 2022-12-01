@@ -125,6 +125,15 @@ def todaysell():
     return render_template('dashboard/todaysell.html', title='Today\'s Sell', form=form, sells=sells)
 
 
+#   NEW SELL
+@dashboard.route('/dashboard/newsell/', methods=['GET', 'POST'])
+@login_required
+def newsell():
+    form=AddTodaySellForm()
+    form.customer_name.choices = [(customer.id, customer.customer_name) for customer in Customers.query.all()]
+    form.product_name.choices = [(product.id, product.name) for product in Products.query.all()]
+    return render_template('dashboard/newsell.html', title="New Sell")
+
 #   BRAND
 @dashboard.route('/dashboard/brand/', methods=['GET', 'POST'])
 @login_required
