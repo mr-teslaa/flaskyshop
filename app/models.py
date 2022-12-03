@@ -68,13 +68,9 @@ class DailySells(db.Model):
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     customer = db.relationship('Customers', backref=db.backref('customers', lazy=True))
 
-    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
-    product_name = db.relationship('Products', backref=db.backref('products', lazy=True))
-
-    quantity = db.Column(db.String(), nullable=False, default='00')
-    discount = db.Column(db.String(), default='00')
-    price = db.Column(db.String(), nullable=False, default='00')
-    payment_status = db.Column(db.String(), nullable=False, default='cash')
+    products = db.Column(db.String(), nullable=False)
+    payment_details = db.Column(db.String(), nullable=False)
+    payment_status = db.Column(db.String(), default='cash')
     trnx_id = db.Column(db.String())
     note = db.Column(db.String())
     pub_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)

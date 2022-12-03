@@ -8,6 +8,7 @@ from flask import request
 from flask import url_for
 from flask import flash
 from flask import abort
+from flask import jsonify
 from flask import current_app
 
 from datetime import datetime
@@ -131,8 +132,32 @@ def todaysell():
 def newsell():
     form=AddTodaySellForm()
     form.customer_name.choices = [(customer.id, customer.customer_name) for customer in Customers.query.all()]
-    form.product_name.choices = [(product.id, product.name) for product in Products.query.all()]
-    return render_template('dashboard/newsell.html', title="New Sell")
+    return render_template('dashboard/newsell.html', title="New Sell", form=form)
+
+@dashboard.route('/dashboard/newsell/submit/', methods=['POST'])
+# @login_required
+def newsell_submit():
+    # userid = current_user.id
+
+    data = request.json
+    customer = data['customer']
+    print(type(customer))
+    return data
+    # sellpayment = data['cashier']
+    # sellproducts = data['products']
+    # payments = data['cashier']
+    
+    # # print(jsonify(data))   
+    # new_sell = DailySells(customer_id=customer['customer_id'], products=sellproducts, payment_status= sellpayment, trnx_id=customer['tranx_id'], note=customer['note'], payment_details=payments, user_id=userid)
+    
+    # db.session.add(new_sell)
+    # db.session.commit()
+
+    # return redirect(url_for('dashboard.newsell_display', data=data))
+
+@dashboard.route('/dashboard/newsell/<string:data>')
+def newsell_display(data):
+    return render_template('public/demo.html', data=data)
 
 #   BRAND
 @dashboard.route('/dashboard/brand/', methods=['GET', 'POST'])

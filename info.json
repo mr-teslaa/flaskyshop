@@ -5,13 +5,14 @@
             "productid": "BX-62829",
             "price": "500",
             "quantity": "1"
-        },
-        {
-            "productname": "sadf",
-            "productid": "sadf",
-            "price": "120000",
-            "quantity": "2"
         }
     ],
-    "cashier": { "subtotal": "240500", "discount": "500", "total": "240000" }
+    "cashier": { "subtotal": "500", "discount": "00", "total": "500" },
+    "customer": {
+        "customer_id": "1",
+        "customer_name": "General",
+        "payment_status": "online(bkash/nagad)",
+        "transactionid": "lksjdf92898kj",
+        "note": "some note"
+    }
 }

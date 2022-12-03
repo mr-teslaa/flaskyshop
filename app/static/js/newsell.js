@@ -19,6 +19,21 @@ class orderComplete {
     }
 }
 
+class customerDetail {
+    constructor(
+        customer_id,
+        customer_name,
+        payment_status,
+        note,
+        transactionid
+    ) {
+        this.customer_id = customer_id;
+        this.customer_name = customer_name;
+        this.payment_status = payment_status;
+        this.transactionid = transactionid;
+        this.note = note;
+    }
+}
 // ADD FORM TO TABLE
 // UI ELEMENT
 class UI {
@@ -236,6 +251,21 @@ orderForm.addEventListener("submit", (e) => {
 // SUBMIT ALL DATA TO DATABASE
 sellcompletebtn.addEventListener("click", () => {
     allproduct = Store.getProducts();
+    let customerEl = document.querySelector("#selectcustomer"),
+        customer_id = customerEl.value,
+        customer_name = customerEl.innerText;
+
+    let payment_status = document.querySelector("#payment_status").value;
+    let note = document.querySelector("#note").value;
+    let trnx_id = document.querySelector("#trnx_id").value;
+
+    let customer = new customerDetail(
+        customer_id,
+        customer_name,
+        payment_status,
+        note,
+        trnx_id
+    );
 
     let cashier = new orderComplete(
         subtotal.value,
@@ -243,17 +273,19 @@ sellcompletebtn.addEventListener("click", () => {
         totalammount.value
     );
 
-    localStorage.setItem("cashier", JSON.stringify(cashier));
-
     let sell = {
         products: allproduct,
         cashier: cashier,
+        customer: customer,
     };
+
+    localStorage.setItem("cashier", JSON.stringify(cashier));
     localStorage.setItem("sell", JSON.stringify(sell));
+    localStorage.setItem("customer", JSON.stringify(customer));
 
     let getsell = localStorage.getItem("sell");
 
-    fetch("https://httpbin.org/post", {
+    fetch("http://127.0.0.1:5000/dashboard/newsell/submit/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -266,5 +298,7 @@ sellcompletebtn.addEventListener("click", () => {
 
 document.addEventListener("DOMContentLoaded", () => {
     localStorage.removeItem("products");
+    localStorage.removeItem("sell");
+    localStorage.removeItem("customer");
     Store.displayBooks();
 });

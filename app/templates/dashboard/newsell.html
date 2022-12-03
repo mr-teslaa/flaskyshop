@@ -25,25 +25,117 @@
 		{% include 'helpers/_dashboard_side_nav.html' %}
 
 		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-			<div
-				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<h1 class="h2">New Sell</h1>
-				<div class="btn-toolbar mb-2 mb-md-0">
-					<div class="d-grid gap-2 d-md-block">
-						<!-- <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
-							data-bs-target="#dailysellModal">
-							<i class="bx bx-plus"></i>
-							New Sell
-						</button> -->
-						<button class="btn btn-primary">
-							Print
-						</button>
-						<button class="btn btn-dark" id="sellcompletebtn">
-							Complete
-						</button>
+			<div>
+				<div
+					class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+					<h1 class="h2">New Sell</h1>
+					<div class="btn-toolbar mb-2 mb-md-0">
+						<div class="d-grid gap-2 d-md-block">
+							<!-- <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+								data-bs-target="#dailysellModal">
+								<i class="bx bx-plus"></i>
+								New Sell
+							</button> -->
+							<button class="btn btn-primary">
+								Print
+							</button>
+							<button class="btn btn-dark" id="sellcompletebtn">
+								Complete
+							</button>
+						</div>
 					</div>
 				</div>
+
+				<form id="form-customer-info">
+					{{ form.hidden_tag() }}
+					<div class="row">
+						<div class="col-md-5 mb-3">
+							{{ form.customer_name.label(class="form-label") }}
+
+							{% if form.customer_name.errors %}
+							{{ form.customer_name(
+									class="form-select text-uppercase is-invalid",
+									placeholder="Customer Name",
+									id="selectcustomer"
+								) }}
+							<div class="invalid-feedback">
+								{% for error in form.customer_name.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+							{% else %}
+							{{ form.customer_name(
+									class="form-select text-uppercase",
+									placeholder="Customer Name",
+									id="selectcustomer"
+								) }}
+							{% endif %}
+						</div>
+
+						<div class="col-md-5 mb-3 ms-auto">
+							{{ form.payment_status.label(class="form-label") }}
+
+							{% if form.payment_status.errors %}
+							{{ form.payment_status(
+								class="form-select text-uppercase is-invalid"
+							) }}
+							<div class="invalid-feedback">
+								{% for error in form.payment_status.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+							{% else %}
+							{{ form.payment_status(
+								class="form-select text-uppercase"
+							) }}
+							{% endif %}
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-5 mb-3">
+							{{ form.note.label() }}
+
+							{% if form.note.errors %}
+							{{ form.note(
+								class="form-select text-uppercase is-invalid"
+							) }}
+							<div class="invalid-feedback">
+								{% for error in form.note.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+							{% else %}
+							{{ form.note(
+								class="form-select text-uppercase"
+							) }}
+							{% endif %}
+						</div>
+
+						<div class="col-md-5 mb-3 ms-auto">
+							{{ form.trnx_id.label(class="form-label") }}
+
+							{% if form.trnx_id.errors %}
+							{{ form.trnx_id(
+								class="form-select text-uppercase is-invalid",
+								placeholder="TRXXX ID"
+							) }}
+							<div class="invalid-feedback">
+								{% for error in form.trnx_id.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+							{% else %}
+							{{ form.trnx_id(
+								class="form-select text-uppercase",
+								placeholder='TRXXX ID'
+							) }}
+							{% endif %}
+						</div>
+					</div>
+				</form>
 			</div>
+
 
 
 			<!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380">
