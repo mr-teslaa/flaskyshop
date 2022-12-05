@@ -1,11 +1,19 @@
 #   importing necessary module
 import os
 import secrets
+import random
+import string
 from PIL import Image
 from flask import url_for
 from flask import current_app
 # from flask_mail import Message
 # from flaskblog import mail
+
+
+#   GENERATING INVOICE NUMBER
+def invoiceID(size=10, chars=string.ascii_uppercase + string.digits):
+    randomstr = ''.join(random.choice(chars) for _ in range(size))
+    return randomstr
 
 #   saving profile picture
 def save_logo(form_picture):

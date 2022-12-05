@@ -1,4 +1,5 @@
 import os
+import json
 
 #   importing basic flask module
 from flask import Blueprint
@@ -9,6 +10,7 @@ from flask import url_for
 from flask import flash
 from flask import abort
 from flask import jsonify
+from flask import make_response
 from flask import current_app
 
 from datetime import datetime
@@ -41,6 +43,7 @@ from app.dashboard.forms import AddTodaySellForm
 #   CUSTOM MODULE
 from app.dashboard.utils import save_logo
 from app.dashboard.utils import save_product
+from app.dashboard.utils import invoiceID
 
 dashboard = Blueprint('dashboard', __name__)
 
@@ -131,28 +134,37 @@ def todaysell():
 @login_required
 def newsell():
     form=AddTodaySellForm()
+    newinvoiceID = invoiceID()
     form.customer_name.choices = [(customer.id, customer.customer_name) for customer in Customers.query.all()]
-    return render_template('dashboard/newsell.html', title="New Sell", form=form)
+    return render_template('dashboard/newsell.html', title="New Sell", form=form, newinvoiceID=newinvoiceID)
 
 @dashboard.route('/dashboard/newsell/submit/', methods=['POST'])
-# @login_required
+@login_required
 def newsell_submit():
-    # userid = current_user.id
+    userid = current_user.id
 
-    data = request.json
-    customer = data['customer']
-    print(type(customer))
-    return data
-    # sellpayment = data['cashier']
-    # sellproducts = data['products']
-    # payments = data['cashier']
+    strreq = request.get_json()
+    data = json.loads(strreq)
+   
     
-    # # print(jsonify(data))   
+    # return data
+    sellpayment = data.get('cashier')
+    sellproducts = data.get('products')
+    payments = data.get('cashier')
+    invoiceid = data.get('invoiceid')
+    print(f'{sellpayment} =====\n\n {sellproducts} ====\n\n {payments} ======\n\n {invoiceid}')
+    # print(jsonify(data))   
+    # new_sell = DailySells(customer_id=1, products=data, payment_status='cash', user_id=2)
     # new_sell = DailySells(customer_id=customer['customer_id'], products=sellproducts, payment_status= sellpayment, trnx_id=customer['tranx_id'], note=customer['note'], payment_details=payments, user_id=userid)
     
     # db.session.add(new_sell)
     # db.session.commit()
 
+    res =  make_response(jsonify({"message": "json received"}), 200)
+
+    return res
+
+    # return "====================  info saved", 200
     # return redirect(url_for('dashboard.newsell_display', data=data))
 
 @dashboard.route('/dashboard/newsell/<string:data>')
@@ -298,7 +310,7 @@ def products():
         productcategory = form.product_category.data
         productimage = form.product_image.data
         productStatus = form.product_available.data
-        print(f'Product status: {productStatus}')
+        print(f'Product IMAGE status: {productimage}')
 
         if productimage:
             picture_file = save_product(productimage)
@@ -311,10 +323,14 @@ def products():
             db.session.commit()
             return redirect(url_for('dashboard.products'))    
 
+        # product = Products(name=productname, productid=productID, price=productprice, 
+        #                     stock=productquantity, description= productdescription,  brand= productbrand, 
+        #                     category= productcategory, available_status=productStatus)
         product = Products(name=productname, productid=productID, price=productprice, 
-                            stock=productquantity, description= productdescription,  brand= productbrand, 
-                            category= productcategory, available_status=productStatus)
-        # STORING IN DB
+                            stock=productquantity, description=productdescription, brand_id=productbrand, 
+                            category_id=productcategory, available_status=productStatus)  
+        
+        #   STORING IN DB
         db.session.add(product)
         db.session.commit()
 

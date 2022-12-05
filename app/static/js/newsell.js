@@ -1,6 +1,7 @@
 let form = document.querySelector("#form");
 let orderForm = document.querySelector("#orderForm");
 let sellcompletebtn = document.querySelector("#sellcompletebtn");
+let newinvoiceid = document.querySelector("#newinvoiceid");
 
 class addCart {
     constructor(productname, productid, price, quantity) {
@@ -277,7 +278,12 @@ sellcompletebtn.addEventListener("click", () => {
         products: allproduct,
         cashier: cashier,
         customer: customer,
+        invoiceid: newinvoiceid.innerText,
     };
+
+    console.log(JSON.stringify(sell));
+    console.log(typeof JSON.stringify(sell));
+    console.log(sell);
 
     localStorage.setItem("cashier", JSON.stringify(cashier));
     localStorage.setItem("sell", JSON.stringify(sell));
@@ -287,13 +293,22 @@ sellcompletebtn.addEventListener("click", () => {
 
     fetch("http://127.0.0.1:5000/dashboard/newsell/submit/", {
         method: "POST",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },
+        cache: "no-cache",
         body: JSON.stringify(getsell),
-    })
-        .then((response) => response.json())
-        .then((data) => console.log(data.json));
+    }).then((response) => {
+        if (response.status !== 200) {
+            console.log(`RESPONSE IS NOT 200, IT'S ${response.status}`);
+            return;
+        }
+
+        response.json().then((data) => {
+            console.log(data);
+        });
+    });
 });
 
 document.addEventListener("DOMContentLoaded", () => {

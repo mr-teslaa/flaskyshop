@@ -29,6 +29,10 @@
 				<div
 					class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 					<h1 class="h2">New Sell</h1>
+					<h5>
+						Invoice No:
+						<spann id="newinvoiceid"> {{ newinvoiceID }} </span>
+					</h5>
 					<div class="btn-toolbar mb-2 mb-md-0">
 						<div class="d-grid gap-2 d-md-block">
 							<!-- <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
@@ -236,6 +240,37 @@
 	// 	counter++;
 	// });
 </script>
+<!-- 
+<script>
+	// generate random invoice number
+	class generateRandom {
+		static lower() {
+			return String.fromCharCode(
+				Math.floor(Math.random() * 26) + 97
+			);
+		}
+
+		static upper() {
+			return String.fromCharCode(
+				Math.floor(Math.random() * 26) + 65
+			);
+		}
+
+		static number() {
+			return String.fromCharCode(
+				Math.floor(Math.random() * 10) + 48
+			);
+		}
+	}
+
+	const getInvoiceID = () => {
+		let upper = generateRandom.upper()
+	}
+
+	console.log(getInvoiceID.lower())
+	console.log(getInvoiceID.upper())
+	console.log(getInvoiceID.number())
+</script> -->
 
 <script src="{{ url_for('static', filename='js/newsell.js') }}"></script>
 {% endblock %}

@@ -463,7 +463,7 @@
 												<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 
 													<button class="btn btn-sm m-1 btn-danger me-md-2"
-														data-bs-target="#deleteConfirmModalToggle"
+														data-bs-target="#deleteConfirmModalToggle{{product.id}}"
 														data-bs-toggle="modal">
 														Delete Product
 													</button>
@@ -482,8 +482,9 @@
 								</div>
 
 								<!-- DELTE CONFIRM MODAL -->
-								<div class="modal fade modal-md" id="deleteConfirmModalToggle" aria-hidden="true"
-									aria-labelledby="deleteConfirmModalToggleLabel" tabindex="-1">
+								<div class="modal fade modal-md" id="deleteConfirmModalToggle{{product.id}}"
+									aria-hidden="true" aria-labelledby="deleteConfirmModalToggle{{product.id}}Label"
+									tabindex="-1">
 									<div class="modal-dialog modal-dialog-centered">
 										<div class="modal-content">
 											<div class="modal-header">
@@ -491,7 +492,8 @@
 													aria-label="Close"></button>
 											</div>
 											<div class="modal-body">
-												<h3 class="modal-title fs-5" id="deleteConfirmModalToggleLabel">
+												<h3 class="modal-title fs-5"
+													id="deleteConfirmModalToggle{{product.id}}Label">
 													Are you sure you want to delete the Product?
 												</h3>
 											</div>
