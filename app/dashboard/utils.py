@@ -11,9 +11,12 @@ from flask import current_app
 
 
 #   GENERATING INVOICE NUMBER
-def invoiceID(size=10, chars=string.ascii_uppercase + string.digits):
-    randomstr = ''.join(random.choice(chars) for _ in range(size))
-    return randomstr
+def invoiceID():
+    return secrets.token_hex(8)
+
+# def invoiceID(size=10, chars=string.ascii_uppercase + string.digits):
+#     randomstr = ''.join(random.choice(chars) for _ in range(size))
+#     return randomstr
 
 #   saving profile picture
 def save_logo(form_picture):

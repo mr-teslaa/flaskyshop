@@ -76,10 +76,8 @@ class SelledProducts(db.Model):
     productid = db.Column(db.String())
     price = db.Column(db.String())
     quantity = db.Column(db.String())
-    invoiceid = db.Column(db.String())
     daily_sells_id = db.Column(db.Integer, db.ForeignKey('daily_sells.id'))
     
-
 
 class DailySells(db.Model):
     __tablename__ = 'daily_sells'
@@ -88,6 +86,9 @@ class DailySells(db.Model):
 
     invoiceid = db.Column(db.String())
     selled_products = db.relationship('SelledProducts', backref=db.backref('selled_products', lazy=True))
+    subtotal = db.Column(db.String())
+    discount = db.Column(db.String())
+    totalprice = db.Column(db.String())
     payment_status = db.Column(db.String(), default='cash')
     trnx_id = db.Column(db.String())
     note = db.Column(db.String())

@@ -30,6 +30,7 @@ from app.models import Products
 from app.models import Users
 from app.models import Customers
 from app.models import DailySells
+from app.models import SelledProducts
 
 from app.dashboard.forms import LoginForm 
 from app.dashboard.forms import RegistrationForm
@@ -148,13 +149,50 @@ def newsell_submit():
    
     
     # return data
-    sellpayment = data.get('cashier')
-    sellproducts = data.get('products')
-    payments = data.get('cashier')
-    invoiceid = data.get('invoiceid')
-    print(f'{sellpayment} =====\n\n {sellproducts} ====\n\n {payments} ======\n\n {invoiceid}')
-    # print(jsonify(data))   
-    # new_sell = DailySells(customer_id=1, products=data, payment_status='cash', user_id=2)
+    subtotal = data['cashier']['subtotal']
+    discount = data['cashier']['discount']
+    totalprice = data['cashier']['total']
+    print('Showing pricing ---->>')
+    print(f'Subtotal: {subtotal}')
+    print(f'Discount: {discount}')
+    print(f'Total Price: {totalprice}')
+
+    invoice_id = data['invoiceid']
+    customerid = data['customer']['customer_id']
+    paymentstatus = data['customer']['payment_status']
+    transactionid = data['customer']['transactionid']
+    note = data['customer']['note']
+
+    print('-------->>>')
+    print(f'Invoice ID: {invoice_id}')
+    print(f'Customer ID: {customerid}')
+    print(f'Payment Status: {paymentstatus}')
+    print(f'Transaction ID: {transactionid}')
+    print(f'Note: {note}')
+    print(";;;;;;;;;;;;;;;;;;;;;;  DONE  ;;;;;;;;;;;;;;;;;;;;;")
+
+    dailysell = DailySells(customer_id=customerid, invoiceid=invoice_id, subtotal=subtotal, discount=discount, totalprice=totalprice,payment_status=paymentstatus, trnx_id=transactionid, note=note, user_id=userid)
+    
+    db.session.add(dailysell)
+    db.session.commit()
+
+    print(f'daily sell id ---->> {dailysell.id}')
+    print('Showing all products ---->>')
+
+    products = data['products']
+    for product in products:
+        print(f"Product Name: {product['productname']}")
+        print(f"Product Name: {product['productid']}")
+        print(f"Product Name: {product['price']}")
+        print(f"Product Name: {product['quantity']}")
+        print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        
+        selled_product = SelledProducts(productname=product['productname'], productid=product['productid'], price=product['price'], quantity=product['quantity'], daily_sells_id=dailysell.id)
+        
+        db.session.add(selled_product)
+        db.session.commit()
+   
+    
     # new_sell = DailySells(customer_id=customer['customer_id'], products=sellproducts, payment_status= sellpayment, trnx_id=customer['tranx_id'], note=customer['note'], payment_details=payments, user_id=userid)
     
     # db.session.add(new_sell)
