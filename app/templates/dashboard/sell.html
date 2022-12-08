@@ -1,0 +1,124 @@
+{% extends 'layouts/root-dashboard.html' %}
+
+<!-- body -->
+{% block body %}
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
+		BM Gadget & Tech
+	</a>
+	<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"> </span>
+	</button>
+	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
+		aria-label="Search" />
+	<div class="navbar-nav">
+		<div class="nav-item text-nowrap">
+			<a class="nav-link px-3" href="#">Sign out </a>
+		</div>
+	</div>
+</header>
+
+<div class="container-fluid">
+	<div class="row">
+		<!-- navigation inject -->
+		{% include 'helpers/_dashboard_side_nav.html' %}
+
+		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+			<div class="align-items-center pt-3 pb-2 mb-3 border-bottom">
+				<h1 class="h2">Invoice: {{ kkkk }}</h1>
+			</div>
+
+			<div class="row">
+				<div class="col-md-6">
+					<p>
+						<b>Customer Name: </b>{.....}
+					</p>
+					<p>
+						<b>Phone: </b>{.....}
+					</p>
+					<p>
+						<b>Address: </b>{.....}
+					</p>
+				</div>
+				<div class="col-md-6">
+					<p>
+						<b>Time: </b>{.....}
+					</p>
+					<p>
+						<b>Date: </b>{.....}
+					</p>
+					<p>
+						<b>Note: </b>{.....}
+					</p>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-12">
+					<div class="table-responsive">
+						<table class="table table-bordered table-striped table-hover">
+							<thead>
+								<th>Serial No</th>
+								<th>Product ID</th>
+								<th>Product Name</th>
+								<th>Unit</th>
+								<th>Unit Price</th>
+								<th>Total</th>
+							</thead>
+							<tbody>
+								{% for product in products %}
+								<tr>
+									<td>
+										{{ product.id }}
+									</td>
+									<td>
+										{{ product.productid }}
+									</td>
+									<td>
+										{{ product.productname }}
+									</td>
+									<td>
+										{{ product.quantity }}
+									</td>
+									<td>
+										{{ product.price }}
+									</td>
+									<td class="totalunit">
+
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+</div>
+
+
+<script>
+	const total = (unit, unitprice) => {
+		return unit * unitprice;
+	}
+
+	const subtotal = () => {
+		let totalunits = document.querySelectorAll('.totalunit');
+
+		totalunits.forEach((totalunit) => {
+
+		})
+	}
+
+	// let allproductprice = document.querySelectorAll(".productprice");
+		// let result = 0;
+		// allproductprice.forEach((number) => {
+		// 	console.log(`we have ${number.innerHTML}`);
+		// 	result += parseFloat(number.innerText);
+		// });
+
+		// return result;
+</script>
+{% endblock %}

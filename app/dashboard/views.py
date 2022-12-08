@@ -49,8 +49,61 @@ from app.dashboard.utils import invoiceID
 dashboard = Blueprint('dashboard', __name__)
 
 # LANDING PAGE
-@dashboard.route('/', methods=['GET', 'POST'])
+@dashboard.route('/')
 def index():
+    return redirect(url_for('dashboard.register'))
+
+
+#   ===========================
+#   START GET DATA with AJAX
+#   ===========================
+@dashboard.route('/todaysell/price/get/', methods=['POST'])
+def todaysell_price_get():
+    allsell = DailySells.query.all()
+    sellprice = 0
+    pendingprice = 0
+
+    today = datetime.utcnow().strftime('%d %b, %Y')
+    
+    for sell in allsell:
+        dbdate = sell.pub_date.strftime('%d %b, %Y')
+
+        if today == dbdate:
+            check = True
+        else:
+            check = False
+        
+        if check:
+            if sell.payment_status == 'cash':
+                sellprice += int(sell.totalprice) 
+            
+            if sell.payment_status == 'pending':
+                pendingprice += int(sell.totalprice)
+
+    
+
+    obj = {
+        "message": "GET Sell Successfully",
+        "selledtk": sellprice,
+        "pendingtk": pendingprice,
+        "todaydate": today
+    }
+    res =  make_response(jsonify(obj), 200)
+    return res
+    
+#   =======================
+#   END GET DATA
+#   =======================
+
+
+
+
+
+#   =============================
+#   START DASHBAORD FUNCTIONALITY
+#   =============================
+@dashboard.route('/register/', methods=['GET', 'POST'])
+def register():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard.admin_dashboard'))
     form = RegistrationForm()
@@ -104,6 +157,7 @@ def admin_dashboard():
 @login_required
 def todaysell():
     sells = DailySells.query.all()
+    totalselledproduct = SelledProducts.query.all()
 
     form=AddTodaySellForm()
     form.customer_name.choices = [(customer.id, customer.customer_name) for customer in Customers.query.all()]
@@ -127,7 +181,7 @@ def todaysell():
 
         return redirect(url_for('dashboard.todaysell'))
 
-    return render_template('dashboard/todaysell.html', title='Today\'s Sell', form=form, sells=sells)
+    return render_template('dashboard/todaysell.html', title='Today\'s Sell', form=form, sells=sells, totalselledproduct=totalselledproduct)
 
 
 #   NEW SELL
@@ -191,23 +245,22 @@ def newsell_submit():
         
         db.session.add(selled_product)
         db.session.commit()
-   
-    
-    # new_sell = DailySells(customer_id=customer['customer_id'], products=sellproducts, payment_status= sellpayment, trnx_id=customer['tranx_id'], note=customer['note'], payment_details=payments, user_id=userid)
-    
-    # db.session.add(new_sell)
-    # db.session.commit()
 
-    res =  make_response(jsonify({"message": "json received"}), 200)
+    res =  make_response(jsonify({"message": "Sell Completed Successfully"}), 200)
 
     return res
-
-    # return "====================  info saved", 200
-    # return redirect(url_for('dashboard.newsell_display', data=data))
 
 @dashboard.route('/dashboard/newsell/<string:data>')
 def newsell_display(data):
     return render_template('public/demo.html', data=data)
+
+
+@dashboard.route('/dashboard/sell/<string:invoiceid>')
+@login_required
+def view_sell(invoiceid):
+    sell = DailySells.query.filter_by(invoiceid=invoiceid).first()
+    products = SelledProducts.query.filter_by(daily_sells_id=sell.id).all()
+    return render_template('/dashboard/sell.html', products=products)
 
 #   BRAND
 @dashboard.route('/dashboard/brand/', methods=['GET', 'POST'])
@@ -502,7 +555,10 @@ def delete_customer(customer_id):
 
 
 #   REPORT
-@dashboard.route('/dashboard/report/', methods=['GET', 'POST'])
-@login_required
-def report():
-    return render_template('dashboard/report.html', title='Report')
+# @dashboard.route('/dashboard/report/', methods=['GET', 'POST'])
+# @login_required
+# def report():
+#     return render_template('dashboard/report.html', title='Report')
+#   =============================
+#   END DASHBAORD FUNCTIONALITY
+#   =============================

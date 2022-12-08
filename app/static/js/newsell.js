@@ -2,13 +2,15 @@ let form = document.querySelector("#form");
 let orderForm = document.querySelector("#orderForm");
 let sellcompletebtn = document.querySelector("#sellcompletebtn");
 let newinvoiceid = document.querySelector("#newinvoiceid");
+newinvoiceid.innerText = newinvoiceid.innerText.toUpperCase();
 
 class addCart {
-    constructor(productname, productid, price, quantity) {
+    constructor(productname, productid, price, quantity, unittotal) {
         this.productname = productname;
         this.productid = productid;
         this.price = price;
         this.quantity = quantity;
+        this.unittotal = unittotal;
     }
 }
 
@@ -154,7 +156,6 @@ class Store {
         let allproductprice = document.querySelectorAll(".productprice");
         let result = 0;
         allproductprice.forEach((number) => {
-            console.log(`we have ${number.innerHTML}`);
             result += parseFloat(number.innerText);
         });
 
@@ -219,7 +220,13 @@ form.addEventListener("submit", (e) => {
         quantity = document.querySelector("#quantity").value;
 
     // ADD NEW PRODUCT
-    let addNewProduct = new addCart(productname, productid, price, quantity);
+    let addNewProduct = new addCart(
+        productname,
+        productid,
+        price,
+        quantity,
+        price * quantity
+    );
     Store.addProduct(addNewProduct);
 
     // DISPLAYING PRODUCTS
@@ -244,7 +251,13 @@ orderForm.addEventListener("submit", (e) => {
         price = document.querySelector("#price").value,
         quantity = document.querySelector("#quantity").value;
 
-    let addNewProduct = new addCart(productname, productid, price, quantity);
+    let addNewProduct = new addCart(
+        productname,
+        productid,
+        price,
+        quantity,
+        price * quantity
+    );
 
     Store.addProduct(addNewProduct);
 });
@@ -281,17 +294,13 @@ sellcompletebtn.addEventListener("click", () => {
         invoiceid: newinvoiceid.innerText,
     };
 
-    console.log(JSON.stringify(sell));
-    console.log(typeof JSON.stringify(sell));
-    console.log(sell);
-
     localStorage.setItem("cashier", JSON.stringify(cashier));
     localStorage.setItem("sell", JSON.stringify(sell));
     localStorage.setItem("customer", JSON.stringify(customer));
 
     let getsell = localStorage.getItem("sell");
 
-    fetch("http://127.0.0.1:5000/dashboard/newsell/submit/", {
+    fetch(`${window.origin}/dashboard/newsell/submit/`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -301,12 +310,14 @@ sellcompletebtn.addEventListener("click", () => {
         body: JSON.stringify(getsell),
     }).then((response) => {
         if (response.status !== 200) {
-            console.log(`RESPONSE IS NOT 200, IT'S ${response.status}`);
+            console.log(
+                `Something went wrong! Reload the page. Status: ${response.status}`
+            );
             return;
         }
 
         response.json().then((data) => {
-            console.log(data);
+            window.location.href = `${window.origin}`;
         });
     });
 });

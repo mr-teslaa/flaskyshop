@@ -41,6 +41,11 @@ body {
 	color: #5d4e46;
 }
 
+.bg__goldenpoppy {
+	background-color: #f6bb00;
+	color: #000;
+}
+
 .bg__anakiwa {
 	background-color: #9bddff;
 	color: #334046;
@@ -69,6 +74,7 @@ body {
 .bg__anakiwa .summery__subtitle {
 	color: #334046;
 }
+
 /* === STATIC BOX END === */
 
 /* === SMALL LOGO | BRAND LOGO === */

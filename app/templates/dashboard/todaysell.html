@@ -27,16 +27,13 @@
 		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 			<div
 				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<h1 class="h2">Today's Sell</h1>
+				<h1 class="h2">
+					Today's Sell
+					(<span id="today">something went wrong. please reload</span>)
+				</h1>
 				<div class="btn-toolbar mb-2 mb-md-0">
 					<div class="btn-group me-2">
-						<!-- <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
-							data-bs-target="#dailysellModal">
-							<i class="bx bx-plus"></i>
-							New Sell
-						</button> -->
-						<a href="{{ url_for('dashboard.newsell') }}" class="btn btn-sm btn-outline-secondary"
-							data-bs-toggle="modal" data-bs-target="#dailysellModal">
+						<a href="{{ url_for('dashboard.newsell') }}" class="btn btn-sm btn-outline-secondary">
 							<i class="bx bx-plus"></i>
 							New Sell
 						</a>
@@ -44,243 +41,35 @@
 				</div>
 			</div>
 
-			<!-- add products modal -->
-			<div class="modal fade" id="dailysellModal" tabindex="-1" aria-labelledby="dailysellModalLabel"
-				aria-hidden="true">
-				<form method="POST" action="" enctype="multipart/form-data">
-					{{ form.hidden_tag() }}
-					<div class="modal-dialog modal-lg" role="document">
-						<div class="modal-content rounded-4 shadow">
-							<div class="modal-header border-bottom-0">
-								<h5 class="modal-title">Add Sell</h5>
-
-								<button type="button" class="btn-close" data-bs-dismiss="modal"
-									aria-label="Close"></button>
-							</div>
-							<div class="modal-body py-0">
-								<div class="row">
-									<div class="col-md-6 px-3 py-2">
-										{{ form.customer_name.label() }}
-
-										{% if form.customer_name.errors %}
-										{{ form.customer_name(
-											class="form-select text-uppercase is-invalid",
-											placeholder="Customer Name",
-											id="selectcustomer"
-										) }}
-										<div class="invalid-feedback">
-											{% for error in form.customer_name.errors %}
-											<span>{{ error }}</span>
-											{% endfor %}
-										</div>
-										{% else %}
-										{{ form.customer_name(
-												class="form-select text-uppercase",
-												placeholder="Customer Name",
-												id="selectcustomer"
-											) }}
-										{% endif %}
-
-									</div>
-
-									<div class="col-md-6 px-3 py-2">
-										{{ form.product_name.label() }}
-
-										{% if form.product_name.errors %}
-										{{ form.product_name(
-											class="form-select text-uppercase is-invalid",
-											placeholder="Product Name",
-											id="selectproduct"
-										) }}
-										<div class="invalid-feedback">
-											{% for error in form.product_name.errors %}
-											<span>{{ error }}</span>
-											{% endfor %}
-										</div>
-										{% else %}
-										{{ form.product_name(
-												class="form-select text-uppercase",
-												placeholder="Product Name",
-												id="selectproduct"
-											) }}
-										{% endif %}
-									</div>
-								</div>
-
-								<div class="row">
-									<div class="col-md-4 px-3 py-2">
-										{{ form.quantity.label() }}
-
-										{% if form.quantity.errors %}
-										{{ form.quantity(
-											class="form-select text-uppercase is-invalid",
-											placeholder="00"
-										) }}
-										<div class="invalid-feedback">
-											{% for error in form.quantity.errors %}
-											<span>{{ error }}</span>
-											{% endfor %}
-										</div>
-										{% else %}
-										{{ form.quantity(
-												class="form-select text-uppercase",
-												placeholder="00"
-											) }}
-										{% endif %}
-									</div>
-
-									<div class="col-md-4 px-3 py-2">
-										{{ form.discount.label() }}
-
-										{% if form.discount.errors %}
-										{{ form.discount(
-											class="form-select text-uppercase is-invalid",
-											placeholder="00"
-										) }}
-										<div class="invalid-feedback">
-											{% for error in form.discount.errors %}
-											<span>{{ error }}</span>
-											{% endfor %}
-										</div>
-										{% else %}
-										{{ form.discount(
-												class="form-select text-uppercase",
-												placeholder="00"
-											) }}
-										{% endif %}
-									</div>
-
-									<div class="col-md-4 px-3 py-2">
-										{{ form.price.label() }}
-
-										{% if form.price.errors %}
-										{{ form.price(
-											class="form-select text-uppercase is-invalid",
-											placeholder="00"
-										) }}
-										<div class="invalid-feedback">
-											{% for error in form.price.errors %}
-											<span>{{ error }}</span>
-											{% endfor %}
-										</div>
-										{% else %}
-										{{ form.price(
-												class="form-select text-uppercase",
-												placeholder="00"
-											) }}
-										{% endif %}
-									</div>
-								</div>
-
-								<div class="row">
-									<div class="col-md-6 px-3 py-2">
-										{{ form.payment_status.label() }}
-
-										{% if form.payment_status.errors %}
-										{{ form.payment_status(
-											class="form-select text-uppercase is-invalid"
-										) }}
-										<div class="invalid-feedback">
-											{% for error in form.payment_status.errors %}
-											<span>{{ error }}</span>
-											{% endfor %}
-										</div>
-										{% else %}
-										{{ form.payment_status(
-												class="form-select text-uppercase"
-											) }}
-										{% endif %}
-									</div>
-
-									<div class="col-md-6 px-3 py-2">
-										{{ form.trnx_id.label() }}
-
-										{% if form.trnx_id.errors %}
-										{{ form.trnx_id(
-											class="form-select text-uppercase is-invalid",
-											placeholder="TRXXX ID"
-										) }}
-										<div class="invalid-feedback">
-											{% for error in form.trnx_id.errors %}
-											<span>{{ error }}</span>
-											{% endfor %}
-										</div>
-										{% else %}
-										{{ form.trnx_id(
-												class="form-select text-uppercase",
-												placeholder='TRXXX ID'
-											) }}
-										{% endif %}
-									</div>
-
-									<div class="col-md-12 px-3 py-2">
-										{{ form.note.label() }}
-
-										{% if form.note.errors %}
-										{{ form.note(
-											class="form-select text-uppercase is-invalid"
-										) }}
-										<div class="invalid-feedback">
-											{% for error in form.note.errors %}
-											<span>{{ error }}</span>
-											{% endfor %}
-										</div>
-										{% else %}
-										{{ form.note(
-											class="form-select text-uppercase"
-										) }}
-										{% endif %}
-									</div>
-								</div>
-							</div>
-
-							<div class="modal-footer mt-4">
-								{{ form.submit(class="btn btn-lg btn-primary w-100 mx-0 mb-2") }}
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-			<!-- end of add product modal -->
-
-			<!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380">
-			</canvas> -->
-
 			<!-- SUMMERY OF PRODUCTS -->
 			<div class="container">
 				<div class="row gap-2 mb-5">
 					<div class="col-lg-3">
+						<div class="border summery__box bg__mintgreen p-2">
+							<h3 id='totalsellprice' class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">Total TK Earning</p>
+						</div>
+					</div>
+
+					<div class="col-lg-3">
+						<div class="border summery__box bg__goldenpoppy p-2">
+							<h3 id="totalpendingprice" class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">Total TK Pending</p>
+						</div>
+					</div>
+
+					<div class="col-lg-3">
 						<div class="border summery__box bg__anakiwa p-2">
 							<h3 class="summery__box-title fs-1 fw-bolder">
-								350
+								{{ totalselledproduct|length }}
 							</h3>
 							<p class="summery__subtitle">
 								Total Selled Product
 							</p>
-						</div>
-					</div>
-
-					<div class="col-lg-3">
-						<div class="border summery__box bg__papayawhip p-2">
-							<h3 class="summery__box-title fs-1 fw-bolder">
-								350
-								<small>
-									<sup class="fs-6">Taka</sup>
-								</small>
-							</h3>
-							<p class="summery__subtitle">Total Pending</p>
-						</div>
-					</div>
-
-					<div class="col-lg-3">
-						<div class="border summery__box bg__mintgreen p-2">
-							<h3 class="summery__box-title fs-1 fw-bolder">
-								350
-								<small>
-									<sup class="fs-6">Taka</sup>
-								</small>
-							</h3>
-							<p class="summery__subtitle">Total Earning</p>
 						</div>
 					</div>
 				</div>
@@ -295,11 +84,9 @@
 					<thead>
 						<tr>
 							<th scope="col" width="100">Serial No</th>
-							<th scope="col">Product Name</th>
-							<th scope="col">Price</th>
-							<th scope="col">Product ID</th>
-							<th scope="col">Buyer</th>
-							<th scope="col">Quantity</th>
+							<th scope="col">Products</th>
+							<th scope="col">Invoice ID</th>
+							<th scope="col">Total Price</th>
 							<th scope="col">Payment</th>
 							<th scope="col">Date</th>
 							<th scope="col">Action</th>
@@ -309,16 +96,18 @@
 						{% for sell in sells %}
 						<tr class="align-middle">
 							<td class="text-center counters">{{ sell.id }}</td>
-							<td>{{ sell.product_name.name }}</td>
+							<td>
+								{% for i in sell.selled_products %}
+								{{ i.productname }},
+								{% endfor %}
+							</td>
+							<td>{{ sell.invoiceid }}</td>
 							<td>
 								<small
-									class="fs-6 d-inline-flex px-2 py-1 fw-lighter text-white bg-dark border border-dark border-opacity-10 rounded-2">
-									{{ sell.price }}
+									class="fs-6 d-inline-flex px-2 py-1 fw-lighter text-dark bg-dark bg-opacity-10 border border-dark border-opacity-10 rounded-2 totalprices">
+									{{ sell.totalprice }}
 								</small>
 							</td>
-							<td>{{ sell.product_name.productid }}</td>
-							<td>{{ sell.customer.customer_name }}</td>
-							<td>{{ sell.quantity }}</td>
 							<td>
 								{% if sell.payment_status == 'pending' %}
 								<small
@@ -338,9 +127,83 @@
 							</td>
 
 							<td>
-								<button type="button" class="btn btn-dark btn-sm" aria-expanded="false">
+								<a class="btn btn-sm btn-dark" data-bs-toggle="modal"
+									href="#detailModalToggle{{sell.id}}" role="button">
 									Details
-								</button>
+								</a>
+
+								<!-- NEW DOUBLE MODAL DELETE PRODUCT -->
+								<div class="modal fade modal-lg" id="detailModalToggle{{sell.id}}" aria-hidden="true"
+									aria-labelledby="detailModalToggle{{sell.id}}Label" tabindex="-1">
+									<div class="modal-dialog modal-dialog-centered">
+
+										<div class="modal-content">
+
+											<div class="modal-header">
+												<h1 class="modal-title fs-5" id="deleteModalToggle{{sell.id}}Label">
+													Invoice: {{ sell.invoiceid }} Details
+												</h1>
+												<button type="button" class="btn-close" data-bs-dismiss="modal"
+													aria-label="Close"></button>
+											</div>
+
+											<div class="modal-body">
+												<div class="table-responsive">
+													<table class="table table-bordered table-striped table-hover">
+														<tbody>
+															<tr>
+																<th>
+																	Invoice ID
+																</th>
+																<td>
+																	{{ sell.invoiceid }}
+																</td>
+															</tr>
+															<tr>
+																<th>Sell Date</th>
+																<td> {{ sell.pub_date.strftime('%I:%M:%S %p, %d %b, %Y') }}
+																</td>
+															</tr>
+															<tr>
+																<th>Total Sell <small>(Taka)</small></th>
+																<td
+																	class="fs-5 d-inline-flex m-2 px-2 py-1 fw-lighter text-dark bg-dark bg-opacity-10 border border-dark border-opacity-10 rounded-2">
+																	{{ sell.totalprice }}
+																</td>
+															</tr>
+															<tr>
+																<th>Products</th>
+																<td>
+																	{% for i in sell.selled_products %}
+																	{{ i.productname }} ({{ i.productid }}),
+																	<br />
+																	{% endfor %}
+																</td>
+															</tr>
+															<tr>
+																<th>
+																	Payment
+																</th>
+																<td>
+																	{{ sell.payment_status }}
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+
+											<div class="modal-footer">
+												<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+													<button class="btn btn-sm m-1 btn-dark" data-bs-dismiss="modal"
+														aria-label="Close">
+														Cancel
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 							</td>
 						</tr>
 						{% endfor %}
@@ -362,12 +225,12 @@
 </div>
 
 
-<script>
+<!-- <script>
 	let error = document.querySelector('.invalid-feedback');
 	if (error) {
 		alert("Failed, check the form again")
 	}
-</script>
+</script> -->
 
 <script>
 	let counter = 1;
@@ -379,7 +242,9 @@
 </script>
 
 <script src="{{ url_for('static', filename='js/dselect.js') }}"></script>
-<script>
+
+<!-- SEARCHEABLE LIST -->
+<!-- <script>
 	const searcustomer = document.querySelector("#selectcustomer");
 	const selectproduct = document.querySelector("#selectproduct");
 	dselect(searcustomer, {
@@ -388,5 +253,46 @@
 	dselect(selectproduct, {
 		search: true,
 	});
+</script> -->
+
+<!-- ADD COMMA TO PRICE -->
+<script>
+
+	document.addEventListener('DOMContentLoaded', () => {
+		const numberWithCommas = (x) => {
+			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		}
+
+		let today = document.querySelector('#today');
+		let allprices = document.querySelectorAll('.totalprices');
+		let totalsellprice = document.querySelector('#totalsellprice');
+		let totalpendingprice = document.querySelector('#totalpendingprice');
+
+		fetch(`${window.origin}/todaysell/price/get/`, {
+			method: "POST",
+		}).then((response) => {
+			if (response.status !== 200) {
+				console.log(`Something went wrong! Reload the page. Status: ${response.status}`);
+				return;
+			}
+
+			response.json().then((data) => {
+				console.log(data)
+				// ADDING COMMA TO TOTAL EARNING
+				totalsellprice.innerText = numberWithCommas(data.selledtk);
+				totalpendingprice.innerText = numberWithCommas(data.pendingtk);
+				today.innerText = data.todaydate
+			});
+		});
+
+		// ADDING COMMA TO ALL PRICE
+		allprices.forEach((price) => {
+			let pricevalue = price.innerText;
+			let pricewithcomma = numberWithCommas(pricevalue)
+
+			price.innerText = pricewithcomma
+		})
+	})
+
 </script>
 {% endblock %}

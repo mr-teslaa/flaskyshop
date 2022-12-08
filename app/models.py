@@ -25,6 +25,7 @@ class Users(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     user_role = db.Column(db.String(60), default="user")
     join_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    ip = db.Column(db.String(60))
     user_dailysells = db.relationship('DailySells', backref='user_dailysells', lazy=True)
 
 class Brands(db.Model):
@@ -76,6 +77,7 @@ class SelledProducts(db.Model):
     productid = db.Column(db.String())
     price = db.Column(db.String())
     quantity = db.Column(db.String())
+    unittotal = db.Column(db.String())
     daily_sells_id = db.Column(db.Integer, db.ForeignKey('daily_sells.id'))
     
 
