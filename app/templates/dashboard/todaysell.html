@@ -14,7 +14,7 @@
 		aria-label="Search" />
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
-			<a class="nav-link px-3" href="#">Sign out </a>
+			<a class="nav-link px-3" href="{{ url_for('dashboard.user_logout') }}">Sign out </a>
 		</div>
 	</div>
 </header>
@@ -122,88 +122,15 @@
 								{% endif %}
 							</td>
 
-							<td>
+							<td style="width: 12%">
 								{{ sell.pub_date.strftime('%d %b, %Y') }}
 							</td>
 
 							<td>
-								<a class="btn btn-sm btn-dark" data-bs-toggle="modal"
-									href="#detailModalToggle{{sell.id}}" role="button">
+								<a class="btn btn-sm btn-dark"
+									href="{{ url_for('dashboard.view_sell', invoiceid=sell.invoiceid) }}">
 									Details
 								</a>
-
-								<!-- NEW DOUBLE MODAL DELETE PRODUCT -->
-								<div class="modal fade modal-lg" id="detailModalToggle{{sell.id}}" aria-hidden="true"
-									aria-labelledby="detailModalToggle{{sell.id}}Label" tabindex="-1">
-									<div class="modal-dialog modal-dialog-centered">
-
-										<div class="modal-content">
-
-											<div class="modal-header">
-												<h1 class="modal-title fs-5" id="deleteModalToggle{{sell.id}}Label">
-													Invoice: {{ sell.invoiceid }} Details
-												</h1>
-												<button type="button" class="btn-close" data-bs-dismiss="modal"
-													aria-label="Close"></button>
-											</div>
-
-											<div class="modal-body">
-												<div class="table-responsive">
-													<table class="table table-bordered table-striped table-hover">
-														<tbody>
-															<tr>
-																<th>
-																	Invoice ID
-																</th>
-																<td>
-																	{{ sell.invoiceid }}
-																</td>
-															</tr>
-															<tr>
-																<th>Sell Date</th>
-																<td> {{ sell.pub_date.strftime('%I:%M:%S %p, %d %b, %Y') }}
-																</td>
-															</tr>
-															<tr>
-																<th>Total Sell <small>(Taka)</small></th>
-																<td
-																	class="fs-5 d-inline-flex m-2 px-2 py-1 fw-lighter text-dark bg-dark bg-opacity-10 border border-dark border-opacity-10 rounded-2">
-																	{{ sell.totalprice }}
-																</td>
-															</tr>
-															<tr>
-																<th>Products</th>
-																<td>
-																	{% for i in sell.selled_products %}
-																	{{ i.productname }} ({{ i.productid }}),
-																	<br />
-																	{% endfor %}
-																</td>
-															</tr>
-															<tr>
-																<th>
-																	Payment
-																</th>
-																<td>
-																	{{ sell.payment_status }}
-																</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
-											</div>
-
-											<div class="modal-footer">
-												<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-													<button class="btn btn-sm m-1 btn-dark" data-bs-dismiss="modal"
-														aria-label="Close">
-														Cancel
-													</button>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
 							</td>
 						</tr>
 						{% endfor %}
@@ -268,7 +195,7 @@
 		let totalsellprice = document.querySelector('#totalsellprice');
 		let totalpendingprice = document.querySelector('#totalpendingprice');
 
-		fetch(`${window.origin}/todaysell/price/get/`, {
+		fetch(`${window.origin}/api/todaysell/price/get/`, {
 			method: "POST",
 		}).then((response) => {
 			if (response.status !== 200) {

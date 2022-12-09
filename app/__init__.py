@@ -35,6 +35,8 @@ def create_app(config_class=Config):
     from app.models import Products
     from app.models import Brands
     from app.models import Categories
+    from app.models import SelledProducts
+    from app.models import DailySells
 
     from app.dashboard.views import dashboard
     app.register_blueprint(dashboard)
@@ -44,5 +46,7 @@ def create_app(config_class=Config):
     admin.add_view(AccessAdminPanel(Products, db.session))
     admin.add_view(AccessAdminPanel(Brands, db.session))
     admin.add_view(AccessAdminPanel(Categories, db.session))
+    admin.add_view(AccessAdminPanel(SelledProducts, db.session))
+    admin.add_view(AccessAdminPanel(DailySells, db.session))
 
     return app

@@ -14,7 +14,7 @@
 		aria-label="Search" />
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
-			<a class="nav-link px-3" href="#">Sign out </a>
+			<a class="nav-link px-3" href="{{ url_for('dashboard.user_logout') }}">Sign out </a>
 		</div>
 	</div>
 </header>
@@ -140,26 +140,44 @@
 				<section class="col-md-4">
 					<form id="form">
 						<div class="mb-3">
-							<label class="form-label">Product Name</label>
+							<!-- <label class="form-label">Product Name</label>
 							<input type="text" required name="productname" id="productname" class="form-control"
-								value="Huawei P30">
+								value="Huawei P30"> -->
+							{% if form.product_name.errors %}
+							{{ form.product_name(
+								class="form-select text-uppercase is-invalid",
+								placeholder="Product Name",
+								id="selectproduct"
+							) }}
+							<div class="invalid-feedback">
+								{% for error in form.product_name.errors %}
+								<span>{{ error }}</span>
+								{% endfor %}
+							</div>
+							{% else %}
+							{{ form.product_name(
+								class="form-select text-uppercase",
+								placeholder="Product Name",
+								id="selectproduct"
+							) }}
+							{% endif %}
 						</div>
 
 						<div class="mb-3">
 							<label class="form-label">Product ID</label>
 							<input type="text" required name="productname" id="productid" class="form-control"
-								value="BX-62829">
+								placeholder="PRODUCT-ID" readonly>
 						</div>
 
 						<div class="mb-3">
 							<label class="form-label">Price</label>
-							<input type="number" step="any" required name="price" id="price" class="form-control"
-								value="500">
+							<input type="number" step="any" required name="price" placeholder="00" id="productprice"
+								class="form-control">
 						</div>
 
 						<div class="mb-3">
 							<label class="form-label">Quantity Name</label>
-							<input type="number" required name="quantity" id="quantity" class="form-control" value="1">
+							<input type="number" required name="quantity" id="quantity" class="form-control">
 						</div>
 
 						<button class="btn btn-sm btn-dark" id="addCartButton">Submit</button>
@@ -184,35 +202,43 @@
 							</tbody>
 						</table>
 
-						<table class="ms-auto">
-							<tr>
-								<th>
-									<p class="m-auto me-2">Sub Total Ammount</p>
-								</th>
-								<td>
-									<input type="number" required name="subtotal" id="subtotal" class="col form-control"
-										value="00">
-								</td>
-							</tr>
-							<tr>
-								<th>
-									<p class="m-auto me-2">Discount</p>
-								</th>
-								<td>
-									<input type="number" required name="discount" id="discount" class="col form-control"
-										value="00">
-								</td>
-							</tr>
-							<tr>
-								<th>
-									<p class="m-auto me-2">Total Ammount</p>
-								</th>
-								<td>
-									<input type="number" required name="totalammount" id="totalammount"
-										class="col form-control" value="00">
-								</td>
-							</tr>
-						</table>
+						<div class="d-flex justify-content-between">
+							<div>
+								<p>
+									In Words:
+									<span id="countprice">......</span>
+								</p>
+							</div>
+							<table class="ms-auto">
+								<tr>
+									<th>
+										<p class="m-auto me-2">Sub Total Ammount</p>
+									</th>
+									<td>
+										<input type="number" required name="subtotal" id="subtotal"
+											class="col form-control" value="00">
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<p class="m-auto me-2">Discount</p>
+									</th>
+									<td>
+										<input type="number" required name="discount" id="discount"
+											class="col form-control" value="00">
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<p class="m-auto me-2">Total Ammount</p>
+									</th>
+									<td>
+										<input type="number" required name="totalammount" id="totalammount"
+											class="col form-control" value="00">
+									</td>
+								</tr>
+							</table>
+						</div>
 					</form>
 				</section>
 			</div>
@@ -222,45 +248,22 @@
 </div>
 
 
-<script>
-	// let counter = 1;
-	// const serialnos = document.querySelectorAll('.counters');
-	// serialnos.forEach(serial => {
-	// 	serial.innerText = counter;
-	// 	counter++;
-	// });
-</script>
-<!-- 
-<script>
-	// generate random invoice number
-	class generateRandom {
-		static lower() {
-			return String.fromCharCode(
-				Math.floor(Math.random() * 26) + 97
-			);
-		}
-
-		static upper() {
-			return String.fromCharCode(
-				Math.floor(Math.random() * 26) + 65
-			);
-		}
-
-		static number() {
-			return String.fromCharCode(
-				Math.floor(Math.random() * 10) + 48
-			);
-		}
-	}
-
-	const getInvoiceID = () => {
-		let upper = generateRandom.upper()
-	}
-
-	console.log(getInvoiceID.lower())
-	console.log(getInvoiceID.upper())
-	console.log(getInvoiceID.number())
+<!-- <script>
+	let counter = 1;
+	const serialnos = document.querySelectorAll('.counters');
+	serialnos.forEach(serial => {
+		serial.innerText = counter;
+		counter++;
+	});
 </script> -->
 
+<script src="{{ url_for('static', filename='js/dselect.js') }}"></script>
+<script>
+	const searchproduct = document.querySelector("#selectproduct");
+	dselect(searchproduct, {
+		search: true,
+	});
+</script>
+<script src="{{ url_for('static', filename='js/numberToWords.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/newsell.js') }}"></script>
 {% endblock %}

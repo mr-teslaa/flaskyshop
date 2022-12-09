@@ -41,33 +41,30 @@ class customerDetail {
 // UI ELEMENT
 class UI {
     static addBookList(product) {
-        if (
-            productname.value &&
-            productid.value &&
-            price.value &&
-            quantity.value
-        ) {
-            let tbody = document.querySelector("#carttable");
-            let tr = document.createElement("tr");
+        let tbody = document.querySelector("#carttable");
+        let tr = document.createElement("tr");
 
-            let unittotal =
-                parseFloat(product.price) * parseFloat(product.quantity);
+        let unittotal =
+            parseFloat(product.price) * parseFloat(product.quantity);
 
-            tr.innerHTML = `
-            <td>${product.productname}</td>
-            <td>${product.productid}</td>
-            <td>${product.price}</td>
-            <td>${product.quantity}</td>
-            <td class="productprice">${unittotal}</td>
-            <td>
-                <a href="#" class="btn btn-sm btn-danger deleteproductbtn"> Delete </a>
-            </td>`;
-            tbody.appendChild(tr);
-        }
+        tr.innerHTML = `
+        <td>${product.productname}</td>
+        <td>${product.productid}</td>
+        <td>${product.price}</td>
+        <td>${product.quantity}</td>
+        <td class="productprice">${unittotal}</td>
+        <td>
+            <a href="#" class="btn btn-sm btn-danger deleteproductbtn"> Delete </a>
+        </td>`;
+        tbody.appendChild(tr);
     }
 
     static clearForm() {
-        productname.value = "";
+        let productid = document.querySelector("#productid"),
+            price = document.querySelector("#productprice"),
+            quantity = document.querySelector("#quantity");
+
+        localStorage.removeItem("currentproduct");
         productid.value = "";
         price.value = "";
         quantity.value = "";
@@ -192,6 +189,8 @@ const payment = () => {
         discountel = document.querySelector("#discount"),
         totalammountel = document.querySelector("#totalammount");
 
+    let countprice = document.querySelector("#countprice");
+
     subtotalvalue = parseFloat(subtotalel.value);
     discountvalue = parseFloat(discountel.value);
 
@@ -208,15 +207,48 @@ const payment = () => {
         totalammountel.value = total;
     });
     totalammountel.value = total;
+
+    countprice.innerText = `${numberToWords
+        .toWords(parseFloat(totalammountel.value))
+        .toUpperCase()} Taka Only.`;
 };
+
+// FETCH THE PRODUCT ID AND PRICE
+let searchcontainer = document.querySelector(".dselect-wrapper .form-select");
+searchcontainer.addEventListener("focusout", (e) => {
+    //  GET ALL THE ELEMENTS FORM DOM
+    let productid = document.querySelector("#productid");
+    let productprice = document.querySelector("#productprice");
+
+    let productname = e.target.innerText.trim();
+
+    fetch(`${window.origin}/api/newsell/${productname}/price/get/`, {
+        method: "POST",
+    }).then((response) => {
+        if (response.status !== 200) {
+            console.log(
+                `Something went wrong! Reload the page. Status: ${response.status}`
+            );
+            return;
+        }
+
+        response.json().then((data) => {
+            console.log(data);
+            localStorage.setItem("currentproduct", productname);
+
+            productid.value = data.productid;
+            productprice.value = data.price;
+        });
+    });
+});
 
 form.addEventListener("submit", (e) => {
     e.preventDefault();
 
     // GETTING ALL THE ELEMENTS
-    let productname = document.querySelector("#productname").value,
+    let productname = localStorage.getItem("currentproduct"),
         productid = document.querySelector("#productid").value,
-        price = document.querySelector("#price").value,
+        price = document.querySelector("#productprice").value,
         quantity = document.querySelector("#quantity").value;
 
     // ADD NEW PRODUCT
@@ -317,7 +349,7 @@ sellcompletebtn.addEventListener("click", () => {
         }
 
         response.json().then((data) => {
-            window.location.href = `${window.origin}`;
+            window.location.href = `${window.origin}/dashboard/todaysell/`;
         });
     });
 });

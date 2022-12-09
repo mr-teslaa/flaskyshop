@@ -14,7 +14,7 @@
 		aria-label="Search" />
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
-			<a class="nav-link px-3" href="#">Sign out </a>
+			<a class="nav-link px-3" href="{{ url_for('dashboard.user_logout') }}">Sign out </a>
 		</div>
 	</div>
 </header>
@@ -26,30 +26,36 @@
 
 		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 			<div class="align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<h1 class="h2">Invoice: {{ kkkk }}</h1>
+				<h1 class="h2">Invoice: {{ sell.invoiceid }}</h1>
 			</div>
 
 			<div class="row">
 				<div class="col-md-6">
 					<p>
-						<b>Customer Name: </b>{.....}
+						<b>Customer Name: </b>
+						{{ customer.customer_name }}
 					</p>
 					<p>
-						<b>Phone: </b>{.....}
+						<b>Phone: </b>
+						{{ customer.customer_contact_number }}
 					</p>
 					<p>
-						<b>Address: </b>{.....}
+						<b>Address: </b>
+						{{ customer.customer_address }}
 					</p>
 				</div>
 				<div class="col-md-6">
 					<p>
-						<b>Time: </b>{.....}
+						<b>Date & Time: </b>
+						{{ sell.pub_date.strftime('%I:%M:%S %p, %d %b, %Y') }}
 					</p>
 					<p>
-						<b>Date: </b>{.....}
+						<b>Billed by: </b>
+						{{ user.username }}
 					</p>
 					<p>
-						<b>Note: </b>{.....}
+						<b>Note: </b>
+						{{ sell.note }}
 					</p>
 				</div>
 			</div>
@@ -59,7 +65,7 @@
 					<div class="table-responsive">
 						<table class="table table-bordered table-striped table-hover">
 							<thead>
-								<th>Serial No</th>
+								<th>SL</th>
 								<th>Product ID</th>
 								<th>Product Name</th>
 								<th>Unit</th>
@@ -69,28 +75,66 @@
 							<tbody>
 								{% for product in products %}
 								<tr>
-									<td>
+									<td style="width: 5%;">
 										{{ product.id }}
 									</td>
-									<td>
+									<td style="width: 15%;">
 										{{ product.productid }}
 									</td>
 									<td>
 										{{ product.productname }}
 									</td>
-									<td>
+									<td style="width: 5%;">
 										{{ product.quantity }}
 									</td>
-									<td>
+									<td style="width: 10%;">
 										{{ product.price }}
 									</td>
-									<td class="totalunit">
-
+									<td style="width: 20%">
+										{{ product.unittotal }}
 									</td>
 								</tr>
 								{% endfor %}
 							</tbody>
 						</table>
+
+						<div class="d-flex justify-content-between">
+							<div>
+								<p>
+									In Words:
+									<span id="countprice">One Two Three</span>
+								</p>
+							</div>
+							<table class="ms-auto">
+								<tr>
+									<th>
+										<p class="m-auto me-2">Sub Total Ammount</p>
+									</th>
+									<td>
+										<input disabled id="subtotal" class="col form-control"
+											value="{{ sell.subtotal }}">
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<p class="m-auto me-2">Discount</p>
+									</th>
+									<td>
+										<input disabled id="discount" class="col form-control"
+											value="{{ sell.discount }}">
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<p class="m-auto me-2">Total Ammount</p>
+									</th>
+									<td>
+										<input disabled id="total" class="col form-control"
+											value="{{ sell.totalprice }}">
+									</td>
+								</tr>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -99,26 +143,25 @@
 </div>
 
 
+<script src="{{ url_for('static', filename='js/numberToWords.min.js') }}"></script>
 <script>
-	const total = (unit, unitprice) => {
-		return unit * unitprice;
+	const numberWithCommas = (x) => {
+		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	}
 
-	const subtotal = () => {
-		let totalunits = document.querySelectorAll('.totalunit');
+	let subtotal = document.querySelector('#subtotal');
+	let discount = document.querySelector('#discount');
+	let total = document.querySelector('#total');
 
-		totalunits.forEach((totalunit) => {
+	let countprice = document.querySelector('#countprice');
+	countprice.innerText = `${numberToWords.toWords(parseFloat(total.value)).toUpperCase()} Taka Only.`;
 
-		})
-	}
+	// ADD COMMAS TO PIRCE
+	subtotal.value = numberWithCommas(subtotal.value);
+	discount.value = numberWithCommas(discount.value);
+	total.value = numberWithCommas(total.value);
 
-	// let allproductprice = document.querySelectorAll(".productprice");
-		// let result = 0;
-		// allproductprice.forEach((number) => {
-		// 	console.log(`we have ${number.innerHTML}`);
-		// 	result += parseFloat(number.innerText);
-		// });
 
-		// return result;
+
 </script>
 {% endblock %}

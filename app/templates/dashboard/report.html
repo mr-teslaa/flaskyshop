@@ -6,26 +6,15 @@
 	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
 		BM Gadget & Tech
 	</a>
-	<button
-		class="navbar-toggler position-absolute d-md-none collapsed"
-		type="button"
-		data-bs-toggle="collapse"
-		data-bs-target="#sidebarMenu"
-		aria-controls="sidebarMenu"
-		aria-expanded="false"
-		aria-label="Toggle navigation"
-	>
+	<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"> </span>
 	</button>
-	<input
-		class="form-control form-control-dark w-100 rounded-0 border-0"
-		type="text"
-		placeholder="Search"
-		aria-label="Search"
-	/>
+	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
+		aria-label="Search" />
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
-			<a class="nav-link px-3" href="#">Sign out </a>
+			<a class="nav-link px-3" href="{{ url_for('dashboard.user_logout') }}">Sign out </a>
 		</div>
 	</div>
 </header>
@@ -37,17 +26,12 @@
 
 		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 			<div
-				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
-			>
+				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h1 class="h2">Report</h1>
 				<div class="btn-toolbar mb-2 mb-md-0">
 					<div class="btn-group me-2">
-						<button
-							type="button"
-							class="btn btn-sm btn-outline-secondary"
-							data-bs-toggle="modal"
-							data-bs-target="#categoryModal"
-						>
+						<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+							data-bs-target="#categoryModal">
 							<i class="bx bx-plus"></i>
 							Search Report
 						</button>
@@ -56,13 +40,8 @@
 			</div>
 
 			<!-- add products modal -->
-			<div
-				class="modal fade"
-				id="categoryModal"
-				tabindex="-1"
-				aria-labelledby="categoryModalLabel"
-				aria-hidden="true"
-			>
+			<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel"
+				aria-hidden="true">
 				<div class="modal-dialog modal-md" role="document">
 					<div class="modal-content rounded-4 shadow">
 						<div class="modal-header border-bottom-0">
@@ -70,24 +49,15 @@
 								Report
 							</h5>
 
-							<button
-								type="button"
-								class="btn-close"
-								data-bs-dismiss="modal"
-								aria-label="Close"
-							></button>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 
 						<div class="modal-body py-0">
 							<div class="row">
 								<div class="col-md-12">
 									<div class="form-floating mb-3">
-										<input
-											type="number"
-											class="form-control"
-											id="CategoryNameID"
-											placeholder="Category Name"
-										/>
+										<input type="number" class="form-control" id="CategoryNameID"
+											placeholder="Category Name" />
 										<label for="CategoryNameID">
 											Category Name
 										</label>
@@ -98,12 +68,8 @@
 							<div class="row">
 								<div class="col-md-12">
 									<div class="form-floating mb-3">
-										<textarea
-											class="form-control"
-											id="floatingCategory"
-											placeholder="Category"
-											style="height: 100px"
-										></textarea>
+										<textarea class="form-control" id="floatingCategory" placeholder="Category"
+											style="height: 100px"></textarea>
 										<label for="floatingCategory">
 											Note
 											<small class="text-muted">
@@ -116,10 +82,7 @@
 						</div>
 
 						<div class="modal-footer">
-							<button
-								type="button"
-								class="btn btn-lg btn-primary w-100 mx-0 mb-2"
-							>
+							<button type="button" class="btn btn-lg btn-primary w-100 mx-0 mb-2">
 								Save
 							</button>
 						</div>
@@ -168,18 +131,13 @@
 							<td>text</td>
 							<td>
 								<small
-									class="d-inline-flex px-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2"
-								>
+									class="d-inline-flex px-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2">
 									Complete
 								</small>
 							</td>
 							<td>text</td>
 							<td>
-								<button
-									type="button"
-									class="btn btn-dark btn-sm"
-									aria-expanded="false"
-								>
+								<button type="button" class="btn btn-dark btn-sm" aria-expanded="false">
 									Details
 								</button>
 							</td>
@@ -192,18 +150,13 @@
 							<td>layout</td>
 							<td>
 								<small
-									class="d-inline-flex px-2 py-1 fw-semibold text-warning bg-warning bg-gradient bg-opacity-10 border border-success border-opacity-10 rounded-2"
-								>
+									class="d-inline-flex px-2 py-1 fw-semibold text-warning bg-warning bg-gradient bg-opacity-10 border border-success border-opacity-10 rounded-2">
 									Pending
 								</small>
 							</td>
 							<td>layout</td>
 							<td>
-								<button
-									type="button"
-									class="btn btn-dark btn-sm"
-									aria-expanded="false"
-								>
+								<button type="button" class="btn btn-dark btn-sm" aria-expanded="false">
 									Details
 								</button>
 							</td>

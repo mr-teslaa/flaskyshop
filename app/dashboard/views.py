@@ -57,7 +57,7 @@ def index():
 #   ===========================
 #   START GET DATA with AJAX
 #   ===========================
-@dashboard.route('/todaysell/price/get/', methods=['POST'])
+@dashboard.route('/api/todaysell/price/get/', methods=['POST'])
 def todaysell_price_get():
     allsell = DailySells.query.all()
     sellprice = 0
@@ -90,7 +90,30 @@ def todaysell_price_get():
     }
     res =  make_response(jsonify(obj), 200)
     return res
-    
+
+
+
+@dashboard.route('/api/newsell/<string:productname>/price/get/', methods=['POST'])
+def product_price_get(productname):
+    getproduct = Products.query.filter_by(name=productname).first()
+    print(getproduct)
+    if getproduct and getproduct.available_status == 'yes':
+        product = {
+            "message": "Product Found",
+            "name": getproduct.name,
+            "price": getproduct.price,
+            "productid": getproduct.productid
+        }
+    else:
+        product = {
+            "message": "Product Not Found",
+            "name": "Not available",
+            "price": "Not available",
+            "productid": "Not available",
+            "error": getproduct
+        }
+    res =  make_response(jsonify(product), 200)
+    return res 
 #   =======================
 #   END GET DATA
 #   =======================
@@ -102,9 +125,12 @@ def todaysell_price_get():
 #   =============================
 #   START DASHBAORD FUNCTIONALITY
 #   =============================
-@dashboard.route('/register/', methods=['GET', 'POST'])
-def register():
+@dashboard.route('/register/createadmin/', methods=['GET', 'POST'])
+def registeradmin():
+    current_ip = request.remote_addr
     if current_user.is_authenticated:
+        current_user.ip = current_ip
+        db.session.commit()
         return redirect(url_for('dashboard.admin_dashboard'))
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -118,10 +144,32 @@ def register():
     return render_template('public/register.html', form=form)
 
 
+@dashboard.route('/register/', methods=['GET', 'POST'])
+def register():
+    current_ip = request.remote_addr
+    if current_user.is_authenticated:
+        current_user.ip = current_ip
+        db.session.commit()
+        return redirect(url_for('dashboard.admin_dashboard'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = Users(phone=form.phone.data, username=form.username.data, email=form.email.data, password=hashed_password, user_role='user')
+        db.session.add(user)
+        db.session.commit()
+        flash('Your account has been created! You are now able to log in ✅', 'success')
+        return redirect(url_for('dashboard.admin_login'))
+
+    return render_template('public/register.html', form=form)
+
+
 #   ADMIN LOGIN
 @dashboard.route('/login/', methods=['GET', 'POST'])
 def admin_login():
+    current_ip = request.remote_addr
     if current_user.is_authenticated:
+        current_user.ip = current_ip
+        db.session.commit()
         return redirect(url_for('dashboard.admin_dashboard'))
     form = LoginForm()
     if form.validate_on_submit():
@@ -191,6 +239,7 @@ def newsell():
     form=AddTodaySellForm()
     newinvoiceID = invoiceID()
     form.customer_name.choices = [(customer.id, customer.customer_name) for customer in Customers.query.all()]
+    form.product_name.choices = [(product.name, product.name) for product in Products.query.all()]
     return render_template('dashboard/newsell.html', title="New Sell", form=form, newinvoiceID=newinvoiceID)
 
 @dashboard.route('/dashboard/newsell/submit/', methods=['POST'])
@@ -201,8 +250,10 @@ def newsell_submit():
     strreq = request.get_json()
     data = json.loads(strreq)
    
+    print("==================")
+    print(data)
+    print("==================")
     
-    # return data
     subtotal = data['cashier']['subtotal']
     discount = data['cashier']['discount']
     totalprice = data['cashier']['total']
@@ -239,28 +290,31 @@ def newsell_submit():
         print(f"Product Name: {product['productid']}")
         print(f"Product Name: {product['price']}")
         print(f"Product Name: {product['quantity']}")
+        print(f"Product Name: {product['unittotal']}")
         print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
         
-        selled_product = SelledProducts(productname=product['productname'], productid=product['productid'], price=product['price'], quantity=product['quantity'], daily_sells_id=dailysell.id)
+        selled_product = SelledProducts(productname=product['productname'], productid=product['productid'], price=product['price'], quantity=product['quantity'],unittotal=product['unittotal'], daily_sells_id=dailysell.id)
         
         db.session.add(selled_product)
-        db.session.commit()
+    db.session.commit()
 
     res =  make_response(jsonify({"message": "Sell Completed Successfully"}), 200)
 
     return res
 
-@dashboard.route('/dashboard/newsell/<string:data>')
+@dashboard.route('/dashboard/newsell/<string:data>/')
 def newsell_display(data):
     return render_template('public/demo.html', data=data)
 
 
-@dashboard.route('/dashboard/sell/<string:invoiceid>')
+@dashboard.route('/dashboard/sell/<string:invoiceid>/')
 @login_required
 def view_sell(invoiceid):
     sell = DailySells.query.filter_by(invoiceid=invoiceid).first()
     products = SelledProducts.query.filter_by(daily_sells_id=sell.id).all()
-    return render_template('/dashboard/sell.html', products=products)
+    customer = Customers.query.filter_by(id=sell.customer_id).first()
+    user = Users.query.filter_by(id=sell.user_id).first()
+    return render_template('/dashboard/sell.html', products=products, sell=sell, customer=customer, user=user)
 
 #   BRAND
 @dashboard.route('/dashboard/brand/', methods=['GET', 'POST'])
@@ -457,7 +511,7 @@ def edit_product(product_id):
 
         #   CHECK IF NEW IMAGE ADDED
         if productimage:
-            if product.image1:
+            if product.image1 != 'demoproduct.jpg':
                 os.unlink(os.path.join(current_app.root_path,'static/productimages/' +  product.image1))
             picture_file = save_product(productimage)
             product.image1 = picture_file
@@ -490,7 +544,7 @@ def edit_product(product_id):
 @login_required
 def delete_product(product_id):
     product = Products.query.get_or_404(product_id)
-    if product.image1:
+    if product.image1 != 'demoproduct.jpg':
         os.unlink(os.path.join(current_app.root_path,'static/productimages/' +  product.image1))
     db.session.delete(product)
     db.session.commit()
