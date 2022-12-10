@@ -21,32 +21,32 @@ from flask_login import login_required
 from flask_login import login_user
 from flask_login import logout_user
 
-from app import db
-from app import bcrypt
+from application import db
+from application import bcrypt
 
-from app.models import Brands
-from app.models import Categories
-from app.models import Products
-from app.models import Users
-from app.models import Customers
-from app.models import DailySells
-from app.models import SelledProducts
+from application.models import Brands
+from application.models import Categories
+from application.models import Products
+from application.models import Users
+from application.models import Customers
+from application.models import DailySells
+from application.models import SelledProducts
 
-from app.dashboard.forms import LoginForm 
-from app.dashboard.forms import RegistrationForm
-from app.dashboard.forms import AddCustomerForm
-from app.dashboard.forms import AddBrandForm
-from app.dashboard.forms import AddCategoryForm 
-from app.dashboard.forms import AddProductForm
-from app.dashboard.forms import EditProductForm
-from app.dashboard.forms import AddTodaySellForm 
-from app.dashboard.forms import UpdateProfileForm 
+from application.dashboard.forms import LoginForm 
+from application.dashboard.forms import RegistrationForm
+from application.dashboard.forms import AddCustomerForm
+from application.dashboard.forms import AddBrandForm
+from application.dashboard.forms import AddCategoryForm 
+from application.dashboard.forms import AddProductForm
+from application.dashboard.forms import EditProductForm
+from application.dashboard.forms import AddTodaySellForm 
+from application.dashboard.forms import UpdateProfileForm 
 
 #   CUSTOM MODULE
-from app.dashboard.utils import save_logo
-from app.dashboard.utils import save_product 
-from app.dashboard.utils import save_profile_picture 
-from app.dashboard.utils import invoiceID
+from application.dashboard.utils import save_logo
+from application.dashboard.utils import save_product 
+from application.dashboard.utils import save_profile_picture 
+from application.dashboard.utils import invoiceID
 
 dashboard = Blueprint('dashboard', __name__)
 

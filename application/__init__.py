@@ -1,14 +1,13 @@
-from operator import imod
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_migrate import upgrade
-from app.config import Config
+from application.config import Config
 
 from flask_admin import Admin
-from app.admin import AccessAdminPanel
+from application.admin import AccessAdminPanel
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -30,15 +29,15 @@ def create_app(config_class=Config):
 
     admin = Admin(app, name='BM Gatget & Technology', template_mode='bootstrap4')
 
-    from app.models import Users
-    from app.models import Customers
-    from app.models import Products
-    from app.models import Brands
-    from app.models import Categories
-    from app.models import SelledProducts
-    from app.models import DailySells
+    from application.models import Users
+    from application.models import Customers
+    from application.models import Products
+    from application.models import Brands
+    from application.models import Categories
+    from application.models import SelledProducts
+    from application.models import DailySells
 
-    from app.dashboard.views import dashboard
+    from application.dashboard.views import dashboard
     app.register_blueprint(dashboard)
 
     admin.add_view(AccessAdminPanel(Users, db.session))

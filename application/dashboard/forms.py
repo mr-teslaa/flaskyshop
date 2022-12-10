@@ -18,7 +18,7 @@ from wtforms.validators import EqualTo
 from wtforms.validators import ValidationError
 
 from flask_login import current_user
-from app.models import Users
+from application.models import Users
 
 class RegistrationForm(FlaskForm):
     username = StringField(

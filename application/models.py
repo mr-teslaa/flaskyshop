@@ -3,10 +3,10 @@ from datetime import datetime
 from flask import current_app
 
 #   importing dataase
-from app import db
+from application import db
 
 #   importing login manager
-from app import login_manager
+from application import login_manager
 from flask_login import UserMixin
 
 
