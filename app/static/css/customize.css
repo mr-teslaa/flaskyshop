@@ -2,6 +2,18 @@ body {
 	font-family: "Poppins", sans-serif;
 }
 
+main {
+	min-height: 80vh;
+}
+
+.bx {
+	font-size: 1.4rem;
+}
+
+.bxs-pencil {
+	font-size: 1rem;
+}
+
 /* .active {
     color: #000;
     font-weight: 600;

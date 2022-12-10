@@ -57,13 +57,17 @@ def index():
 #   ===========================
 #   START GET DATA with AJAX
 #   ===========================
+
+#   GET TODAY SELLS INFO
 @dashboard.route('/api/todaysell/price/get/', methods=['POST'])
 def todaysell_price_get():
     allsell = DailySells.query.all()
     sellprice = 0
     pendingprice = 0
+    totalsellproduct = 0
 
     today = datetime.utcnow().strftime('%d %b, %Y')
+
     
     for sell in allsell:
         dbdate = sell.pub_date.strftime('%d %b, %Y')
@@ -74,6 +78,8 @@ def todaysell_price_get():
             check = False
         
         if check:
+            for i in sell.selled_products:
+                totalsellproduct += 1
             if sell.payment_status == 'cash':
                 sellprice += int(sell.totalprice) 
             
@@ -86,13 +92,15 @@ def todaysell_price_get():
         "message": "GET Sell Successfully",
         "selledtk": sellprice,
         "pendingtk": pendingprice,
-        "todaydate": today
+        "todaydate": today,
+        "totalsellproduct": totalsellproduct
     }
     res =  make_response(jsonify(obj), 200)
     return res
 
 
 
+#   GET PRICE FOR A SINGLE PRODUCT
 @dashboard.route('/api/newsell/<string:productname>/price/get/', methods=['POST'])
 def product_price_get(productname):
     getproduct = Products.query.filter_by(name=productname).first()
@@ -114,6 +122,77 @@ def product_price_get(productname):
         }
     res =  make_response(jsonify(product), 200)
     return res 
+
+
+#   GET TOTAL SELL INFO
+@dashboard.route('/api/allsell/info/get/', methods=['POST'])
+def allsell_info_get():
+    allsell = DailySells.query.all()
+    stock = Products.query.count()
+    sellprice = 0
+    pendingprice = 0
+    totalsellproduct = 0
+    
+    for sell in allsell:
+        for i in sell.selled_products:
+            totalsellproduct += 1
+
+        if sell.payment_status == 'cash':
+            sellprice += int(sell.totalprice) 
+        
+        if sell.payment_status == 'pending':
+            pendingprice += int(sell.totalprice)
+
+    obj = {
+        "message": "GET Sell Successfully",
+        "stock": stock,
+        "selledtk": sellprice,
+        "pendingtk": pendingprice,
+        "totalsellproduct": totalsellproduct
+    }
+    res =  make_response(jsonify(obj), 200)
+    return res
+
+#   GET THIS MONTH SELL INFO
+@dashboard.route('/api/sell/currentmonth/info/get/', methods=['POST'])
+def current_month_sell_info_get():
+    allsell = DailySells.query.all()
+    sellprice = 0
+    pendingprice = 0
+    totalsellproduct = 0
+
+    today = datetime.utcnow().strftime('%d %b, %Y')
+
+    
+    for sell in allsell:
+        dbdate = sell.pub_date.strftime('%d %b, %Y')
+
+        if today == dbdate:
+            check = True
+        else:
+            check = False
+        
+        if check:
+            for i in sell.selled_products:
+                totalsellproduct += 1
+            if sell.payment_status == 'cash':
+                sellprice += int(sell.totalprice) 
+            
+            if sell.payment_status == 'pending':
+                pendingprice += int(sell.totalprice)
+
+    
+
+    obj = {
+        "message": "GET Sell Successfully",
+        "selledtk": sellprice,
+        "pendingtk": pendingprice,
+        "todaydate": today,
+        "totalsellproduct": totalsellproduct
+    }
+    res =  make_response(jsonify(obj), 200)
+    return res
+
 #   =======================
 #   END GET DATA
 #   =======================
@@ -193,11 +272,22 @@ def user_logout():
     return redirect(url_for('dashboard.admin_login'))
 
 
+
+#   USER PROFILE
+@dashboard.route('/dashboard/profile/')
+@login_required
+def user_profile():
+    user = current_user
+    return render_template('dashboard/profile.html', user=user)
+
 #   ADMIN DASHBOARD
 @dashboard.route('/dashboard/')
 @login_required
 def admin_dashboard():
-    return render_template('dashboard/dashboard.html', title='Dashboard')
+    page = request.args.get('page', 1, type=int)
+    sells = DailySells.query.order_by(DailySells.pub_date.desc()).paginate(page=page, per_page=20)
+    # totalselledproduct = SelledProducts.query.all()
+    return render_template('dashboard/dashboard.html', title='Dashboard', sells=sells)
 
 
 #   DAILY SELL
@@ -207,29 +297,7 @@ def todaysell():
     sells = DailySells.query.all()
     totalselledproduct = SelledProducts.query.all()
 
-    form=AddTodaySellForm()
-    form.customer_name.choices = [(customer.id, customer.customer_name) for customer in Customers.query.all()]
-    form.product_name.choices = [(product.id, product.name) for product in Products.query.all()]
-    
-    if form.validate_on_submit():
-        customer = form.customer_name.data
-        product = form.product_name.data
-        quantitydata = form.quantity.data
-        discountdata = form.discount.data
-        pricedata = form.price.data
-        payment = form.payment_status.data
-        tranx_id = form.trnx_id.data
-        notedata = form.note.data
-        userid = current_user.id
-    
-        today_sell = DailySells(customer_id= customer, product_id= product, quantity= quantitydata, discount= discountdata, price= pricedata, payment_status= payment, trnx_id= tranx_id, note= notedata, user_id=userid)
-
-        db.session.add(today_sell)
-        db.session.commit()
-
-        return redirect(url_for('dashboard.todaysell'))
-
-    return render_template('dashboard/todaysell.html', title='Today\'s Sell', form=form, sells=sells, totalselledproduct=totalselledproduct)
+    return render_template('dashboard/todaysell.html', title='Today\'s Sell', sells=sells, totalselledproduct=totalselledproduct)
 
 
 #   NEW SELL

@@ -43,6 +43,10 @@
 						<b>Address: </b>
 						{{ customer.customer_address }}
 					</p>
+					<p>
+						<b>Note: </b>
+						{{ sell.note }}
+					</p>
 				</div>
 				<div class="col-md-6">
 					<p>
@@ -54,8 +58,12 @@
 						{{ user.username }}
 					</p>
 					<p>
-						<b>Note: </b>
-						{{ sell.note }}
+						<b>Payment Status: </b>
+						{{ sell.payment_status }}
+					</p>
+					<p>
+						<b>Transaction No: </b>
+						{{ sell.trnx_id }}
 					</p>
 				</div>
 			</div>
@@ -65,7 +73,7 @@
 					<div class="table-responsive">
 						<table class="table table-bordered table-striped table-hover">
 							<thead>
-								<th>SL</th>
+								<th>#</th>
 								<th>Product ID</th>
 								<th>Product Name</th>
 								<th>Unit</th>
@@ -75,7 +83,7 @@
 							<tbody>
 								{% for product in products %}
 								<tr>
-									<td style="width: 5%;">
+									<td style="width: 5%;" class="counters">
 										{{ product.id }}
 									</td>
 									<td style="width: 15%;">
@@ -160,8 +168,15 @@
 	subtotal.value = numberWithCommas(subtotal.value);
 	discount.value = numberWithCommas(discount.value);
 	total.value = numberWithCommas(total.value);
+</script>
 
-
-
+<script>
+	let counter = 1;
+	const serialnos = document.querySelectorAll('.counters');
+	console.log(serialnos);
+	serialnos.forEach(serial => {
+		serial.innerText = counter;
+		counter++;
+	});
 </script>
 {% endblock %}

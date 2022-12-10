@@ -64,8 +64,8 @@
 
 					<div class="col-lg-3">
 						<div class="border summery__box bg__anakiwa p-2">
-							<h3 class="summery__box-title fs-1 fw-bolder">
-								{{ totalselledproduct|length }}
+							<h3 id="totalsellproduct" class="summery__box-title fs-1 fw-bolder">
+								00
 							</h3>
 							<p class="summery__subtitle">
 								Total Selled Product
@@ -83,7 +83,7 @@
 				<table class="table table-striped table-sm">
 					<thead>
 						<tr>
-							<th scope="col" width="100">Serial No</th>
+							<th scope="col">#</th>
 							<th scope="col">Products</th>
 							<th scope="col">Invoice ID</th>
 							<th scope="col">Total Price</th>
@@ -95,7 +95,7 @@
 					<tbody>
 						{% for sell in sells %}
 						<tr class="align-middle">
-							<td class="text-center counters">{{ sell.id }}</td>
+							<td class="text-center counters" style="width: 5%;">{{ sell.id }}</td>
 							<td>
 								{% for i in sell.selled_products %}
 								{{ i.productname }},
@@ -108,7 +108,7 @@
 									{{ sell.totalprice }}
 								</small>
 							</td>
-							<td>
+							<td style="width: 5%;">
 								{% if sell.payment_status == 'pending' %}
 								<small
 									class="d-inline-flex px-2 py-1 fw-semibold text-warning bg-warning bg-gradient bg-opacity-10 border border-success border-opacity-10 rounded-2">
@@ -168,23 +168,8 @@
 	});
 </script>
 
-<script src="{{ url_for('static', filename='js/dselect.js') }}"></script>
-
-<!-- SEARCHEABLE LIST -->
-<!-- <script>
-	const searcustomer = document.querySelector("#selectcustomer");
-	const selectproduct = document.querySelector("#selectproduct");
-	dselect(searcustomer, {
-		search: true,
-	});
-	dselect(selectproduct, {
-		search: true,
-	});
-</script> -->
-
 <!-- ADD COMMA TO PRICE -->
 <script>
-
 	document.addEventListener('DOMContentLoaded', () => {
 		const numberWithCommas = (x) => {
 			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -194,6 +179,7 @@
 		let allprices = document.querySelectorAll('.totalprices');
 		let totalsellprice = document.querySelector('#totalsellprice');
 		let totalpendingprice = document.querySelector('#totalpendingprice');
+		let totalsellproduct = document.querySelector('#totalsellproduct')
 
 		fetch(`${window.origin}/api/todaysell/price/get/`, {
 			method: "POST",
@@ -209,6 +195,7 @@
 				totalsellprice.innerText = numberWithCommas(data.selledtk);
 				totalpendingprice.innerText = numberWithCommas(data.pendingtk);
 				today.innerText = data.todaydate
+				totalsellproduct.innerText = data.totalsellproduct
 			});
 		});
 

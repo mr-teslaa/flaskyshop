@@ -279,7 +279,7 @@ class AddTodaySellForm(FlaskForm):
         choices = [
             ('cash', 'Cash' ),
             ('card', 'Card' ),
-            ('online(bkash/nagad)', 'Online (bKash/Nagad)' ),
+            ('bkash/nagad', 'bKash/Nagad' ),
             ('pending', 'Pending')
         ],
         validators = [

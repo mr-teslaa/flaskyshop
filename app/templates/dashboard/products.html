@@ -332,7 +332,7 @@
 				<table class="table table-striped table-sm">
 					<thead>
 						<tr>
-							<th scope="col" width="100">SL</th>
+							<th scope="col" width="100">#</th>
 							<th scope="col">Product ID</th>
 							<th scope="col">ProductName</th>
 							<th scope="col">Price <small>(Taka)</small> </th>
@@ -345,7 +345,7 @@
 					<tbody>
 						{% for product in existingproduct %}
 						<tr class="align-middle">
-							<td style="width: 5%;">{{ product.id }}</td>
+							<td style="width: 5%;" class="counters">{{ product.id }}</td>
 							<td>{{ product.productid }}</td>
 							<td style="width: 50%">{{ product.name }}</td>
 							<td>
@@ -548,6 +548,16 @@
 	});
 	dselect(selectcategory, {
 		search: true,
+	});
+</script>
+
+<script>
+	let counter = 1;
+	const serialnos = document.querySelectorAll('.counters');
+	console.log(serialnos);
+	serialnos.forEach(serial => {
+		serial.innerText = counter;
+		counter++;
 	});
 </script>
 

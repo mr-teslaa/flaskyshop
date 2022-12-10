@@ -1,0 +1,81 @@
+{% extends 'layouts/root-dashboard.html' %}
+
+<!-- body -->
+{% block body %}
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
+        BM Gadget & Tech
+    </a>
+    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"> </span>
+    </button>
+    <input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
+        aria-label="Search" />
+    <div class="navbar-nav">
+        <div class="nav-item text-nowrap">
+            <a class="nav-link px-3" href="{{ url_for('dashboard.user_logout') }}">Sign out </a>
+        </div>
+    </div>
+</header>
+<div class="container-fluid">
+    <div class="row">
+        <!-- navigation inject -->
+        {% include 'helpers/_dashboard_side_nav.html' %}
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Profile</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group me-2">
+                        <button type="button" class="btn bg__anakiwa">
+                            Edit Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUMMERY -->
+            <div class="container">
+                <div class="row mb-5">
+                    <div class="col-md-3">
+                        <div class="p-2">
+                            <img src="https://blog.photofeeler.com/wp-content/uploads/2017/12/linkedin-profile-picture.jpg"
+                                class="img-thumbnail" alt="user profile picture">
+                        </div>
+                    </div>
+
+                    <div class="col-md-9">
+                        <div class="table-responsive p-2">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th scope="col" style="width: 30%">Username</th>
+                                    <td scope="col">{{ user.username }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="col" style="width: 30%">Phone</th>
+                                    <td scope="col">{{ user.phone }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="col" style="width: 30%">Email</th>
+                                    <td scope="col">{{ user.email }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="col" style="width: 30%">Join Date</th>
+                                    <td scope="col">{{ user.join_date.strftime('%d %b, %Y') }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="col" style="width: 30%">Last Login IP</th>
+                                    <td scope="col">{{ user.ip }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+{% endblock %}
