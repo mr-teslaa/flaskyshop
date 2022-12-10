@@ -29,9 +29,9 @@
                 <h1 class="h2">Profile</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
                     <div class="btn-group me-2">
-                        <button type="button" class="btn bg__anakiwa">
+                        <a href="{{ url_for('dashboard.user_profile_edit') }}" class="btn bg__anakiwa">
                             Edit Profile
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -41,8 +41,7 @@
                 <div class="row mb-5">
                     <div class="col-md-3">
                         <div class="p-2">
-                            <img src="https://blog.photofeeler.com/wp-content/uploads/2017/12/linkedin-profile-picture.jpg"
-                                class="img-thumbnail" alt="user profile picture">
+                            <img src="{{ profile_picture }}" class="img-thumbnail" alt="user profile picture">
                         </div>
                     </div>
 

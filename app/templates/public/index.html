@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Flaskyshop</title>
+
+		<!-- fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+
+		<!-- boxicons -->
+		<link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet" />
+
+		<!-- bootstrap css -->
+		<link href="./../../static/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+			integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
+			crossorigin="anonymous" />
+		<style>
+			main {
+				height: 76vh;
+			}
+		</style>
+	</head>
+	<body>
+		<main class="container mt-5">
+			<img class="img-thumbnail" height="100" width="100" src="{{ url_for('static', filename='default.jpg') }}"
+				alt="">
+			<h1 class="my-4">BM Gadget and Technology</h1>
+
+			<a href="{{ url_for('dashboard.register') }}" class="btn btn-primary">
+				Register
+			</a>
+			<a href="{{ url_for('dashboard.admin_login') }}" class="btn btn-primary">
+				Login
+			</a>
+		</main>
+
+
+		<!-- FOOTER START -->
+		<footer class="bg-dark bg-gradient py-4 mt-5">
+			<div class="container text-center text-light">
+				&copy; <span id="yearvalue">20xx</span> All right reserved.
+				Developed by
+				<a href="https://hossainfoysal.com" style="color: #00a8ff">Hossain Foysal</a>.
+			</div>
+		</footer>
+		<!-- FOOTER END -->
+
+		<script>
+			const year = new Date();
+			const gettheyear = year.getFullYear();
+			const yearel = document.querySelector("#yearvalue");
+			yearel.innerHTML = gettheyear;
+		</script>
+	</body>
+</html>

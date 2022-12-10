@@ -39,11 +39,13 @@ from app.dashboard.forms import AddBrandForm
 from app.dashboard.forms import AddCategoryForm 
 from app.dashboard.forms import AddProductForm
 from app.dashboard.forms import EditProductForm
-from app.dashboard.forms import AddTodaySellForm
+from app.dashboard.forms import AddTodaySellForm 
+from app.dashboard.forms import UpdateProfileForm 
 
 #   CUSTOM MODULE
 from app.dashboard.utils import save_logo
-from app.dashboard.utils import save_product
+from app.dashboard.utils import save_product 
+from app.dashboard.utils import save_profile_picture 
 from app.dashboard.utils import invoiceID
 
 dashboard = Blueprint('dashboard', __name__)
@@ -51,7 +53,7 @@ dashboard = Blueprint('dashboard', __name__)
 # LANDING PAGE
 @dashboard.route('/')
 def index():
-    return redirect(url_for('dashboard.register'))
+    return render_template('public/index.html')
 
 
 #   ===========================
@@ -131,11 +133,13 @@ def allsell_info_get():
     stock = Products.query.count()
     sellprice = 0
     pendingprice = 0
-    totalsellproduct = 0
+    totalselleproduct = 0
+
+    today = datetime.utcnow().strftime('%d %b, %Y')
     
     for sell in allsell:
         for i in sell.selled_products:
-            totalsellproduct += 1
+            totalselleproduct += 1
 
         if sell.payment_status == 'cash':
             sellprice += int(sell.totalprice) 
@@ -145,10 +149,11 @@ def allsell_info_get():
 
     obj = {
         "message": "GET Sell Successfully",
+        "todaydate": today,
         "stock": stock,
         "selledtk": sellprice,
         "pendingtk": pendingprice,
-        "totalsellproduct": totalsellproduct
+        "totalselledproduct": totalselleproduct,
     }
     res =  make_response(jsonify(obj), 200)
     return res
@@ -162,12 +167,13 @@ def current_month_sell_info_get():
     totalsellproduct = 0
 
     today = datetime.utcnow().strftime('%d %b, %Y')
+    current_month = datetime.utcnow().strftime('%b')
 
     
     for sell in allsell:
-        dbdate = sell.pub_date.strftime('%d %b, %Y')
+        dbmonth = sell.pub_date.strftime('%b')
 
-        if today == dbdate:
+        if current_month == dbmonth:
             check = True
         else:
             check = False
@@ -278,7 +284,33 @@ def user_logout():
 @login_required
 def user_profile():
     user = current_user
-    return render_template('dashboard/profile.html', user=user)
+    profile_picture = url_for('static', filename='profile_picture/' + current_user.profile)
+    return render_template('dashboard/profile.html', user=user, profile_picture=profile_picture)
+
+#   EDIT USER PROFILE
+@dashboard.route('/dashboard/profile/edit/', methods=['GET', 'POST'])
+@login_required
+def user_profile_edit():
+    form = UpdateProfileForm()
+    user = current_user
+
+    if form.validate_on_submit():
+        if form.picture.data:
+            picture_file = save_profile_picture(form.picture.data)
+            current_user.profile = picture_file
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        current_user.phone = form.phone.data
+        db.session.commit()
+        flash('Your account has been updated!', 'success')
+        return redirect(url_for('dashboard.user_profile'))
+    
+    if request.method == 'GET':
+        form.phone.data = current_user.phone
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+
+    return render_template('dashboard/profile_edit.html', user=user, form=form)
 
 #   ADMIN DASHBOARD
 @dashboard.route('/dashboard/')

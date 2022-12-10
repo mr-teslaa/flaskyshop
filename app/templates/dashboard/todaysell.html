@@ -185,7 +185,7 @@
 			method: "POST",
 		}).then((response) => {
 			if (response.status !== 200) {
-				console.log(`Something went wrong! Reload the page. Status: ${response.status}`);
+				alert(`Something went wrong! Reload the page. Status: ${response.status}`);
 				return;
 			}
 
