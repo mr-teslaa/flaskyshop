@@ -219,6 +219,17 @@
 
 
 <script>
+	let error = document.querySelector('.invalid-feedback');
+	let buttonaddproduct = document.querySelector(".btn.btn-sm.btn-outline-secondary")
+	if (error) {
+		alert('Product not saved. Something went wrong! Pleas and try again')
+		document.addEventListener('DOMContentLoaded', () => {
+			buttonaddproduct.click();
+		})
+	}
+</script>
+
+<script>
 	let counter = 1;
 	const serialnos = document.querySelectorAll('.counters');
 	console.log(serialnos);

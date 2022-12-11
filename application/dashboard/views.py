@@ -447,6 +447,9 @@ def edit_brand(brand_id):
     if form.validate_on_submit():
         if form.brand_logo.data:
             brand.name = form.brand_name.data
+            print(f'===== >>> brand logo: {brand.logo} =====')
+            if brand.logo and brand.logo != 'default.jpg':
+                os.unlink(os.path.join(current_app.root_path,'static/brandlogo/' +  brand.logo))
             picture_file = save_logo(form.brand_logo.data)
             # brandlogo = url_for('static', filename='brandlogo/' + picture_file)
             brand.logo = picture_file
@@ -459,7 +462,8 @@ def edit_brand(brand_id):
             db.session.commit()
             flash('Brand details has been updated ✅', 'success')
         return redirect(url_for('dashboard.brand', brand_id=brand.id))
-    elif request.method == 'GET':
+    
+    if request.method == 'GET':
         form.brand_name.data = brand.name
         form.brand_logo.data = brand.logo
         form.brand_note.data = brand.note
@@ -471,7 +475,7 @@ def edit_brand(brand_id):
 @login_required
 def delete_brand(brand_id):
     brand = Brands.query.get_or_404(brand_id)
-    if brand.logo:
+    if brand.logo and brand.logo != 'default.jpg':
         os.unlink(os.path.join(current_app.root_path,'static/brandlogo/' +  brand.logo))
     db.session.delete(brand)
     db.session.commit()

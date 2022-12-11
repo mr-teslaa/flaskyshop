@@ -19,6 +19,7 @@ from wtforms.validators import ValidationError
 
 from flask_login import current_user
 from application.models import Users
+from application.models import Products
 
 class RegistrationForm(FlaskForm):
     username = StringField(
@@ -61,7 +62,8 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Sign Up')
     
     def validate_phone(self, phone):
-        user_phone = Users.query.filter_by(email=phone.data).first()
+        user_phone = Users.query.filter_by(phone=phone.data).first()
+        print(f"User Found: {user_phone}")
         if user_phone:
             raise ValidationError('This Phone is alredy registerd. Please choose a different one.')
 
@@ -222,13 +224,22 @@ class AddProductForm(FlaskForm):
     ) 
 
     product_image = FileField(
-            'Product Image',
-            validators = [
-                FileAllowed(['jpg', 'png', 'webp', 'jpeg'])
-            ]
+        'Product Image',
+        validators = [
+            FileAllowed(['jpg', 'png', 'webp', 'jpeg'])
+        ]
     )
 
     submit = SubmitField('Save')
+
+    def validate_product_id(self, product_id):
+        print("=============== start finding product ============")
+        if product_id.data:
+            print(f"Product Found: {product_id.data}")
+            product = Products.query.filter_by(productid=product_id.data).first()
+            print(f"Product Found: {product}")
+            if product:
+                raise ValidationError('Product already added.')
 
 
 # EDIT PRODUCT FORM
@@ -278,6 +289,12 @@ class EditProductForm(FlaskForm):
     )
 
     submit = SubmitField('Save')
+
+    def validate_product_id(self, product_id):
+        if product_id.data:
+            product = Products.query.filter_by(productid=product_id.data).first()
+            if product:
+                raise ValidationError('Product already added.')
 
 
 # ADD CUSTOMER FORM

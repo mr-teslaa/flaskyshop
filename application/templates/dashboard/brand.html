@@ -221,14 +221,18 @@
 									<div class="modal-dialog">
 										<div class="modal-content">
 											<div class="modal-header">
-												<h5 id="exampleModalLabel">Are you sure, want to delete this BRAND
-													{{ brand.id }}?
+												<h5 id="exampleModalLabel">Are you sure, want to delete this BRAND -
+													{{ brand.name }}?
 												</h5>
 												<button type="button" class="btn-close" data-bs-dismiss="modal"
 													aria-label="Close"></button>
 											</div>
 											<div class="modal-footer">
-												<button class="btn btn-sm m-1 btn-dark">Cancel</button>
+												<button class="btn btn-sm m-1 btn-dark" data-bs-dismiss="modal"
+													aria-label="Close">
+													Cancel
+												</button>
+
 												<form
 													action="{{ url_for('dashboard.delete_brand', brand_id=brand.id) }}"
 													method="POST">
