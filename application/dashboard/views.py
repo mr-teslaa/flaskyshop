@@ -103,9 +103,9 @@ def todaysell_price_get():
 
 
 #   GET PRICE FOR A SINGLE PRODUCT
-@dashboard.route('/api/newsell/<string:productname>/price/get/', methods=['POST'])
-def product_price_get(productname):
-    getproduct = Products.query.filter_by(name=productname).first()
+@dashboard.route('/api/newsell/<string:productid>/price/get/', methods=['POST'])
+def product_price_get(productid):
+    getproduct = Products.query.filter_by(productid=productid).first()
     print(getproduct)
     if getproduct and getproduct.available_status == 'yes':
         product = {
@@ -339,7 +339,7 @@ def newsell():
     form=AddTodaySellForm()
     newinvoiceID = invoiceID()
     form.customer_name.choices = [(customer.id, customer.customer_name) for customer in Customers.query.all()]
-    form.product_name.choices = [(product.name, product.name) for product in Products.query.all()]
+    form.product_name.choices = [(product.productid, product.name) for product in Products.query.all()]
     return render_template('dashboard/newsell.html', title="New Sell", form=form, newinvoiceID=newinvoiceID)
 
 @dashboard.route('/dashboard/newsell/submit/', methods=['POST'])

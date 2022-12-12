@@ -221,24 +221,32 @@ searchcontainer.addEventListener("focusout", (e) => {
     let productprice = document.querySelector("#productprice");
 
     let productname = e.target.innerText.trim();
+    let getid = document.querySelectorAll("#selectproduct option");
+    getid.forEach((i) => {
+        const selectitem = i.innerText;
 
-    fetch(`${window.origin}/api/newsell/${productname}/price/get/`, {
-        method: "POST",
-    }).then((response) => {
-        if (response.status !== 200) {
-            console.log(
-                `Something went wrong! Reload the page. Status: ${response.status}`
-            );
-            return;
+        if (productname == selectitem) {
+            let getProductID = i.value;
+
+            fetch(`${window.origin}/api/newsell/${getProductID}/price/get/`, {
+                method: "POST",
+            }).then((response) => {
+                if (response.status !== 200) {
+                    console.log(
+                        `Something went wrong! Reload the page. Status: ${response.status}`
+                    );
+                    return;
+                }
+
+                response.json().then((data) => {
+                    console.log(data);
+                    localStorage.setItem("currentproduct", productname);
+
+                    productid.value = data.productid;
+                    productprice.value = data.price;
+                });
+            });
         }
-
-        response.json().then((data) => {
-            console.log(data);
-            localStorage.setItem("currentproduct", productname);
-
-            productid.value = data.productid;
-            productprice.value = data.price;
-        });
     });
 });
 
