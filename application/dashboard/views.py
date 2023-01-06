@@ -651,7 +651,7 @@ def products():
             picture_file = save_product(productimage)
             # imagefile = url_for('static', filename='productimages/' + picture_file)
             product = Products(name=productname, productid=productID, price=productprice, 
-                                productBuyingprice=productBuyingprice, 
+                                buying_price=productBuyingprice, 
                                 stock=productquantity, description= productdescription, brand_id=productbrand, 
                                 category_id= productcategory, image1=picture_file, available_status=productStatus)  
             # STORING IN DB
@@ -663,7 +663,7 @@ def products():
         #                     stock=productquantity, description= productdescription,  brand= productbrand, 
         #                     category= productcategory, available_status=productStatus)
         product = Products(name=productname, productid=productID, price=productprice,
-                            productBuyingprice=productBuyingprice,  
+                            buying_price=productBuyingprice,  
                             stock=productquantity, description=productdescription, brand_id=productbrand, 
                             category_id=productcategory, available_status=productStatus)  
         
