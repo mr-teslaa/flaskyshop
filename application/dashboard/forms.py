@@ -132,6 +132,18 @@ class UpdateProfileForm(FlaskForm):
         ]
     )
 
+    current_password = PasswordField(
+        'Current Password'
+    )
+
+    new_password = PasswordField(
+        'New Password'
+    )
+
+    confirm_password = PasswordField(
+        'Confirm New Password'
+    )
+
     submit = SubmitField('Save')
 
     def validate_username(self, username):
@@ -191,7 +203,12 @@ class AddProductForm(FlaskForm):
     )
 
     product_price = IntegerField(
-        'Product Price',
+        'Selling Price',
+        validators=[DataRequired()]
+    )
+
+    product_buying_price = StringField(
+        'Buying Price', 
         validators=[DataRequired()]
     )
 
@@ -245,19 +262,28 @@ class AddProductForm(FlaskForm):
 # EDIT PRODUCT FORM
 class EditProductForm(FlaskForm):
     product_name = StringField(
-        'Product Name'
+        'Product Name',
+        validators=[DataRequired()] 
     )
 
     product_id = StringField(
-        'Product ID'
+        'Product ID',
+        validators=[DataRequired()] 
     )
 
     product_price = IntegerField(
-        'Product Price'
+        'Product Price',
+        validators=[DataRequired()] 
+    )
+
+    product_buying_price = StringField(
+        'Buying Price',
+        validators=[DataRequired()] 
     )
 
     product_quantity = IntegerField(
-        'Product Quantity'
+        'Product Quantity',
+        validators=[DataRequired()] 
     )
 
     product_description = TextAreaField('Product Description')
@@ -293,7 +319,7 @@ class EditProductForm(FlaskForm):
     def validate_product_id(self, product_id):
         if product_id.data:
             product = Products.query.filter_by(productid=product_id.data).first()
-            if product:
+            if str(product.productid) != str(product_id.data):
                 raise ValidationError('Product already added.')
 
 

@@ -45,8 +45,17 @@
 			<div class="container">
 
 				<!-- ALL SELL CARD -->
-				<div class="row gap-2 mb-5">
-					<div class="col">
+				<div class="row mb-3">
+					<div class="col-md-4">
+						<div class="border summery__box bg-success bg-gradient text-white p-2">
+							<h3 id="currentmonthprofit" class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">This month Profit</p>
+						</div>
+					</div>
+
+					<div class="col-md-4">
 						<div class="border summery__box bg__anakiwa p-2">
 							<h3 id="stock" class="summery__box-title fs-1 fw-bolder">
 								00
@@ -57,7 +66,7 @@
 						</div>
 					</div>
 
-					<div class="col">
+					<div class="col-md-4">
 						<div class="border summery__box bg__anakiwa p-2">
 							<h3 id="totalsellproduct" class="summery__box-title fs-1 fw-bolder">
 								00
@@ -68,16 +77,28 @@
 						</div>
 					</div>
 
-					<div class="col">
+				</div>
+
+				<div class="row mb-3">
+					<div class="col-md-4">
+						<div class="border summery__box bg-success bg-gradient text-white p-2">
+							<h3 id="totalprofit" class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">Total Profit</p>
+						</div>
+					</div>
+
+					<div class="col-md-4">
 						<div class="border summery__box bg__mintgreen p-2">
-							<h3 id='totalearning' class="summery__box-title fs-1 fw-bolder">
+							<h3 id="totalearning" class="summery__box-title fs-1 fw-bolder">
 								000
 							</h3>
 							<p class="summery__subtitle">Total TK Earning</p>
 						</div>
 					</div>
 
-					<div class="col">
+					<div class="col-md-4">
 						<div class="border summery__box bg__goldenpoppy p-2">
 							<h3 id="totalpendingprice" class="summery__box-title fs-1 fw-bolder">
 								000
@@ -242,11 +263,13 @@
 		let totalselleproduct = document.querySelector('#totalsellproduct');
 		let totalearning = document.querySelector('#totalearning');
 		let totalpendingprice = document.querySelector('#totalpendingprice');
+		let totalprofit = document.querySelector('#totalprofit');
 
 		// CURRENT MONTH EARNING CONTAINER
 		let currentMonthEarning = document.querySelector('#currentMonthEarning');
 		let currentMonthPending = document.querySelector('#currentMonthPending');
 		let currentMonthSelledProduct = document.querySelector('#currentMonthSelledProduct');
+		let currentMonthProfit = document.querySelector('#currentmonthprofit');
 
 		// GET ALL SELL INFO
 		fetch(`${window.origin}/api/allsell/info/get/`, {
@@ -262,6 +285,7 @@
 				stock.innerText = numberWithCommas(data.stock);
 				totalselleproduct.innerText = data.totalselledproduct;
 				totalearning.innerText = numberWithCommas(data.selledtk);
+				totalprofit.innerText = numberWithCommas(data.totalprofit);
 				totalpendingprice.innerText = numberWithCommas(data.pendingtk);
 				today.innerText = data.todaydate
 			});
@@ -281,6 +305,7 @@
 				currentMonthEarning.innerText = numberWithCommas(data.selledtk);
 				currentMonthPending.innerText = numberWithCommas(data.pendingtk);
 				currentMonthSelledProduct.innerText = numberWithCommas(data.totalsellproduct);
+				currentMonthProfit.innerText = numberWithCommas(data.profit);
 			});
 		});
 

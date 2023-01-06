@@ -34,11 +34,6 @@ main {
 	padding: 15px;
 }
 
-.form-profile-update {
-	max-width: 550px;
-	padding: 15px
-}
-
 .nav__icon {
 	display: flex;
 	align-items: center;

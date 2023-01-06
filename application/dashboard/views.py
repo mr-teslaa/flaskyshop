@@ -14,6 +14,8 @@ from flask import make_response
 from flask import current_app
 
 from datetime import datetime
+from sqlalchemy import func
+from sqlalchemy import extract
 
 #   importing module from flask login
 from flask_login import current_user
@@ -106,21 +108,26 @@ def todaysell_price_get():
 @dashboard.route('/api/newsell/<string:productname>/price/get/', methods=['POST'])
 def product_price_get(productname):
     getproduct = Products.query.filter_by(name=productname).first()
-    print(getproduct)
-    if getproduct and getproduct.available_status == 'yes':
+    
+    if getproduct.stock < 1:
+        getproduct.available_status = 'no'
+        db.session.commit()
+
+    if getproduct.available_status == 'yes':
         product = {
             "message": "Product Found",
             "name": getproduct.name,
             "price": getproduct.price,
-            "productid": getproduct.productid
+            "productid": getproduct.productid,
+            "stock": getproduct.stock
         }
     else:
         product = {
-            "message": "Product Not Found",
-            "name": "Not available",
-            "price": "Not available",
-            "productid": "Not available",
-            "error": getproduct
+            "message": "Out of stock product",
+            "name": getproduct.name,
+            "price": "Out of stock",
+            "productid": "Out of stock",
+            "stock": getproduct.stock
         }
     res =  make_response(jsonify(product), 200)
     return res 
@@ -130,17 +137,19 @@ def product_price_get(productname):
 @dashboard.route('/api/allsell/info/get/', methods=['POST'])
 def allsell_info_get():
     allsell = DailySells.query.all()
-    stock = Products.query.count()
-    sellprice = 0
-    pendingprice = 0
-    totalselleproduct = 0
+    stock = Products.query.with_entities(func.sum(Products.stock)).scalar()
+    sellprice, pendingprice = 0, 0
+    totalselleproduct = SelledProducts.query.with_entities(func.sum(SelledProducts.quantity)).scalar()
+
+    # TOTAL PROFIT
+    selled_products = SelledProducts.query.all()
+    total_profit = 0
+    for product in selled_products:
+        total_profit += product.calculate_profit()
 
     today = datetime.utcnow().strftime('%d %b, %Y')
-    
-    for sell in allsell:
-        for i in sell.selled_products:
-            totalselleproduct += 1
 
+    for sell in allsell:
         if sell.payment_status == 'cash':
             sellprice += int(sell.totalprice) 
         
@@ -154,50 +163,91 @@ def allsell_info_get():
         "selledtk": sellprice,
         "pendingtk": pendingprice,
         "totalselledproduct": totalselleproduct,
+        "totalprofit": total_profit
     }
     res =  make_response(jsonify(obj), 200)
     return res
+
+
 
 #   GET THIS MONTH SELL INFO
 @dashboard.route('/api/sell/currentmonth/info/get/', methods=['POST'])
 def current_month_sell_info_get():
-    allsell = DailySells.query.all()
-    sellprice = 0
-    pendingprice = 0
-    totalsellproduct = 0
+    current_month = datetime.utcnow().strftime("%m")
+
+    # TOTAL SELED PRODUCT
+    total_selled_products = SelledProducts.query.with_entities(func.sum(SelledProducts.quantity)).join(DailySells).filter(extract('month', DailySells.pub_date) == current_month).scalar()
+
+    # TOTAL PROFIT
+    selled_products = SelledProducts.query.join(DailySells).filter(extract('month', DailySells.pub_date) == current_month).all()
+    total_profit = 0
+    for product in selled_products:
+        total_profit += product.calculate_profit()
 
     today = datetime.utcnow().strftime('%d %b, %Y')
-    current_month = datetime.utcnow().strftime('%b')
 
-    
-    for sell in allsell:
-        dbmonth = sell.pub_date.strftime('%b')
-
-        if current_month == dbmonth:
-            check = True
-        else:
-            check = False
-        
-        if check:
-            for i in sell.selled_products:
-                totalsellproduct += 1
+    # Get the total sell price and pending price for the current month
+    sell_price, pending_price = 0, 0
+    for sell in DailySells.query.all():
+        sell_month = sell.pub_date.strftime("%m")
+        if sell_month == current_month:
             if sell.payment_status == 'cash':
-                sellprice += int(sell.totalprice) 
-            
-            if sell.payment_status == 'pending':
-                pendingprice += int(sell.totalprice)
-
-    
+                sell_price += int(sell.totalprice)
+            elif sell.payment_status == 'pending':
+                pending_price += int(sell.totalprice)
 
     obj = {
         "message": "GET Sell Successfully",
-        "selledtk": sellprice,
-        "pendingtk": pendingprice,
+        "selledtk": sell_price,
+        "pendingtk": pending_price,
         "todaydate": today,
-        "totalsellproduct": totalsellproduct
+        "totalsellproduct": total_selled_products,
+        "profit": total_profit
     }
-    res =  make_response(jsonify(obj), 200)
-    return res
+    return make_response(jsonify(obj), 200)
+
+
+
+
+# #   GET THIS MONTH SELL INFO
+# @dashboard.route('/api/sell/currentmonth/info/get/', methods=['POST'])
+# def current_month_sell_info_get():
+#     allsell = DailySells.query.all()
+#     sellprice = 0
+#     pendingprice = 0
+#     current_month = datetime.datetime.now().strftime("%m")
+#     total_selled_products = SelledProducts.query.with_entities(func.sum(SelledProducts.quantity)).join(DailySells).filter(extract('month', DailySells.pub_date) == current_month).scalar()
+
+#     today = datetime.utcnow().strftime('%d %b, %Y')
+#     current_month = datetime.utcnow().strftime('%b')
+
+    
+#     for sell in allsell:
+#         dbmonth = sell.pub_date.strftime('%b')
+
+#         if current_month == dbmonth:
+#             check = True
+#         else:
+#             check = False
+        
+#         if check:
+#             if sell.payment_status == 'cash':
+#                 sellprice += int(sell.totalprice) 
+            
+#             if sell.payment_status == 'pending':
+#                 pendingprice += int(sell.totalprice)
+
+    
+
+#     obj = {
+#         "message": "GET Sell Successfully",
+#         "selledtk": sellprice,
+#         "pendingtk": pendingprice,
+#         "todaydate": today,
+#         "totalsellproduct": total_selled_products
+#     }
+#     res =  make_response(jsonify(obj), 200)
+#     return res
 
 #   =======================
 #   END GET DATA
@@ -288,16 +338,41 @@ def user_profile():
     return render_template('dashboard/profile.html', user=user, profile_picture=profile_picture)
 
 #   EDIT USER PROFILE
-@dashboard.route('/dashboard/profile/edit/', methods=['GET', 'POST'])
+@dashboard.route('/dashboard/profile/update/', methods=['GET', 'POST'])
 @login_required
 def user_profile_edit():
     form = UpdateProfileForm()
-    user = current_user
 
+    # Check if form is submitted and valid
     if form.validate_on_submit():
+
+        # Get form data
+        new_password = form.new_password.data
+        confirm_new_password = form.confirm_password.data
+        current_password = form.current_password.data
+
+        # Check if current password is correct
+        current_password_hash = bcrypt.check_password_hash(current_user.password, current_password)
+        if current_password_hash and new_password==confirm_new_password:
+
+            # Hash and set new password
+            hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+            current_user.password = hashed_password
+            db.session.commit()
+            flash('Your password has been updated!', 'success')
+            return redirect(url_for('users.user_dashboard'))
+
+        elif current_password_hash and new_password != confirm_new_password:
+            flash('Password Not Matched', 'danger')
+            return redirect(url_for('users.user_resetpassword'))
+
+        # Check if profile picture is being updated
         if form.picture.data:
+            # Save new profile picture
             picture_file = save_profile_picture(form.picture.data)
             current_user.profile = picture_file
+
+        # Update user info
         current_user.username = form.username.data
         current_user.email = form.email.data
         current_user.phone = form.phone.data
@@ -310,7 +385,7 @@ def user_profile_edit():
         form.username.data = current_user.username
         form.email.data = current_user.email
 
-    return render_template('dashboard/profile_edit.html', user=user, form=form)
+    return render_template('dashboard/profile_edit.html', form=form)
 
 #   ADMIN DASHBOARD
 @dashboard.route('/dashboard/')
@@ -326,10 +401,10 @@ def admin_dashboard():
 @dashboard.route('/dashboard/todaysell/', methods=['GET', 'POST'])
 @login_required
 def todaysell():
-    sells = DailySells.query.all()
-    totalselledproduct = SelledProducts.query.all()
-
-    return render_template('dashboard/todaysell.html', title='Today\'s Sell', sells=sells, totalselledproduct=totalselledproduct)
+    today = datetime.utcnow().strftime('%d %b, %Y')
+    page = request.args.get('page', 1, type=int)
+    sells = DailySells.query.order_by(DailySells.pub_date.desc()).paginate(page=page, per_page=20)
+    return render_template('dashboard/todaysell.html', title='Today\'s Sell', sells=sells, today=today)
 
 
 #   NEW SELL
@@ -340,6 +415,7 @@ def newsell():
     newinvoiceID = invoiceID()
     form.customer_name.choices = [(customer.id, customer.customer_name) for customer in Customers.query.all()]
     form.product_name.choices = [(product.name, product.name) for product in Products.query.all()]
+
     return render_template('dashboard/newsell.html', title="New Sell", form=form, newinvoiceID=newinvoiceID)
 
 @dashboard.route('/dashboard/newsell/submit/', methods=['POST'])
@@ -387,12 +463,18 @@ def newsell_submit():
     products = data['products']
     for product in products:
         print(f"Product Name: {product['productname']}")
-        print(f"Product Name: {product['productid']}")
-        print(f"Product Name: {product['price']}")
-        print(f"Product Name: {product['quantity']}")
-        print(f"Product Name: {product['unittotal']}")
+        print(f"Product id: {product['productid']}")
+        print(f"Product price: {product['price']}")
+        # print(f"Product buying price: {product['buying_price']}")
+        print(f"Product quantity: {product['quantity']}")
+        print(f"Product unit total: {product['unittotal']}")
         print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-        
+        current_product = product['productid']
+        current_product_quantity = product['quantity']
+        # fetch all products for update the product quantity
+        get_product = Products.query.filter_by(productid=current_product).first()
+        update_product_stock = int(get_product.stock) - int(current_product_quantity)
+        get_product.stock = update_product_stock
         selled_product = SelledProducts(productname=product['productname'], productid=product['productid'], price=product['price'], quantity=product['quantity'],unittotal=product['unittotal'], daily_sells_id=dailysell.id)
         
         db.session.add(selled_product)
@@ -545,10 +627,14 @@ def products():
     #   fetch existing product
     existingproduct = Products.query.all()
 
+    # count total stock
+    total_products = Products.query.with_entities(func.sum(Products.stock)).scalar()
+
     if form.validate_on_submit():
         productname = form.product_name.data
         productID = form.product_id.data
         productprice = form.product_price.data
+        productBuyingprice = form.product_buying_price.data
         productquantity = form.product_quantity.data
         # if existingproduct:
         #     productquantity = form.product_quantity.data + existingproduct.stock
@@ -565,6 +651,7 @@ def products():
             picture_file = save_product(productimage)
             # imagefile = url_for('static', filename='productimages/' + picture_file)
             product = Products(name=productname, productid=productID, price=productprice, 
+                                productBuyingprice=productBuyingprice, 
                                 stock=productquantity, description= productdescription, brand_id=productbrand, 
                                 category_id= productcategory, image1=picture_file, available_status=productStatus)  
             # STORING IN DB
@@ -575,7 +662,8 @@ def products():
         # product = Products(name=productname, productid=productID, price=productprice, 
         #                     stock=productquantity, description= productdescription,  brand= productbrand, 
         #                     category= productcategory, available_status=productStatus)
-        product = Products(name=productname, productid=productID, price=productprice, 
+        product = Products(name=productname, productid=productID, price=productprice,
+                            productBuyingprice=productBuyingprice,  
                             stock=productquantity, description=productdescription, brand_id=productbrand, 
                             category_id=productcategory, available_status=productStatus)  
         
@@ -585,7 +673,7 @@ def products():
 
         return redirect(url_for('dashboard.products'))
 
-    return render_template('dashboard/products.html', title='Products', form=form, existingproduct=existingproduct, brands=brands, categories=categories, products=products)
+    return render_template('dashboard/products.html', title='Products', form=form, existingproduct=existingproduct, brands=brands, categories=categories, products=products, total_products=total_products)
 
 
 #   EDIT PRODUCTS
@@ -602,6 +690,7 @@ def edit_product(product_id):
         productname = form.product_name.data
         productID = form.product_id.data
         productprice = form.product_price.data
+        productBuyingprice = form.product_buying_price.data
         productquantity = form.product_quantity.data
         productdescription = form.product_description.data
         productStatus = form.product_available.data
@@ -623,6 +712,7 @@ def edit_product(product_id):
         product.name = productname
         product.productid = productID
         product.price = productprice
+        product.buying_price = productBuyingprice
         product.stock = productquantity
         product.description = productdescription
         product.brand_id = productbrand
@@ -637,6 +727,7 @@ def edit_product(product_id):
         form.product_name.data = product.name
         form.product_id.data = product.productid
         form.product_price.data = product.price 
+        form.product_buying_price.data = product.buying_price
         form.product_quantity.data = product.stock 
         form.product_description.data = product.description 
         form.product_available.data = product.available_status

@@ -56,6 +56,7 @@ class Products(db.Model):
     name = db.Column(db.String(), nullable=False)
     productid = db.Column(db.String(), nullable=False)
     price = db.Column(db.String(), nullable=False)
+    buying_price = db.Column(db.String(), default='00')
     stock = db.Column(db.Integer, nullable=False, default='00')
     colors = db.Column(db.Text())
     description = db.Column(db.Text())
@@ -79,6 +80,15 @@ class SelledProducts(db.Model):
     quantity = db.Column(db.String())
     unittotal = db.Column(db.String())
     daily_sells_id = db.Column(db.Integer, db.ForeignKey('daily_sells.id'))
+
+    def calculate_profit(self):
+        selling_price = int(self.price)
+        product = Products.query.filter_by(productid=self.productid).first()
+        if product:
+            buying_price = int(product.buying_price)
+        else:
+            buying_price = 0
+        return selling_price - buying_price
     
 
 class DailySells(db.Model):

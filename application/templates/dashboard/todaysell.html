@@ -93,7 +93,10 @@
 						</tr>
 					</thead>
 					<tbody>
-						{% for sell in sells %}
+						{% for sell in sells.items %}
+
+						<!-- START OF checking if the sell item is selled today -->
+						{% if today == sell.pub_date.strftime('%d %b, %Y') %}
 						<tr class="align-middle">
 							<td class="text-center counters" style="width: 5%;">{{ sell.id }}</td>
 							<td>
@@ -133,6 +136,8 @@
 								</a>
 							</td>
 						</tr>
+						{% endif %}
+						<!-- END OF checking if the sell item is selled today -->
 						{% endfor %}
 					</tbody>
 				</table>
@@ -147,6 +152,20 @@
 				</button>
 			</h5>
 			{% endif %}
+
+			{% for page_num in sells.iter_pages( left_edge=2, right_edge=2, left_current=1, right_current=1 ) %}
+			{% if page_num %}
+			{% if sells.page == page_num %}
+			<a class="btn btn-sm btn-primary mb-4" href="{{ url_for('dashboard.todaysell', page=page_num) }}">
+				{{ page_num }} </a>
+			{% else %}
+			<a class="btn btn-sm btn-outline-primary mb-4" href="{{ url_for('dashboard.todaysell', page=page_num) }}">
+				{{ page_num }} </a>
+			{% endif %}
+			{% else %}
+			<a class="btn btn-sm mb-4" href="#"> .... </a>
+			{% endif %}
+			{% endfor %}
 		</main>
 	</div>
 </div>

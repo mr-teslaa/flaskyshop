@@ -1,4 +1,6 @@
-{% extends 'layouts/root-dashboard.html' %} {% block body %}
+{% extends 'layouts/root-dashboard.html' %}
+
+{% block body %}
 <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
 	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
 		BM Gadget & Tech
@@ -106,7 +108,7 @@
 								</div>
 
 								<div class="row">
-									<div class="col-md-6">
+									<div class="col-md-4">
 										<div class="form-floating mb-3">
 											{% if form.product_price.errors %}
 											{{ form.product_price(
@@ -129,7 +131,30 @@
 										</div>
 									</div>
 
-									<div class="col-md-6">
+									<div class="col-md-4">
+										<div class="form-floating mb-3">
+											{% if form.product_buying_price.errors %}
+											{{ form.product_buying_price(
+												class="form-control is-invalid",
+												placeholder="Product Price"
+											) }}
+											<div class="invalid-feedback">
+												{% for error in form.product_buying_price.errors %}
+												<span>{{ error }}</span>
+												{% endfor %}
+											</div>
+											{% else %}
+											{{ form.product_buying_price(
+												class="form-control",
+												placeholder="Product Price"
+											) }}
+											{% endif %}
+
+											{{ form.product_buying_price.label(class="form-control-label") }}
+										</div>
+									</div>
+
+									<div class="col-md-4">
 										<div class="form-floating mb-3">
 											{% if form.product_quantity.errors %}
 											{{ form.product_quantity(
@@ -298,7 +323,7 @@
 					<div class="col-lg-3">
 						<div class="border summery__box bg__papayawhip p-2">
 							<h3 class="summery__box-title fs-1 fw-bolder">
-								{{ products|length }}
+								{{ total_products }}
 							</h3>
 							<p class="summery__subtitle">Total Product</p>
 						</div>
@@ -360,21 +385,21 @@
 									class="img-fluid avatar__logo" />
 							</td>
 							<td>
-								<a class="btn btn-sm btn-dark" data-bs-toggle="modal"
-									href="#deleteModalToggle{{product.id}}" role="button">
+								<a class="btn btn-sm btn-dark" data-bs-toggle="modal" href="#detailsModal{{product.id}}"
+									role="button">
 									Details
 								</a>
 
 								<!-- NEW DOUBLE MODAL DELETE PRODUCT -->
-								<div class="modal fade modal-lg" id="deleteModalToggle{{product.id}}" aria-hidden="true"
-									aria-labelledby="deleteModalToggle{{product.id}}Label" tabindex="-1">
+								<div class="modal fade modal-lg" id="detailsModal{{product.id}}" aria-hidden="true"
+									aria-labelledby="detailsModal{{product.id}}Label" tabindex="-1">
 									<div class="modal-dialog modal-dialog-centered">
 
 										<div class="modal-content">
 
 											<div class="modal-header">
-												<h1 class="modal-title fs-5" id="deleteModalToggle{{product.id}}Label">
-													{{ product.name }} Details
+												<h1 class="modal-title fs-5" id="detailsModal{{product.id}}Label">
+													"{{ product.name }}" - Details
 												</h1>
 												<button type="button" class="btn-close" data-bs-dismiss="modal"
 													aria-label="Close"></button>
@@ -385,7 +410,7 @@
 													<table class="table table-bordered table-striped table-hover">
 														<tbody>
 															<tr>
-																<th style="width: 20%;">
+																<th style="width: 25%;">
 																	Product ID
 																</th>
 																<td>
@@ -407,6 +432,12 @@
 															<tr>
 																<th>Category</th>
 																<td>{{ product.category.name }}</td>
+															</tr>
+															<tr>
+																<th>Buying Price <small>(Taka)</small></th>
+																<td>
+																	{{ product.buying_price }} Taka
+																</td>
 															</tr>
 															<tr>
 																<th>Price <small>(Taka)</small></th>

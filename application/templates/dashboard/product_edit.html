@@ -84,7 +84,7 @@
 						</div>
 
 						<div class="row">
-							<div class="col-md-6">
+							<div class="col-md-4">
 								<div class="form-floating mb-3">
 									{% if form.product_price.errors %}
 									{{ form.product_price(
@@ -107,7 +107,30 @@
 								</div>
 							</div>
 
-							<div class="col-md-6">
+							<div class="col-md-4">
+								<div class="form-floating mb-3">
+									{% if form.product_buying_price.errors %}
+									{{ form.product_buying_price(
+										class="form-control is-invalid",
+										placeholder="Product Price"
+									) }}
+									<div class="invalid-feedback">
+										{% for error in form.product_buying_price.errors %}
+										<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+									{% else %}
+									{{ form.product_buying_price(
+										class="form-control",
+										placeholder="Product Price"
+									) }}
+									{% endif %}
+
+									{{ form.product_buying_price.label(class="form-control-label") }}
+								</div>
+							</div>
+
+							<div class="col-md-4">
 								<div class="form-floating mb-3">
 									{% if form.product_quantity.errors %}
 									{{ form.product_quantity(

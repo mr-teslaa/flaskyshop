@@ -88,7 +88,7 @@ class UI {
         if (target.hasAttribute("href")) {
             target.parentElement.parentElement.remove();
             Store.removeProduct(
-                target.parentElement.previousElementSibling.previousElementSibling.previousElementSibling.textContent.trim()
+                target.parentElement.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.textContent.trim()
             );
             payment();
             // UI.showalert("Book Deleted ✅", "success")
@@ -221,6 +221,7 @@ searchcontainer.addEventListener("focusout", (e) => {
     let productprice = document.querySelector("#productprice");
 
     let productname = e.target.innerText.trim();
+    console.log(`Product name is >> ${productname}`);
 
     fetch(`${window.origin}/api/newsell/${productname}/price/get/`, {
         method: "POST",
@@ -233,10 +234,16 @@ searchcontainer.addEventListener("focusout", (e) => {
         }
 
         response.json().then((data) => {
-            console.log(data);
+            let displaystock = document.querySelector("#displaystock");
+            displaystock.innerText = data.stock;
             localStorage.setItem("currentproduct", productname);
-
             productid.value = data.productid;
+            if (productid.value == "Out of stock") {
+                productid.classList.add("text-danger");
+                alert(`${data.name}, is Out of stock`);
+            } else {
+                productid.classList.remove("text-danger");
+            }
             productprice.value = data.price;
         });
     });
@@ -273,6 +280,7 @@ form.addEventListener("submit", (e) => {
 let removebutton = document.querySelector("#carttable");
 removebutton.addEventListener("click", (e) => {
     UI.deleteProductFromCart(e.target);
+    // Store.removeProduct(e.target);
 });
 
 // COMPLETE ORDER PROCESS
@@ -357,6 +365,7 @@ sellcompletebtn.addEventListener("click", () => {
 document.addEventListener("DOMContentLoaded", () => {
     localStorage.removeItem("products");
     localStorage.removeItem("sell");
+    localStorage.removeItem("cashier");
     localStorage.removeItem("customer");
     Store.displayBooks();
 });
