@@ -26,7 +26,7 @@
 
 		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 			<div class="align-items-center pt-3 pb-2 mb-3 border-bottom">
-				<h1 class="h2">Invoice: {{ sell.invoiceid }}</h1>
+				<h1 class="h2">Invoice: <span id="invoiceid">{{ sell.invoiceid }}</span></h1>
 			</div>
 
 			<div class="row">
@@ -59,8 +59,56 @@
 					</p>
 					<p>
 						<b>Payment Status: </b>
-						{{ sell.payment_status }}
+						<select id="payment_status" name="payment_status">
+							<option value="cash" {% if sell.payment_status=='cash' %}selected{% endif %}>cash</option>
+							<option value="card" {% if sell.payment_status=='card' %}selected{% endif %}>card
+							</option>
+							<option value="bkash/nagad" {% if sell.payment_status=='bkash/nagad' %}selected{% endif %}>
+								bkash/nagad</option>
+							<option value="pending" {% if sell.payment_status=='pending' %}selected{% endif %}>Pending
+							</option>
+						</select>
+						<button class="btn btn-sm btn-primary ms-2" id="savePaymentStatus">Save</button>
 					</p>
+
+					<!-- UPDATE PAYMENT STATUS TO SERVER -->
+					<script>
+						let invoice_id = document.querySelector('#invoiceid').innerText;
+						const updatePaymentStatus = async () => {
+							try {
+								const response = await fetch(`/api/sell/update/payment/status/${invoice_id}`, {
+									method: 'POST',
+									headers: { 'Content-Type': 'application/json' },
+									body: JSON.stringify({
+										invoiceid: invoice_id,
+										payment_status: document.getElementById('payment_status').value
+									})
+								}).then((response) => {
+									if (response.status !== 200) {
+										console.log(
+											`Something went wrong! Reload the page. Status: ${response.status}`
+										);
+										return;
+									}
+
+									response.json().then((data) => {
+										window.location.href = `${window.origin}/dashboard/`;
+									});
+								});
+								// const data = await response.json();
+								// if (data.success) {
+								// 	document.getElementById('payment_status').value = '{{ sell.payment_status }}';
+								// 	alert('Payment status updated successfully!');
+								// }
+							} catch (error) {
+								console.error(error);
+							}
+						}
+
+						// call the function and update the status
+						document.getElementById('savePaymentStatus').addEventListener('click', updatePaymentStatus);
+
+					</script>
 					<p>
 						<b>Transaction No: </b>
 						{{ sell.trnx_id }}

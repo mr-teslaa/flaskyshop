@@ -35,7 +35,6 @@ class Brands(db.Model):
     logo = db.Column(db.String(), default='default.jpg')
     note = db.Column(db.String())
 
-
 class Categories(db.Model):
     __tablename__ = 'categories'
     id = db.Column(db.Integer, primary_key=True)
@@ -70,7 +69,6 @@ class Products(db.Model):
     category = db.relationship('Categories', backref=db.backref('product', lazy=True))
     image1 = db.Column(db.String(), nullable=False, default='demoproduct.jpg')
 
-
 class SelledProducts(db.Model):
     __tablename__ = 'selled_products'
     id = db.Column(db.Integer, primary_key=True)
@@ -88,7 +86,15 @@ class SelledProducts(db.Model):
             buying_price = int(product.buying_price)
         else:
             buying_price = 0
-        return selling_price - buying_price
+
+        daily_sell = DailySells.query.filter_by(id=self.daily_sells_id).first()
+
+        if daily_sell:
+            discount = int(daily_sell.discount)
+        else:
+            discount = 0
+
+        return (selling_price - buying_price) * int(self.quantity) - discount
     
 
 class DailySells(db.Model):

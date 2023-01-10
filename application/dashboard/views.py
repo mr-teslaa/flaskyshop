@@ -16,6 +16,7 @@ from flask import current_app
 from datetime import datetime
 from sqlalchemy import func
 from sqlalchemy import extract
+from sqlalchemy import and_
 
 #   importing module from flask login
 from flask_login import current_user
@@ -65,49 +66,46 @@ def index():
 #   GET TODAY SELLS INFO
 @dashboard.route('/api/todaysell/price/get/', methods=['POST'])
 def todaysell_price_get():
-    allsell = DailySells.query.all()
-    sellprice = 0
-    pendingprice = 0
-    totalsellproduct = 0
+    today = datetime.utcnow().date()
+    today_sells = DailySells.query.filter(DailySells.pub_date.like(f'{today}%')).all()
 
-    today = datetime.utcnow().strftime('%d %b, %Y')
+    # Get the total sell price and pending price for the current day
+    sell_price, pending_price = 0, 0
+    total_sell_product = 0
+    today_profit = 0
 
-    
-    for sell in allsell:
-        dbdate = sell.pub_date.strftime('%d %b, %Y')
+    for sell in today_sells:
 
-        if today == dbdate:
-            check = True
-        else:
-            check = False
-        
-        if check:
-            for i in sell.selled_products:
-                totalsellproduct += 1
-            if sell.payment_status == 'cash':
-                sellprice += int(sell.totalprice) 
-            
-            if sell.payment_status == 'pending':
-                pendingprice += int(sell.totalprice)
+        # AS WE HAVE RELATION WITH SelledProducts TABLE
+        # WE CAN ACCESS THEM AND PROCEED 
+        for product in sell.selled_products:
+            total_sell_product += 1
 
-    
+            # CHECK IF THE PAYMENT IS ACTUALLY PAID
+            if sell.payment_status != 'pending':
+                today_profit += product.calculate_profit()
+
+        if sell.payment_status != 'pending':
+            sell_price += int(sell.totalprice) 
+        elif sell.payment_status == 'pending':
+            pending_price += int(sell.totalprice)
 
     obj = {
         "message": "GET Sell Successfully",
-        "selledtk": sellprice,
-        "pendingtk": pendingprice,
-        "todaydate": today,
-        "totalsellproduct": totalsellproduct
+        "selledtk": sell_price,
+        "pendingtk": pending_price,
+        "todaydate": today.strftime('%d %b, %Y'),
+        "totalsellproduct": total_sell_product,
+        "todayprofit": today_profit
     }
     res =  make_response(jsonify(obj), 200)
     return res
 
 
-
 #   GET PRICE FOR A SINGLE PRODUCT
-@dashboard.route('/api/newsell/<string:productname>/price/get/', methods=['POST'])
-def product_price_get(productname):
-    getproduct = Products.query.filter_by(name=productname).first()
+@dashboard.route('/api/newsell/<string:product_id>/price/get/', methods=['POST'])
+def product_price_get(product_id):
+    getproduct = Products.query.filter_by(productid=product_id).first()
     
     if getproduct.stock < 1:
         getproduct.available_status = 'no'
@@ -142,7 +140,7 @@ def allsell_info_get():
     totalselleproduct = SelledProducts.query.with_entities(func.sum(SelledProducts.quantity)).scalar()
 
     # TOTAL PROFIT
-    selled_products = SelledProducts.query.all()
+    selled_products = SelledProducts.query.join(DailySells).filter(DailySells.payment_status != 'pending').all()
     total_profit = 0
     for product in selled_products:
         total_profit += product.calculate_profit()
@@ -150,7 +148,7 @@ def allsell_info_get():
     today = datetime.utcnow().strftime('%d %b, %Y')
 
     for sell in allsell:
-        if sell.payment_status == 'cash':
+        if sell.payment_status != 'pending':
             sellprice += int(sell.totalprice) 
         
         if sell.payment_status == 'pending':
@@ -179,7 +177,7 @@ def current_month_sell_info_get():
     total_selled_products = SelledProducts.query.with_entities(func.sum(SelledProducts.quantity)).join(DailySells).filter(extract('month', DailySells.pub_date) == current_month).scalar()
 
     # TOTAL PROFIT
-    selled_products = SelledProducts.query.join(DailySells).filter(extract('month', DailySells.pub_date) == current_month).all()
+    selled_products = SelledProducts.query.join(DailySells).filter(and_(extract('month', DailySells.pub_date) == current_month, DailySells.payment_status != 'pending')).all()
     total_profit = 0
     for product in selled_products:
         total_profit += product.calculate_profit()
@@ -191,7 +189,7 @@ def current_month_sell_info_get():
     for sell in DailySells.query.all():
         sell_month = sell.pub_date.strftime("%m")
         if sell_month == current_month:
-            if sell.payment_status == 'cash':
+            if sell.payment_status != 'pending':
                 sell_price += int(sell.totalprice)
             elif sell.payment_status == 'pending':
                 pending_price += int(sell.totalprice)
@@ -207,6 +205,21 @@ def current_month_sell_info_get():
     return make_response(jsonify(obj), 200)
 
 
+# UPDATE PAYMENT STATUS
+
+@dashboard.route('/api/sell/update/payment/status/<invoice_id>', methods=['POST'])
+def update_payment_status(invoice_id):
+    # Get the new payment status from the POST request
+    new_payment_status = request.json['payment_status']
+
+    # Update the payment status in the database for the specific invoice
+    sell = DailySells.query.filter_by(invoiceid=invoice_id).first()
+    sell.payment_status = new_payment_status
+    db.session.commit()
+
+    flash('Payment Status Updated ✅', 'success')
+    # Return a success message to the frontend
+    return jsonify({'message': 'Payment status updated successfully'})
 
 
 # #   GET THIS MONTH SELL INFO
@@ -404,7 +417,18 @@ def todaysell():
     today = datetime.utcnow().strftime('%d %b, %Y')
     page = request.args.get('page', 1, type=int)
     sells = DailySells.query.order_by(DailySells.pub_date.desc()).paginate(page=page, per_page=20)
+
     return render_template('dashboard/todaysell.html', title='Today\'s Sell', sells=sells, today=today)
+
+
+# #   DAILY SELL
+# @dashboard.route('/dashboard/todaysell/', methods=['GET', 'POST'])
+# @login_required
+# def todaysell():
+#     today = datetime.utcnow().strftime('%d %b, %Y')
+#     page = request.args.get('page', 1, type=int)
+#     sells = DailySells.query.order_by(DailySells.pub_date.desc()).paginate(page=page, per_page=20)
+#     return render_template('dashboard/todaysell.html', title='Today\'s Sell', sells=sells, today=today)
 
 
 #   NEW SELL
@@ -414,7 +438,7 @@ def newsell():
     form=AddTodaySellForm()
     newinvoiceID = invoiceID()
     form.customer_name.choices = [(customer.id, customer.customer_name) for customer in Customers.query.all()]
-    form.product_name.choices = [(product.name, product.name) for product in Products.query.all()]
+    form.product_name.choices = [(product.productid, product.name) for product in Products.query.all()]
 
     return render_template('dashboard/newsell.html', title="New Sell", form=form, newinvoiceID=newinvoiceID)
 

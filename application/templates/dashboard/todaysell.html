@@ -43,26 +43,35 @@
 
 			<!-- SUMMERY OF PRODUCTS -->
 			<div class="container">
-				<div class="row gap-2 mb-5">
-					<div class="col-lg-3">
+				<div class="row mb-5">
+					<div class="col">
+						<div class="border summery__box bg-success text-white p-2">
+							<h3 id='totalprofit' class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">Total Profit</p>
+						</div>
+					</div>
+
+					<div class="col">
 						<div class="border summery__box bg__mintgreen p-2">
 							<h3 id='totalsellprice' class="summery__box-title fs-1 fw-bolder">
 								000
 							</h3>
-							<p class="summery__subtitle">Total TK Earning</p>
+							<p class="summery__subtitle">Total Earning</p>
 						</div>
 					</div>
 
-					<div class="col-lg-3">
+					<div class="col">
 						<div class="border summery__box bg__goldenpoppy p-2">
 							<h3 id="totalpendingprice" class="summery__box-title fs-1 fw-bolder">
 								000
 							</h3>
-							<p class="summery__subtitle">Total TK Pending</p>
+							<p class="summery__subtitle">Total Pending</p>
 						</div>
 					</div>
 
-					<div class="col-lg-3">
+					<div class="col">
 						<div class="border summery__box bg__anakiwa p-2">
 							<h3 id="totalsellproduct" class="summery__box-title fs-1 fw-bolder">
 								00
@@ -199,6 +208,7 @@
 		let totalsellprice = document.querySelector('#totalsellprice');
 		let totalpendingprice = document.querySelector('#totalpendingprice');
 		let totalsellproduct = document.querySelector('#totalsellproduct')
+		let totalprofit = document.querySelector('#totalprofit')
 
 		fetch(`${window.origin}/api/todaysell/price/get/`, {
 			method: "POST",
@@ -215,6 +225,7 @@
 				totalpendingprice.innerText = numberWithCommas(data.pendingtk);
 				today.innerText = data.todaydate
 				totalsellproduct.innerText = data.totalsellproduct
+				totalprofit.innerText = data.todayprofit
 			});
 		});
 

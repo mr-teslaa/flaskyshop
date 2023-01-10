@@ -219,33 +219,47 @@ searchcontainer.addEventListener("focusout", (e) => {
     //  GET ALL THE ELEMENTS FORM DOM
     let productid = document.querySelector("#productid");
     let productprice = document.querySelector("#productprice");
-
+    let getproductidfromselecttag = document.querySelectorAll(
+        "#selectproduct option"
+    );
     let productname = e.target.innerText.trim();
-    console.log(`Product name is >> ${productname}`);
 
-    fetch(`${window.origin}/api/newsell/${productname}/price/get/`, {
-        method: "POST",
-    }).then((response) => {
-        if (response.status !== 200) {
+    // console.log(e.target);
+    // console.log(`Product ID: ${productid}`);
+
+    getproductidfromselecttag.forEach((e) => {
+        // console.log(e.value);
+        if (productname == e.innerText) {
+            let getproductid = e.value;
             console.log(
-                `Something went wrong! Reload the page. Status: ${response.status}`
+                `Product Name: "${productname}" and Product ID: "${e.value}"`
             );
-            return;
-        }
 
-        response.json().then((data) => {
-            let displaystock = document.querySelector("#displaystock");
-            displaystock.innerText = data.stock;
-            localStorage.setItem("currentproduct", productname);
-            productid.value = data.productid;
-            if (productid.value == "Out of stock") {
-                productid.classList.add("text-danger");
-                alert(`${data.name}, is Out of stock`);
-            } else {
-                productid.classList.remove("text-danger");
-            }
-            productprice.value = data.price;
-        });
+            fetch(`${window.origin}/api/newsell/${getproductid}/price/get/`, {
+                method: "POST",
+            }).then((response) => {
+                if (response.status !== 200) {
+                    console.log(
+                        `Something went wrong! Reload the page. Status: ${response.status}`
+                    );
+                    return;
+                }
+
+                response.json().then((data) => {
+                    let displaystock = document.querySelector("#displaystock");
+                    displaystock.innerText = data.stock;
+                    localStorage.setItem("currentproduct", productname);
+                    productid.value = data.productid;
+                    if (productid.value == "Out of stock") {
+                        productid.classList.add("text-danger");
+                        alert(`${data.name}, is Out of stock`);
+                    } else {
+                        productid.classList.remove("text-danger");
+                    }
+                    productprice.value = data.price;
+                });
+            });
+        }
     });
 });
 

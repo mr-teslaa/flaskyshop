@@ -1,8 +1,8 @@
 #   importing necessary module
 import os
+import uuid
 import secrets
-import random
-import string
+import datetime
 from PIL import Image
 from flask import url_for
 from flask import current_app
@@ -12,11 +12,10 @@ from flask import current_app
 
 #   GENERATING INVOICE NUMBER
 def invoiceID():
-    return secrets.token_hex(8)
+    now = datetime.datetime.now()
+    timestamp = now.strftime("%Y%m%d%H%M%S")
+    return timestamp + str(uuid.uuid4().int)[:6]
 
-# def invoiceID(size=10, chars=string.ascii_uppercase + string.digits):
-#     randomstr = ''.join(random.choice(chars) for _ in range(size))
-#     return randomstr
 
 #   saving logo
 def save_logo(form_picture):
