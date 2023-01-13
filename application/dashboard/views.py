@@ -1,5 +1,6 @@
 import os
 import json
+import uuid
 
 #   importing basic flask module
 from flask import Blueprint
@@ -355,6 +356,7 @@ def user_profile():
 @login_required
 def user_profile_edit():
     form = UpdateProfileForm()
+    updated_fields = []
 
     # Check if form is submitted and valid
     if form.validate_on_submit():
@@ -364,34 +366,53 @@ def user_profile_edit():
         confirm_new_password = form.confirm_password.data
         current_password = form.current_password.data
 
+        print(f'Current password: {current_password}')
+        print(f'New password: {new_password}')
+        print(f'Confirm New password: {confirm_new_password}')
+
+        print(f'User Password: {bcrypt.check_password_hash(current_user.password, current_password)} ----> {current_user.password}')
+
         # Check if current password is correct
         current_password_hash = bcrypt.check_password_hash(current_user.password, current_password)
-        if current_password_hash and new_password==confirm_new_password:
-
+        if current_password_hash and new_password == confirm_new_password:
+            print('===== Password Matched =====')
             # Hash and set new password
             hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
             current_user.password = hashed_password
+            updated_fields.append("password")
             db.session.commit()
-            flash('Your password has been updated!', 'success')
-            return redirect(url_for('users.user_dashboard'))
 
         elif current_password_hash and new_password != confirm_new_password:
-            flash('Password Not Matched', 'danger')
-            return redirect(url_for('users.user_resetpassword'))
+            flash('New Password and Confirm Password Doesn\'t Matched ⚠️', 'danger')
+            return redirect(url_for('dashboard.user_profile_edit'))
+
+        elif current_password and current_password_hash == False:
+            flash('Your current password is incorrect', 'danger')
+            return redirect(url_for('dashboard.user_profile_edit'))
+            
+        if current_user.username != form.username.data:
+            current_user.username = form.username.data
+            updated_fields.append("username")
+
+        if current_user.email != form.email.data:
+            current_user.email = form.email.data
+            updated_fields.append("email")
+        
+        if current_user.phone != form.phone.data:
+            current_user.phone = form.phone.data
+            updated_fields.append("phone")
+        
+        db.session.commit()
+        
+        if len(updated_fields) > 0:
+            flash(f'Your {", ".join(updated_fields)} has been updated', 'success')
+        return redirect(url_for('dashboard.user_profile'))
 
         # Check if profile picture is being updated
-        if form.picture.data:
-            # Save new profile picture
-            picture_file = save_profile_picture(form.picture.data)
-            current_user.profile = picture_file
-
-        # Update user info
-        current_user.username = form.username.data
-        current_user.email = form.email.data
-        current_user.phone = form.phone.data
-        db.session.commit()
-        flash('Your account has been updated!', 'success')
-        return redirect(url_for('dashboard.user_profile'))
+        # if form.picture.data:
+        #     # Save new profile picture
+        #     picture_file = save_profile_picture(form.picture.data)
+        #     current_user.profile = picture_file
     
     if request.method == 'GET':
         form.phone.data = current_user.phone
@@ -404,8 +425,17 @@ def user_profile_edit():
 @dashboard.route('/dashboard/')
 @login_required
 def admin_dashboard():
+    # UPDATING INVOICE NUMBER FROM DB
+    # daily_sells = DailySells.query.all()
+    # for daily_sell in daily_sells:
+    #     # Create new invoice id using uuid and current date and time
+    #     new_invoice_id = datetime.now().strftime('%Y%m%d%H%M%S')+str(uuid.uuid4().int)[:6]
+    #     # Update the invoice id in the database
+    #     daily_sell.invoiceid = new_invoice_id
+    #     db.session.commit()
+
     page = request.args.get('page', 1, type=int)
-    sells = DailySells.query.order_by(DailySells.pub_date.desc()).paginate(page=page, per_page=20)
+    sells = DailySells.query.order_by(DailySells.pub_date.desc()).paginate(page=page, per_page=50)
     # totalselledproduct = SelledProducts.query.all()
     return render_template('dashboard/dashboard.html', title='Dashboard', sells=sells)
 

@@ -107,27 +107,6 @@
 
                                     {{ form.email.label() }}
                                 </div>
-
-                                <!-- <div class="input-group mb-3">
-                                    {{ form.picture.label(class="input-group-text") }}
-
-                                    {% if form.picture.errors %}
-                                    {{ form.picture(
-                                        class="form-control is-invalid",
-                                        placeholder="Profile Picture"
-                                    ) }}
-                                    <div class="invalid-feedback">
-                                        {% for error in form.picture.errors %}
-                                        <span>{{ error }}</span>
-                                        {% endfor %}
-                                    </div>
-                                    {% else %}
-                                    {{ form.picture(
-                                            class="form-control",
-                                            placeholder="Profile Picture"
-                                        ) }}
-                                    {% endif %}
-                                </div> -->
                             </div>
 
                             <div class="col-md-6">
@@ -197,6 +176,11 @@
 
                                     {{ form.confirm_password.label() }}
                                 </div>
+
+                                <div class="my-3">
+                                    <input type="checkbox" id="show-password">
+                                    <label for="show-password">Show Password</label>
+                                </div>
                             </div>
                         </div>
 
@@ -212,5 +196,19 @@
         </main>
     </div>
 </div>
+
+<script>
+    const checkbox = document.getElementById("show-password");
+    const passwordFields = document.querySelectorAll('input[type="password"]');
+
+    checkbox.addEventListener('change', function () {
+        if (this.checked) {
+            passwordFields.forEach(field => field.type = 'text');
+        } else {
+            passwordFields.forEach(field => field.type = 'password');
+        }
+    });
+
+</script>
 
 {% endblock %}
