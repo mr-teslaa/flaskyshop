@@ -9,8 +9,8 @@
 		data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"> </span>
 	</button>
-	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
-		aria-label="Search" />
+	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" id="searchProduct"
+		placeholder="Search Product by name" aria-label="Search" />
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
 			<a class="nav-link px-3" href="{{ url_for('dashboard.user_logout') }}">Sign out </a>
@@ -352,7 +352,7 @@
 			<!-- PRODUCTS DETAILS -->
 			<h2>All Products</h2>
 			<hr />
-			{% if existingproduct %}
+			{% if products %}
 			<div class="table-responsive">
 				<table class="table table-striped table-sm">
 					<thead>
@@ -368,7 +368,7 @@
 					</thead>
 
 					<tbody>
-						{% for product in existingproduct %}
+						{% for product in products.items %}
 						<tr class="align-middle">
 							<td style="width: 5%;" class="counters">{{ product.id }}</td>
 							<td>{{ product.productid }}</td>
@@ -548,6 +548,22 @@
 					</tbody>
 				</table>
 			</div>
+
+			<!-- PAGINATE FOR LARGE AMMOUNT OF DATA -->
+			{% for page_num in products.iter_pages(left_edge=2, right_edge=2, left_current=1, right_current=1) %}
+			{% if page_num %}
+			{% if products.page == page_num %}
+			<a class="btn btn-sm btn-primary mb-4" href="{{ url_for('dashboard.products', page=page_num) }}">
+				{{ page_num }} </a>
+			{% else %}
+			<a class="btn btn-sm btn-outline-primary mb-4" href="{{ url_for('dashboard.products', page=page_num) }}">
+				{{ page_num }} </a>
+			{% endif %}
+			{% else %}
+			<a class="btn btn-sm mb-4" href="#"> .... </a>
+			{% endif %}
+			{% endfor %}
+
 			{% else %}
 			<h5>
 				No product added yet.
@@ -594,6 +610,56 @@
 		serial.innerText = counter;
 		counter++;
 	});
+
+
+	// SEARCH PRODUCTS
+	const searchInput = document.getElementById('searchProduct');
+
+	searchInput.addEventListener('input', (e) => {
+		const searchValue = e.target.value;
+
+		// Make a fetch request to your endpoint
+		fetch(`/dashboard/search-products?q=${searchValue}`)
+			.then(response => response.json())
+			.then(data => {
+				// Get the tbody element
+				const tbody = document.querySelector("tbody")
+
+				// Clear the existing rows
+				tbody.innerHTML = ""
+
+				// Check if there are any products
+				if (data.length) {
+					// Loop through the products
+					for (let product of data) {
+						// Create a new row
+						const row = document.createElement("tr")
+
+						let producturl = `${window.location.origin}/dashboard/product/${product.id}`
+
+						// Add the product information to the row
+						row.innerHTML = `<td>${product.id}</td>
+										<td>${product.productid}</td>
+										<td>${product.name}</td>
+										<td>${product.price}</td>
+										<td>${product.brand}</td>
+										<td>
+											<img src="{{url_for('static', filename='productimages/')}}/${product.image1}" class="img-fluid avatar__logo">
+										</td>
+										<td>
+											<a class="btn btn-sm btn-dark" href="${producturl}" role="button">Details</a>
+										</td>`
+
+						// Add the row to the table
+						tbody.appendChild(row)
+					}
+				} else {
+					// Show an error message
+					tbody.innerHTML = "<tr><td colspan='7' class='text-center fs-5'>Product not found</td></tr>"
+				}
+			})
+	});
+
 </script>
 
 {% endblock %}

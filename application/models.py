@@ -69,6 +69,26 @@ class Products(db.Model):
     category = db.relationship('Categories', backref=db.backref('product', lazy=True))
     image1 = db.Column(db.String(), nullable=False, default='demoproduct.jpg')
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "productid": self.productid,
+            "name": self.name,
+            "price": self.price,
+            "image1": self.image1,
+            "buying_price": self.buying_price,
+            "stock": self.stock,
+            "description": self.description,
+            "category": self.category.name,
+            "brand": self.brand.name,
+            "available_status": self.available_status,
+            "pub_date": self.pub_date,
+        }
+
+
+
+
+
 class SelledProducts(db.Model):
     __tablename__ = 'selled_products'
     id = db.Column(db.Integer, primary_key=True)
@@ -112,3 +132,16 @@ class DailySells(db.Model):
     note = db.Column(db.String())
     pub_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    def to_dict(self):
+        selled_products_list = []
+        for selled_product in self.selled_products:
+            selled_products_list.append(selled_product.productname)
+        return {
+            "id": self.id,
+            "invoice_id": self.invoiceid,
+            "selled_products": selled_products_list,
+            "totalprice": self.totalprice,
+            "payment_status": self.payment_status,
+            "pub_date": self.pub_date.strftime('%d %b, %Y'),
+        }

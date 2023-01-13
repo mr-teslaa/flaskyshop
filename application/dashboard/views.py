@@ -366,16 +366,9 @@ def user_profile_edit():
         confirm_new_password = form.confirm_password.data
         current_password = form.current_password.data
 
-        print(f'Current password: {current_password}')
-        print(f'New password: {new_password}')
-        print(f'Confirm New password: {confirm_new_password}')
-
-        print(f'User Password: {bcrypt.check_password_hash(current_user.password, current_password)} ----> {current_user.password}')
-
         # Check if current password is correct
         current_password_hash = bcrypt.check_password_hash(current_user.password, current_password)
         if current_password_hash and new_password == confirm_new_password:
-            print('===== Password Matched =====')
             # Hash and set new password
             hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
             current_user.password = hashed_password
@@ -674,12 +667,10 @@ def products():
     form.product_brand.choices = [(brand.id, brand.name) for brand in Brands.query.all()]
     form.product_category.choices = [(category.id, category.name) for category in Categories.query.all()]
     
-    products = Products.query.all()
+    page = request.args.get('page', 1, type=int)
+    products = Products.query.order_by(Products.pub_date.desc()).paginate(page=page, per_page=50)
     brands = Brands.query.all()
     categories = Categories.query.all()
-
-    #   fetch existing product
-    existingproduct = Products.query.all()
 
     # count total stock
     total_products = Products.query.with_entities(func.sum(Products.stock)).scalar()
@@ -727,7 +718,7 @@ def products():
 
         return redirect(url_for('dashboard.products'))
 
-    return render_template('dashboard/products.html', title='Products', form=form, existingproduct=existingproduct, brands=brands, categories=categories, products=products, total_products=total_products)
+    return render_template('dashboard/products.html', title='Products', form=form, brands=brands, categories=categories, products=products, total_products=total_products)
 
 
 #   EDIT PRODUCTS
@@ -741,12 +732,12 @@ def edit_product(product_id):
     form.product_category.choices = [(category.id, category.name) for category in Categories.query.all()]
     
     if form.validate_on_submit():
-        productname = form.product_name.data
-        productID = form.product_id.data
-        productprice = form.product_price.data
-        productBuyingprice = form.product_buying_price.data
-        productquantity = form.product_quantity.data
-        productdescription = form.product_description.data
+        productname = form.product_name.data.strip()
+        productID = form.product_id.data.strip()
+        productprice = int(str(form.product_price.data).strip())
+        productBuyingprice = form.product_buying_price.data.strip()
+        productquantity = int(str(form.product_quantity.data).strip())
+        productdescription = form.product_description.data.strip()
         productStatus = form.product_available.data
         if form.product_brand.data:
             productbrand = form.product_brand.data
@@ -788,7 +779,15 @@ def edit_product(product_id):
     return render_template('dashboard/product_edit.html', form=form, product=product)
 
 
-#   route for deleting a post
+#   SHOW A PRODUCT INFO
+@dashboard.route("/dashboard/product/<int:product_id>/")
+@login_required
+def show_product(product_id):
+    product = Products.query.get_or_404(product_id)
+    return render_template('dashboard/product_details.html', product=product)
+
+
+#   DELTE A PRODUCT
 @dashboard.route("/dashboard/product/<int:product_id>/delete/", methods=['POST'])
 @login_required
 def delete_product(product_id):
@@ -800,6 +799,27 @@ def delete_product(product_id):
     flash('Your product has been deleted ✅', 'success')
     return redirect(url_for('dashboard.products'))
 
+
+#   ========================
+#   REALTIME SEARCH
+#   ========================
+
+#   PRODUCT SEARCH
+@dashboard.route('/dashboard/search-products')
+@login_required
+def search_products():
+    search_query = request.args.get('q')
+    products = Products.query.filter(Products.name.like(f'%{search_query}%')).all()
+    return jsonify([product.to_dict() for product in products])
+
+
+#   ORDER SEARCH
+@dashboard.route('/dashboard/search-invoice')
+@login_required
+def search_orders():
+    search_query = request.args.get('q')
+    invoices = DailySells.query.filter(DailySells.invoiceid.like(f'%{search_query}%')).all()
+    return jsonify([invoice.to_dict() for invoice in invoices])
 
 #   ORDERS
 @dashboard.route('/dashboard/orders/', methods=['GET', 'POST'])

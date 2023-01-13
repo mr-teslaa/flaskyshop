@@ -10,8 +10,8 @@
 		data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"> </span>
 	</button>
-	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
-		aria-label="Search" />
+	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" id="searchInvoice"
+		placeholder="Search by Invoice ID" aria-label="Search" />
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
 			<a class="nav-link px-3" href="{{ url_for('dashboard.user_logout') }}">Sign out </a>
@@ -177,12 +177,12 @@
 							<td>
 								{% if sell.payment_status == 'pending' %}
 								<small
-									class="d-inline-flex px-2 py-1 fw-semibold text-warning bg-warning bg-gradient bg-opacity-10 border border-success border-opacity-10 rounded-2">
+									class="d-inline-flex px-2 py-1 fw-semibold text-uppercase text-warning bg-warning bg-gradient bg-opacity-10 border border-success border-opacity-10 rounded-2">
 									Pending
 								</small>
 								{% else %}
 								<small
-									class="text-uppercase d-inline-flex px-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2">
+									class="text-uppercase d-inline-flex px-2 py-1 fw-semibold text-uppercase text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2">
 									Paid - {{ sell.payment_status }}
 								</small>
 								{% endif %}
@@ -203,18 +203,9 @@
 					</tbody>
 				</table>
 			</div>
-			{% else %}
-			<h5>
-				No product sells yet.
-				<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
-					data-bs-target="#dailysellModal">
-					<i class="bx bx-plus"></i>
-					New Sell
-				</button>
-			</h5>
-			{% endif %}
 
-			{% for page_num in sells.iter_pages( left_edge=2, right_edge=2, left_current=1, right_current=1 ) %}
+			<!-- PAGINATE FOR LARGE AMMOUNT OF DATA -->
+			{% for page_num in sells.iter_pages(left_edge=2, right_edge=2, left_current=1, right_current=1) %}
 			{% if page_num %}
 			{% if sells.page == page_num %}
 			<a class="btn btn-sm btn-primary mb-4" href="{{ url_for('dashboard.admin_dashboard', page=page_num) }}">
@@ -228,6 +219,17 @@
 			<a class="btn btn-sm mb-4" href="#"> .... </a>
 			{% endif %}
 			{% endfor %}
+
+			{% else %}
+			<h5>
+				No product sells yet.
+				<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+					data-bs-target="#dailysellModal">
+					<i class="bx bx-plus"></i>
+					New Sell
+				</button>
+			</h5>
+			{% endif %}
 		</main>
 	</div>
 </div>
@@ -318,5 +320,68 @@
 		})
 	})
 
+</script>
+
+
+<script>
+	// SEARCH INVOICE
+	const searchInput = document.getElementById('searchInvoice');
+
+	searchInput.addEventListener('input', (e) => {
+		const searchValue = e.target.value;
+
+		// Make a fetch request to your endpoint
+		fetch(`/dashboard/search-invoice?q=${searchValue}`)
+			.then(response => response.json())
+			.then(data => {
+				console.log(data)
+				// Get the tbody element
+				const tbody = document.querySelector("tbody")
+
+				// Clear the existing rows
+				tbody.innerHTML = ""
+
+				// Check if there are any products
+				if (data.length) {
+					// Loop through the products
+					for (let invoice of data) {
+						// Create a new row
+						const row = document.createElement("tr")
+
+						let producturl = `${window.location.origin}/dashboard/sell/${invoice.invoice_id}/`
+						let paymentstat = invoice.payment_status
+
+						// Add the product information to the row
+						row.innerHTML = `<td>${invoice.id}</td>
+										<td>${invoice.selled_products}</td>
+										<td>${invoice.invoice_id}</td>
+										
+										<td>
+											<small
+												class="fs-6 d-inline-flex px-2 py-1 fw-lighter text-dark bg-dark bg-opacity-10 border border-dark border-opacity-10 rounded-2 totalprices">
+												${invoice.totalprice}
+											</small>
+										</td>
+										<td>
+											<small
+												class="d-inline-flex px-2 py-1 fw-semibold text-uppercase  ${invoice.payment_status == 'pending' ? 'text-warning bg-warning bg-gradient bg-opacity-10 border border-warning border-opacity-10 rounded-2' : 'text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2'}">
+												${invoice.payment_status == 'pending' ? 'pending' : 'paid - ' + invoice.payment_status}
+											</small>
+										</td>
+
+										<td>${invoice.pub_date}</td>
+										<td>
+											<a class="btn btn-sm btn-dark" href="${producturl}" role="button">Details</a>
+										</td>`
+
+						// Add the row to the table
+						tbody.appendChild(row)
+					}
+				} else {
+					// Show an error message
+					tbody.innerHTML = "<tr><td colspan='7' class='text-center fs-5'>Product not found</td></tr>"
+				}
+			})
+	});
 </script>
 {% endblock %}

@@ -268,7 +268,10 @@ class EditProductForm(FlaskForm):
 
     product_id = StringField(
         'Product ID',
-        validators=[DataRequired()] 
+        validators=[
+            DataRequired(),
+            Length(min=1)
+        ] 
     )
 
     product_price = IntegerField(
@@ -317,9 +320,10 @@ class EditProductForm(FlaskForm):
     submit = SubmitField('Save')
 
     def validate_product_id(self, product_id):
-        if product_id.data:
-            product = Products.query.filter_by(productid=product_id.data).first()
-            if str(product.productid) != str(product_id.data):
+        current_produdct_id = product_id.data.strip()
+        if current_produdct_id:
+            product = Products.query.filter_by(productid=current_produdct_id).first()
+            if str(product.productid) != str(current_produdct_id):
                 raise ValidationError('Product already added.')
 
 

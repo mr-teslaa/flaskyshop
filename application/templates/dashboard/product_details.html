@@ -1,0 +1,178 @@
+{% extends 'layouts/root-dashboard.html' %}
+
+<!-- body -->
+{% block body %}
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
+		BM Gadget & Tech
+	</a>
+	<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"> </span>
+	</button>
+	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
+		aria-label="Search" />
+	<div class="navbar-nav">
+		<div class="nav-item text-nowrap">
+			<a class="nav-link px-3" href="{{ url_for('dashboard.user_logout') }}">Sign out </a>
+		</div>
+	</div>
+</header>
+
+<div class="container-fluid">
+	<div class="row">
+		<!-- navigation inject -->
+		{% include 'helpers/_dashboard_side_nav.html' %}
+
+		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+			<div class="d-flex justify-content-between border-bottom my-3">
+				<div class="align-items-center">
+					<h1 class="h2">Product Details</h1>
+				</div>
+
+				<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+
+					<a href="#">
+						<button class="btn m-1 btn-danger me-md-2"
+							data-bs-target="#deleteConfirmModalToggle{{product.id}}" data-bs-toggle="modal">
+							Delete Product
+						</button>
+					</a>
+
+					<a href="{{ url_for('dashboard.edit_product', product_id=product.id) }}">
+						<button class="btn m-1 btn-primary me-md-2">
+							Edit Product
+						</button>
+					</a>
+				</div>
+			</div>
+
+			<!-- PRODUCT DESCRIPTION -->
+			<div>
+				<div class="table-responsive">
+					<table class="table table-bordered table-striped table-hover">
+						<tbody>
+							<tr>
+								<th style="width: 25%;">
+									Product ID
+								</th>
+								<td>
+									{{ product.productid }}
+								</td>
+							</tr>
+							<tr>
+								<th>Product Name</th>
+								<td>{{ product.name }}</td>
+							</tr>
+							<tr>
+								<th>Product Details</th>
+								<td>{{ product.description }}</td>
+							</tr>
+							<tr>
+								<th>Brand</th>
+								<td>{{ product.brand.name }}</td>
+							</tr>
+							<tr>
+								<th>Category</th>
+								<td>{{ product.category.name }}</td>
+							</tr>
+							<tr>
+								<th>Buying Price <small>(Taka)</small></th>
+								<td>
+									{{ product.buying_price }} Taka
+								</td>
+							</tr>
+							<tr>
+								<th>Price <small>(Taka)</small></th>
+								<td
+									class="fs-5 d-inline-flex m-2 px-2 py-1 fw-lighter text-dark bg-dark bg-opacity-10 border border-dark border-opacity-10 rounded-2">
+									{{ product.price }} Taka
+								</td>
+							</tr>
+							<tr>
+								<th>Stock</th>
+								<td>
+									{{ product.stock }}
+
+									{% if product.available_status == 'yes' %}
+									<span
+										class="d-inline-flex px-2 ms-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2">
+										<small>Available</small>
+									</span>
+									{% else %}
+									<span
+										class="d-inline-flex px-2 ms-2 py-1 fw-semibold text-danger bg-danger bg-opacity-10 border border-danger border-opacity-10 rounded-2">
+										<small>Not available</small>
+									</span>
+									{% endif %}
+
+								</td>
+							</tr>
+							{% if product.colors %}
+							<tr>
+								<th>Colors</th>
+								<td> {{ product.colors }} </td>
+							</tr>
+							{% endif %}
+							<tr>
+								<th>Last updated</th>
+								<td> {{ product.pub_date.strftime('%d %b, %Y') }} </td>
+							</tr>
+							<tr>
+								<th>Prodcut Images</th>
+								<td class="text-center">
+									<img src="{{ url_for('static', filename='productimages/' + product.image1) }}"
+										alt="" class="img-fluid" style="width: 60%;" />
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- DELTE CONFIRM MODAL -->
+			<div class="modal fade modal-md" id="deleteConfirmModalToggle{{product.id}}" aria-hidden="true"
+				aria-labelledby="deleteConfirmModalToggle{{product.id}}Label" tabindex="-1">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<h3 class="modal-title fs-5" id="deleteConfirmModalToggle{{product.id}}Label">
+								Are you sure you want to delete the Product?
+							</h3>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-sm btn-dark" data-bs-target="#exampleModalToggle"
+								data-bs-toggle="modal">
+								Cancel
+							</button>
+							<form action="{{ url_for('dashboard.delete_product', product_id=product.id) }}"
+								method="POST">
+								<input type="submit" class="btn btn-danger btn-sm m-1" value="Delete Product" />
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+</div>
+
+
+<script src="{{ url_for('static', filename='js/dselect.js') }}"></script>
+
+<script>
+	const searchbrand = document.querySelector("#selectbrand");
+	const selectcategory = document.querySelector("#selectcategory");
+	dselect(searchbrand, {
+		search: true,
+	});
+	dselect(selectcategory, {
+		search: true,
+	});
+</script>
+
+
+{% endblock %}
