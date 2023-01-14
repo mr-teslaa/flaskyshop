@@ -199,8 +199,8 @@
 
 						<div class="row">
 							<div class="col-md-4">
-								<div class="form-floating py-5">
-									<label>Update Brand</label>
+								<div class="py-3">
+									<label class="form-label">Update Brand</label>
 
 									{% if form.product_brand.errors %}
 									{{ form.product_brand(
@@ -224,8 +224,8 @@
 							</div>
 
 							<div class="col-md-4">
-								<div class="form-floating py-5">
-									<label>Update Category</label>
+								<div class="py-3">
+									<label class="form-label">Update Category</label>
 
 									{% if form.product_category.errors %}
 									{{ form.product_category(
@@ -318,16 +318,19 @@
 
 <script src="{{ url_for('static', filename='js/dselect.js') }}"></script>
 
-<script>
+<!-- <script>
 	const searchbrand = document.querySelector("#selectbrand");
 	const selectcategory = document.querySelector("#selectcategory");
 	dselect(searchbrand, {
 		search: true,
+		value: `{{ product.brand_id }}`
 	});
+
 	dselect(selectcategory, {
 		search: true,
 	});
-</script>
+
+</script> -->
 
 
 {% endblock %}

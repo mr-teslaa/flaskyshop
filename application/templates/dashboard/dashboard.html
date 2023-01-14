@@ -46,7 +46,9 @@
 
 				<!-- ALL SELL CARD -->
 				<div class="row mb-3">
-					<div class="col-md-4">
+
+					<!-- PROFIT - THIS MONTH -->
+					<div class="col">
 						<div class="border summery__box bg-success bg-gradient text-white p-2">
 							<h3 id="currentmonthprofit" class="summery__box-title fs-1 fw-bolder">
 								000
@@ -55,7 +57,64 @@
 						</div>
 					</div>
 
-					<div class="col-md-4">
+					<!-- PROFIT - TOTAL -->
+					<div class="col">
+						<div class="border summery__box bg-success bg-gradient text-white p-2">
+							<h3 id="totalprofit" class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">Total Profit</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="row mb-3">
+					<!-- EARNING - THIS MONTH -->
+					<div class="col">
+						<div class="border summery__box bg__mintgreen p-2">
+							<h3 id='currentMonthEarning' class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">This Month Earning</p>
+						</div>
+					</div>
+
+					<!-- EARNING - TOTAL -->
+					<div class="col">
+						<div class="border summery__box bg__mintgreen p-2">
+							<h3 id="totalearning" class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">Total TK Earning</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="row gap-2 mb-3">
+					<!-- PENDING - THIS MONTH -->
+					<div class="col">
+						<div class="border summery__box bg__goldenpoppy p-2">
+							<h3 id="currentMonthPending" class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">This Month TK Pending</p>
+						</div>
+					</div>
+
+					<!-- PENDING - TOTAL -->
+					<div class="col">
+						<div class="border summery__box bg__goldenpoppy p-2">
+							<h3 id="totalpendingprice" class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">Total TK Pending</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="row gap-2 mb-3">
+					<!-- STOCK - TOTAL PRODUCT -->
+					<div class="col">
 						<div class="border summery__box bg__anakiwa p-2">
 							<h3 id="stock" class="summery__box-title fs-1 fw-bolder">
 								00
@@ -66,68 +125,7 @@
 						</div>
 					</div>
 
-					<div class="col-md-4">
-						<div class="border summery__box bg__anakiwa p-2">
-							<h3 id="totalsellproduct" class="summery__box-title fs-1 fw-bolder">
-								00
-							</h3>
-							<p class="summery__subtitle">
-								Total Selled Product
-							</p>
-						</div>
-					</div>
-
-				</div>
-
-				<div class="row mb-3">
-					<div class="col-md-4">
-						<div class="border summery__box bg-success bg-gradient text-white p-2">
-							<h3 id="totalprofit" class="summery__box-title fs-1 fw-bolder">
-								000
-							</h3>
-							<p class="summery__subtitle">Total Profit</p>
-						</div>
-					</div>
-
-					<div class="col-md-4">
-						<div class="border summery__box bg__mintgreen p-2">
-							<h3 id="totalearning" class="summery__box-title fs-1 fw-bolder">
-								000
-							</h3>
-							<p class="summery__subtitle">Total TK Earning</p>
-						</div>
-					</div>
-
-					<div class="col-md-4">
-						<div class="border summery__box bg__goldenpoppy p-2">
-							<h3 id="totalpendingprice" class="summery__box-title fs-1 fw-bolder">
-								000
-							</h3>
-							<p class="summery__subtitle">Total TK Pending</p>
-						</div>
-					</div>
-				</div>
-
-				<!-- CURRENT MONTH SELL CARD -->
-				<div class="row gap-2 mb-5">
-					<div class="col">
-						<div class="border summery__box bg__mintgreen p-2">
-							<h3 id='currentMonthEarning' class="summery__box-title fs-1 fw-bolder">
-								000
-							</h3>
-							<p class="summery__subtitle">This Month Earning</p>
-						</div>
-					</div>
-
-					<div class="col">
-						<div class="border summery__box bg__goldenpoppy p-2">
-							<h3 id="currentMonthPending" class="summery__box-title fs-1 fw-bolder">
-								000
-							</h3>
-							<p class="summery__subtitle">This Month TK Pending</p>
-						</div>
-					</div>
-
+					<!-- SELLED - THIS MONTH -->
 					<div class="col">
 						<div class="border summery__box bg__anakiwa p-2">
 							<h3 id="currentMonthSelledProduct" class="summery__box-title fs-1 fw-bolder">
@@ -135,6 +133,18 @@
 							</h3>
 							<p class="summery__subtitle">
 								This Month Selled Product
+							</p>
+						</div>
+					</div>
+
+					<!-- SELLED - TOTAL PRODUCT -->
+					<div class="col">
+						<div class="border summery__box bg__anakiwa p-2">
+							<h3 id="totalsellproduct" class="summery__box-title fs-1 fw-bolder">
+								00
+							</h3>
+							<p class="summery__subtitle">
+								Total Selled Product
 							</p>
 						</div>
 					</div>
@@ -285,7 +295,7 @@
 			response.json().then((data) => {
 				// ADDING COMMA TO TOTAL EARNING
 				stock.innerText = numberWithCommas(data.stock);
-				totalselleproduct.innerText = data.totalselledproduct;
+				totalselleproduct.innerText = numberWithCommas(data.totalselledproduct);
 				totalearning.innerText = numberWithCommas(data.selledtk);
 				totalprofit.innerText = numberWithCommas(data.totalprofit);
 				totalpendingprice.innerText = numberWithCommas(data.pendingtk);
@@ -334,7 +344,6 @@
 		fetch(`/dashboard/search-invoice?q=${searchValue}`)
 			.then(response => response.json())
 			.then(data => {
-				console.log(data)
 				// Get the tbody element
 				const tbody = document.querySelector("tbody")
 

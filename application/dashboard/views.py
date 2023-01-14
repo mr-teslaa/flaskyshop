@@ -728,8 +728,9 @@ def edit_product(product_id):
     product = Products.query.get_or_404(product_id)
     
     form = EditProductForm()
-    form.product_brand.choices = [(brand.id, brand.name) for brand in Brands.query.all()]
-    form.product_category.choices = [(category.id, category.name) for category in Categories.query.all()]
+    form.product_brand.choices = [(product.brand_id, Brands.query.get(product.brand_id).name)] + [(brand.id, brand.name) for brand in Brands.query.filter(Brands.id != product.brand_id).all()]
+
+    form.product_category.choices = [(product.category_id, Categories.query.get(product.category_id).name)] + [(category.id, category.name) for category in Categories.query.filter(Categories.id != product.category_id).all()]
     
     if form.validate_on_submit():
         productname = form.product_name.data.strip()

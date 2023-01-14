@@ -228,9 +228,6 @@ searchcontainer.addEventListener("focusout", (e) => {
         // console.log(e.value);
         if (productname == e.innerText) {
             let getproductid = e.value;
-            // console.log(
-            //     `Product Name: "${productname}" and Product ID: "${e.value}"`
-            // );
 
             fetch(`${window.origin}/api/newsell/${getproductid}/price/get/`, {
                 method: "POST",
