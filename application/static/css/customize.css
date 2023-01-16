@@ -14,15 +14,6 @@ main {
 	font-size: 1rem;
 }
 
-/* .active {
-    color: #000;
-    font-weight: 600;
-}
-
-.active i {
-    font-weight: 600;
-} */
-
 .login__container {
 	height: 100vh;
 	display: flex;
@@ -37,6 +28,20 @@ main {
 .nav__icon {
 	display: flex;
 	align-items: center;
+}
+
+.navbar-brand {
+	padding-top: .75rem;
+	padding-bottom: .75rem;
+}
+
+.navbar .navbar-toggler {
+	top: .25rem;
+	right: 1rem;
+}
+
+.navbar .form-control {
+	padding: .75rem 1rem;
 }
 
 .nav__icon i {

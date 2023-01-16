@@ -465,6 +465,18 @@ def newsell():
 
     return render_template('dashboard/newsell.html', title="New Sell", form=form, newinvoiceID=newinvoiceID)
 
+
+#   NEW SELL POS
+@dashboard.route('/dashboard/newsell/pos/', methods=['GET', 'POST'])
+@login_required
+def newsellPOS():
+    form=AddTodaySellForm()
+    newinvoiceID = invoiceID()
+    form.customer_name.choices = [(customer.id, customer.customer_name) for customer in Customers.query.all()]
+    # form.product_name.choices = [(product.productid, product.name) for product in Products.query.all()]
+
+    return render_template('dashboard/newsellPOS.html', title="New Sell", form=form, newinvoiceID=newinvoiceID)
+
 @dashboard.route('/dashboard/newsell/submit/', methods=['POST'])
 @login_required
 def newsell_submit():
@@ -805,12 +817,21 @@ def delete_product(product_id):
 #   REALTIME SEARCH
 #   ========================
 
-#   PRODUCT SEARCH
-@dashboard.route('/dashboard/search-products')
+#   PRODUCT SEARCH by PRODUCT NAME
+@dashboard.route('/dashboard/search-products-by-name')
 @login_required
-def search_products():
+def search_products_id():
     search_query = request.args.get('q')
     products = Products.query.filter(Products.name.like(f'%{search_query}%')).all()
+    return jsonify([product.to_dict() for product in products])
+
+
+#   PRODUCT SEARCH by PRODUCT ID
+@dashboard.route('/dashboard/search-products-by-id')
+@login_required
+def search_products_name():
+    search_query = request.args.get('q')
+    products = Products.query.filter(Products.productid.like(f'%{search_query}%')).all()
     return jsonify([product.to_dict() for product in products])
 
 

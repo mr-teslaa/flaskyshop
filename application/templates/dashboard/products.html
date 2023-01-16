@@ -5,12 +5,13 @@
 	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
 		BM Gadget & Tech
 	</a>
-	<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
-		data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+	<button class="navbar-toggler position-absolute d-md-none collapsed" type="button"
+		data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+		aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"> </span>
 	</button>
 	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" id="searchProduct"
-		placeholder="Search Product by name" aria-label="Search" />
+		placeholder="Search Product by id or name" aria-label="Search" />
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
 			<a class="nav-link px-3" href="{{ url_for('dashboard.user_logout') }}">Sign out </a>
@@ -618,8 +619,17 @@
 	searchInput.addEventListener('input', (e) => {
 		const searchValue = e.target.value;
 
+		let url = '';
+		if (!isNaN(searchValue)) {
+			// search by ID
+			url = `/dashboard/search-products-by-id?q=${searchValue}`;
+		} else {
+			// search by name
+			url = `/dashboard/search-products-by-name?q=${searchValue}`;
+		}
+
 		// Make a fetch request to your endpoint
-		fetch(`/dashboard/search-products?q=${searchValue}`)
+		fetch(url)
 			.then(response => response.json())
 			.then(data => {
 				// Get the tbody element

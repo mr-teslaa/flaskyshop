@@ -141,33 +141,15 @@
 				<section class="col-md-4">
 					<form id="form">
 						<div class="mb-3">
-							<!-- <label class="form-label">Product Name</label>
-							<input type="text" required name="productname" id="productname" class="form-control"
-								value="Huawei P30"> -->
-							{% if form.product_name.errors %}
-							{{ form.product_name(
-								class="form-select text-uppercase is-invalid",
-								placeholder="Product Name",
-								id="selectproduct"
-							) }}
-							<div class="invalid-feedback">
-								{% for error in form.product_name.errors %}
-								<span>{{ error }}</span>
-								{% endfor %}
-							</div>
-							{% else %}
-							{{ form.product_name(
-								class="form-select text-uppercase",
-								placeholder="Product Name",
-								id="selectproduct"
-							) }}
-							{% endif %}
+							<label class="form-label">Product ID</label>
+							<input type="text" required name="productid" id="productid" class="form-control"
+								placeholder="PRODUCT-ID">
 						</div>
 
 						<div class="mb-3">
-							<label class="form-label">Product ID</label>
-							<input type="text" required name="productname" id="productid" class="form-control"
-								placeholder="PRODUCT-ID" readonly>
+							<label class="form-label">Product Name</label>
+							<input type="text" required name="productname" id="productname" class="form-control"
+								placeholder="PRODUCT NAME" readonly>
 						</div>
 
 						<div class="mb-3">
@@ -248,25 +230,15 @@
 	</div>
 </div>
 
-
-<!-- <script>
-	let counter = 1;
-	const serialnos = document.querySelectorAll('.counters');
-	serialnos.forEach(serial => {
-		serial.innerText = counter;
-		counter++;
-	});
-</script> -->
-
-<script src="{{ url_for('static', filename='js/dselect.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='js/dselect.js') }}"></script>
 <script>
 	const searchproduct = document.querySelector("#selectproduct");
 	dselect(searchproduct, {
 		search: true,
 	});
-</script>
+</script> -->
 
 <script src="{{ url_for('static', filename='js/numberToWords.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/newsell.js') }}"></script>
+<script src="{{ url_for('static', filename='js/newsellPOS.js') }}"></script>
 
 {% endblock %}
