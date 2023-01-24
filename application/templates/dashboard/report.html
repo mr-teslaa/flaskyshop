@@ -11,7 +11,7 @@
 		<span class="navbar-toggler-icon"> </span>
 	</button>
 	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
-		aria-label="Search" />
+		aria-label="Search" disabled />
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
 			<a class="nav-link px-3" href="{{ url_for('dashboard.user_logout') }}">Sign out </a>
@@ -29,143 +29,144 @@
 				class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h1 class="h2">Report</h1>
 				<div class="btn-toolbar mb-2 mb-md-0">
-					<div class="btn-group me-2">
-						<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+					<!-- <div class="btn-group me-2">
+						<button type="button" class="btn btn-primary" data-bs-toggle="modal"
 							data-bs-target="#categoryModal">
 							<i class="bx bx-plus"></i>
-							Search Report
+							Print
 						</button>
+					</div> -->
+				</div>
+			</div>
+
+			<form id="report-form" action="/dashboard/report/">
+				<div class="row align-items-center">
+					<div class="col-md-3 mb-3">
+						<label for="start-date">Start Date:</label>
+						<input type="date" id="start-date" name="start-date" class="form-control" required>
+					</div>
+					<div class="col-md-3 mb-3">
+						<label for="end-date">End Date:</label>
+						<input type="date" id="end-date" name="end-date" class="form-control" required>
+					</div>
+					<div class="col-md-3 mb-3">
+						<label for="filter">Filter:</label>
+						<select id="filter" name="filter" class="form-select">
+							<option value="all">All Invoices</option>
+							<option value="pending">Pending Invoices</option>
+							<option value="non-pending">Paid Invoices</option>
+							<option value="products">Products</option>
+						</select>
+					</div>
+					<div class="col-md-3 align-self-end mb-3">
+						<input type="submit" class="btn btn-dark" value="Generate Report">
 					</div>
 				</div>
-			</div>
+			</form>
 
-			<!-- add products modal -->
-			<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel"
-				aria-hidden="true">
-				<div class="modal-dialog modal-md" role="document">
-					<div class="modal-content rounded-4 shadow">
-						<div class="modal-header border-bottom-0">
-							<h5 class="modal-title" id="exampleModalLabel">
-								Report
-							</h5>
+			<div class="row py-4" id="report-total-container"></div>
 
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-						</div>
+			<div id="report-table"></div>
 
-						<div class="modal-body py-0">
-							<div class="row">
-								<div class="col-md-12">
-									<div class="form-floating mb-3">
-										<input type="number" class="form-control" id="CategoryNameID"
-											placeholder="Category Name" />
-										<label for="CategoryNameID">
-											Category Name
-										</label>
-									</div>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="col-md-12">
-									<div class="form-floating mb-3">
-										<textarea class="form-control" id="floatingCategory" placeholder="Category"
-											style="height: 100px"></textarea>
-										<label for="floatingCategory">
-											Note
-											<small class="text-muted">
-												(optional)
-											</small>
-										</label>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="modal-footer">
-							<button type="button" class="btn btn-lg btn-primary w-100 mx-0 mb-2">
-								Save
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- end of add product modal -->
-
-			<!-- REPORT DETAILS -->
-			<div class="row mb-5">
-				<div class="col-md-3">
-					<p style="margin-bottom: 0.3rem">From</p>
-					<input type="date" class="form-control" />
-				</div>
-
-				<div class="col-md-3">
-					<p style="margin-bottom: 0.3rem">To</p>
-					<input type="date" class="form-control" />
-				</div>
-				<div class="col-md-3 align-self-end">
-					<button class="btn btn-primary">Search</button>
-				</div>
-			</div>
-
-			<h3>Search Result</h3>
-			<div class="table-responsive">
-				<table class="table table-striped table-sm">
-					<thead>
-						<tr>
-							<th scope="col" width="100">Serial No</th>
-							<th scope="col">Product Name</th>
-							<th scope="col">Product ID</th>
-							<th scope="col">Customer Name</th>
-							<th scope="col">Quantity</th>
-							<th scope="col">Payment</th>
-							<th scope="col">Price</th>
-							<th scope="col">Action</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td class="text-center">1,001</td>
-							<td>random</td>
-							<td>data</td>
-							<td>placeholder</td>
-							<td>text</td>
-							<td>
-								<small
-									class="d-inline-flex px-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2">
-									Complete
-								</small>
-							</td>
-							<td>text</td>
-							<td>
-								<button type="button" class="btn btn-dark btn-sm" aria-expanded="false">
-									Details
-								</button>
-							</td>
-						</tr>
-						<tr>
-							<td class="text-center">1,002</td>
-							<td>placeholder</td>
-							<td>irrelevant</td>
-							<td>viseual</td>
-							<td>layout</td>
-							<td>
-								<small
-									class="d-inline-flex px-2 py-1 fw-semibold text-warning bg-warning bg-gradient bg-opacity-10 border border-success border-opacity-10 rounded-2">
-									Pending
-								</small>
-							</td>
-							<td>layout</td>
-							<td>
-								<button type="button" class="btn btn-dark btn-sm" aria-expanded="false">
-									Details
-								</button>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
 		</main>
 	</div>
 </div>
 
+
+<script>
+	document.getElementById("report-form").addEventListener("submit", (e) => {
+		e.preventDefault();
+		let startDate = document.getElementById("start-date").value;
+		let endDate = document.getElementById("end-date").value;
+		let filter = document.getElementById("filter").value;
+
+		fetch(`${window.origin}/dashboard/report/submit/`, {
+			method: "POST",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				startDate,
+				endDate,
+				filter
+			}),
+		}).then((response) => {
+			if (response.status !== 200) {
+				console.log(`Something went wrong! Reload the page. Status: ${response.status}`);
+				return;
+			}
+
+
+			response.json().then((data) => {
+				let reportTable = document.getElementById("report-table");
+				let reportTotalContainer = document.querySelector('#report-total-container');
+				let table = "";
+				if (filter === "products") {
+					let index = 1;
+					table += `<table class="table table-hover table-bordered table-striped table-sm"> 
+						<tr> 
+							<th>#</th>
+							<th>Product ID</th>
+							<th>Product Name</th> 
+							<th>Quantity</th>
+						</tr>`;
+					data.products.forEach((product) => {
+						table += `<tr> 
+									<td>${index++}</td> 
+									<td>${product.productid}</td> 
+									<td>${product.productname}</td> 
+									<td>${product.quantity}</td> 
+								</tr>`;
+					});
+					table += `</table>`;
+					if (data.total_quantity || data.total_quantity === 0) {
+						let reportTotal = `<div class="col">
+												<h3 class="fs-4">Total Product Sold: ${data.total_quantity}</h3>
+											</div>`;
+						reportTotalContainer.innerHTML = reportTotal;
+					}
+				} else {
+					let index = 1;
+					table += `<table class="table table-hover table-bordered table-striped table-sm"> 
+								<tr> 
+									<th>#</th>
+									<th> Date </th> 
+									<th> Invoice ID </th> 
+									<th>Customer Name</th> 
+									<th> Total Amount </th> 
+									<th>Payment Status</th> 
+									<th>Details</th> 
+								</tr>`;
+					data.invoices.forEach((invoice) => {
+						table += `<tr> 
+									<td>${index++}</td> 
+									<td>${invoice.pub_date}</td> 
+									<td>${invoice.invoice_id}</td> 
+									<td>${invoice.customer_name} </td> 
+									<td>${invoice.totalprice}</td> 
+									<td>${invoice.payment_status}</td> 
+									<td> 
+										<a class="btn btn-sm btn-outline-dark" href="${window.origin}/dashboard/sell/${invoice.invoice_id}/">
+											Details
+										</a> 
+									</td> 
+								</tr>`;
+					});
+					table += `</table>`;
+				}
+				reportTable.innerHTML = table;
+				if (data.total_profit || data.total_profit === 0 || data.total_pending || data.total_pending === 0) {
+					let reportTotal = `<div class="col">
+												<h3 class="fs-4">Total Profit: ${data.total_profit}</h3>
+											</div>
+											<div class="col">
+												<h3 class="fs-4">Total Pending: ${data.total_pending}</h3>
+											</div>`;
+					reportTotalContainer.innerHTML = reportTotal;
+				}
+			});
+		});
+	});
+</script>
 {% endblock %}

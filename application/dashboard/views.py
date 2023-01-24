@@ -1,6 +1,12 @@
+# ////////////////////////////////
+# 0. API  
+# 1. REALTIME SEARCH   
+# 2. DASHBOARD
+# ////////////////////////////////
+
+
 import os
 import json
-import uuid
 
 #   importing basic flask module
 from flask import Blueprint
@@ -45,6 +51,7 @@ from application.dashboard.forms import AddProductForm
 from application.dashboard.forms import EditProductForm
 from application.dashboard.forms import AddTodaySellForm 
 from application.dashboard.forms import UpdateProfileForm 
+from application.dashboard.forms import ReportForm
 
 #   CUSTOM MODULE
 from application.dashboard.utils import save_logo
@@ -61,11 +68,12 @@ def index():
 
 
 #   ===========================
-#   START GET DATA with AJAX
+#   START API
 #   ===========================
 
 #   GET TODAY SELLS INFO
 @dashboard.route('/api/todaysell/price/get/', methods=['POST'])
+@login_required
 def todaysell_price_get():
     today = datetime.utcnow().date()
     today_sells = DailySells.query.filter(DailySells.pub_date.like(f'{today}%')).all()
@@ -105,6 +113,7 @@ def todaysell_price_get():
 
 #   GET PRICE FOR A SINGLE PRODUCT
 @dashboard.route('/api/newsell/<string:product_id>/price/get/', methods=['POST'])
+@login_required
 def product_price_get(product_id):
     getproduct = Products.query.filter_by(productid=product_id).first()
     
@@ -134,6 +143,7 @@ def product_price_get(product_id):
 
 #   GET TOTAL SELL INFO
 @dashboard.route('/api/allsell/info/get/', methods=['POST'])
+@login_required
 def allsell_info_get():
     allsell = DailySells.query.all()
     stock = Products.query.with_entities(func.sum(Products.stock)).scalar()
@@ -171,6 +181,7 @@ def allsell_info_get():
 
 #   GET THIS MONTH SELL INFO
 @dashboard.route('/api/sell/currentmonth/info/get/', methods=['POST'])
+@login_required
 def current_month_sell_info_get():
     current_month = datetime.utcnow().strftime("%m")
 
@@ -207,8 +218,8 @@ def current_month_sell_info_get():
 
 
 # UPDATE PAYMENT STATUS
-
 @dashboard.route('/api/sell/update/payment/status/<invoice_id>', methods=['POST'])
+@login_required
 def update_payment_status(invoice_id):
     # Get the new payment status from the POST request
     new_payment_status = request.json['payment_status']
@@ -223,52 +234,148 @@ def update_payment_status(invoice_id):
     return jsonify({'message': 'Payment status updated successfully'})
 
 
-# #   GET THIS MONTH SELL INFO
-# @dashboard.route('/api/sell/currentmonth/info/get/', methods=['POST'])
-# def current_month_sell_info_get():
-#     allsell = DailySells.query.all()
-#     sellprice = 0
-#     pendingprice = 0
-#     current_month = datetime.datetime.now().strftime("%m")
-#     total_selled_products = SelledProducts.query.with_entities(func.sum(SelledProducts.quantity)).join(DailySells).filter(extract('month', DailySells.pub_date) == current_month).scalar()
+#   CUSTOMERWISE REPORT
+@dashboard.route('/api/customer/<int:customer_id>/history')
+@login_required
+def get_customer_history(customer_id):
+    # Query the customer by id
+    customer = Customers.query.get(customer_id)
+    if not customer:
+        # Return a 404 error if the customer does not exist
+        return make_response(jsonify({'error': 'Customer not found'}), 404)
 
-#     today = datetime.utcnow().strftime('%d %b, %Y')
-#     current_month = datetime.utcnow().strftime('%b')
+    # Query the customer's orders from the DailySells table
+    orders = DailySells.query.filter_by(customer_id=customer_id).all()
+    if not orders:
+        # Return a 404 error if the customer has no orders
+        return make_response(jsonify({'error': 'No orders found for this customer'}), 404)
 
-    
-#     for sell in allsell:
-#         dbmonth = sell.pub_date.strftime('%b')
+    # Create a list to store the customer's order history
+    order_history = []
+    for order in orders:
+        # Query the products for each order
+        products = SelledProducts.query.filter_by(daily_sells_id=order.id).all()
+        # Create a dictionary to store the order's details
+        order_details = {
+            'invoice_id': order.invoiceid,
+            'date': order.pub_date,
+            'products': [{'name': product.productname, 'price': product.price, 'quantity': product.quantity} for product in products],
+            'total_price': order.totalprice
+        }
+        # Append the order details to the customer's order history
+        order_history.append(order_details)
 
-#         if current_month == dbmonth:
-#             check = True
-#         else:
-#             check = False
+    # Query the customer's total payment and pending payment
+    total_payment = db.session.query(db.func.sum(DailySells.totalprice)).filter(DailySells.customer_id == customer_id).scalar()
+    pending_payment = db.session.query(db.func.sum(DailySells.totalprice)).filter(DailySells.customer_id == customer_id, DailySells.payment_status == 'pending').scalar()
+    if total_payment is None:
+        total_payment = 0
+    if pending_payment is None:
+        pending_payment = 0
+
+    # Return the customer's order history and payment details
+    return jsonify({'order_history': order_history, 'total_payment': total_payment, 'pending_payment': pending_payment})
+
+
+#   GET FILTERED REPORT
+@dashboard.route('/dashboard/report/submit/', methods=['POST'])
+@login_required
+def get_report():
+    data = request.get_json()
+
+    start_date = data['startDate'] 
+    end_date = data['endDate']
+    filter = data['filter']
+
+    start_date = datetime.strptime(start_date, '%Y-%m-%d')
+    end_date = datetime.strptime(end_date, '%Y-%m-%d')
+
+    if filter == 'all':
+        invoices = DailySells.query.filter(DailySells.pub_date.between(start_date, end_date)).all()
+    elif filter == 'pending':
+        invoices = DailySells.query.filter(DailySells.pub_date.between(start_date, end_date), DailySells.payment_status == 'pending').all()
+    elif filter == 'non-pending':
+        invoices = DailySells.query.filter(DailySells.pub_date.between(start_date, end_date), DailySells.payment_status != 'pending').all()
+    elif filter == 'products':
+        # Query all products sold in the given date range
+        invoices = DailySells.query.filter(DailySells.pub_date.between(start_date, end_date)).all()
+        invoices_json = [invoice.to_dict() for invoice in invoices]
+        products = []
+        total_quantity = 0
+        for invoice in invoices_json:
+            for selled_product in invoice['selled_products']:
+                productid = selled_product['productid']
+                productname = selled_product['productname']
+                quantity = selled_product['quantity']
+                total_quantity += int(quantity)
+                products.append({'productid': productid, 'productname': productname, 'quantity': quantity})
         
-#         if check:
-#             if sell.payment_status == 'cash':
-#                 sellprice += int(sell.totalprice) 
-            
-#             if sell.payment_status == 'pending':
-#                 pendingprice += int(sell.totalprice)
-
+        return jsonify(products=products, total_quantity=total_quantity)
+    else:
+        # Return an error message if the filter option is not valid``
+        return jsonify(error="Invalid filter option")
     
+    # added code to convert DailySells objects to json serializable dict
+    invoices_json = [invoice.to_dict() for invoice in invoices]
 
-#     obj = {
-#         "message": "GET Sell Successfully",
-#         "selledtk": sellprice,
-#         "pendingtk": pendingprice,
-#         "todaydate": today,
-#         "totalsellproduct": total_selled_products
-#     }
-#     res =  make_response(jsonify(obj), 200)
-#     return res
+    # Get all products and their calculate_profit() values
+    products = Products.query.all()
+    product_profits = {product.name: product.calculate_profit() for product in products}
+
+    # CALCULATING PROFIT
+    total_profit = 0
+    for invoice in invoices_json:
+        if invoice['payment_status'] != 'pending':
+            for product in invoice['selled_products']:
+                total_profit += product_profits.get(product['productname'], 0)
+
+    # CALCULATING PENDING
+    total_pending = 0
+    for invoice in invoices_json:
+        if invoice['payment_status'] == 'pending':
+            total_pending += int(invoice['totalprice'])
+
+    return jsonify(invoices=invoices_json, total_pending=total_pending,  total_profit=total_profit) 
+
 
 #   =======================
-#   END GET DATA
+#   END API
 #   =======================
 
 
+#   ========================
+#   START - REALTIME SEARCH
+#   ========================
 
+#   PRODUCT SEARCH by PRODUCT NAME
+@dashboard.route('/dashboard/search-products-by-name')
+@login_required
+def search_products_id():
+    search_query = request.args.get('q')
+    products = Products.query.filter(Products.name.like(f'%{search_query}%')).all()
+    return jsonify([product.to_dict() for product in products])
+
+
+#   PRODUCT SEARCH by PRODUCT ID
+@dashboard.route('/dashboard/search-products-by-id')
+@login_required
+def search_products_name():
+    search_query = request.args.get('q')
+    products = Products.query.filter(Products.productid.like(f'%{search_query}%')).all()
+    return jsonify([product.to_dict() for product in products])
+
+
+#   ORDER SEARCH
+@dashboard.route('/dashboard/search-invoice')
+@login_required
+def search_orders():
+    search_query = request.args.get('q')
+    invoices = DailySells.query.filter(DailySells.invoiceid.like(f'%{search_query}%')).all()
+    return jsonify([invoice.to_dict() for invoice in invoices])
+
+#   ========================
+#   END - REALTIME SEARCH
+#   ========================
 
 
 #   =============================
@@ -439,19 +546,9 @@ def admin_dashboard():
 def todaysell():
     today = datetime.utcnow().strftime('%d %b, %Y')
     page = request.args.get('page', 1, type=int)
-    sells = DailySells.query.order_by(DailySells.pub_date.desc()).paginate(page=page, per_page=20)
+    sells = DailySells.query.order_by(DailySells.pub_date.desc()).paginate(page=page, per_page=50)
 
     return render_template('dashboard/todaysell.html', title='Today\'s Sell', sells=sells, today=today)
-
-
-# #   DAILY SELL
-# @dashboard.route('/dashboard/todaysell/', methods=['GET', 'POST'])
-# @login_required
-# def todaysell():
-#     today = datetime.utcnow().strftime('%d %b, %Y')
-#     page = request.args.get('page', 1, type=int)
-#     sells = DailySells.query.order_by(DailySells.pub_date.desc()).paginate(page=page, per_page=20)
-#     return render_template('dashboard/todaysell.html', title='Today\'s Sell', sells=sells, today=today)
 
 
 #   NEW SELL
@@ -556,6 +653,7 @@ def view_sell(invoiceid):
     customer = Customers.query.filter_by(id=sell.customer_id).first()
     user = Users.query.filter_by(id=sell.user_id).first()
     return render_template('/dashboard/sell.html', products=products, sell=sell, customer=customer, user=user)
+
 
 #   BRAND
 @dashboard.route('/dashboard/brand/', methods=['GET', 'POST'])
@@ -688,21 +786,16 @@ def products():
     total_products = Products.query.with_entities(func.sum(Products.stock)).scalar()
 
     if form.validate_on_submit():
-        productname = form.product_name.data
-        productID = form.product_id.data
-        productprice = form.product_price.data
-        productBuyingprice = form.product_buying_price.data
-        productquantity = form.product_quantity.data
-        # if existingproduct:
-        #     productquantity = form.product_quantity.data + existingproduct.stock
-        # else:
-        #     productquantity = form.product_quantity.data
-        productdescription = form.product_description.data
-        productbrand = form.product_brand.data
-        productcategory = form.product_category.data
+        productname = form.product_name.data.strip()
+        productID = form.product_id.data.strip()
+        productprice = int(str(form.product_price.data).strip())
+        productBuyingprice = int(str(form.product_buying_price.data).strip())
+        productquantity = int(str(form.product_quantity.data).strip())
+        productdescription = form.product_description.data.strip()
+        productbrand = form.product_brand.data.strip()
+        productcategory = form.product_category.data.strip()
         productimage = form.product_image.data
         productStatus = form.product_available.data
-        print(f'Product IMAGE status: {productimage}')
 
         if productimage:
             picture_file = save_product(productimage)
@@ -715,10 +808,7 @@ def products():
             db.session.add(product)
             db.session.commit()
             return redirect(url_for('dashboard.products'))    
-
-        # product = Products(name=productname, productid=productID, price=productprice, 
-        #                     stock=productquantity, description= productdescription,  brand= productbrand, 
-        #                     category= productcategory, available_status=productStatus)
+        
         product = Products(name=productname, productid=productID, price=productprice,
                             buying_price=productBuyingprice,  
                             stock=productquantity, description=productdescription, brand_id=productbrand, 
@@ -813,36 +903,6 @@ def delete_product(product_id):
     return redirect(url_for('dashboard.products'))
 
 
-#   ========================
-#   REALTIME SEARCH
-#   ========================
-
-#   PRODUCT SEARCH by PRODUCT NAME
-@dashboard.route('/dashboard/search-products-by-name')
-@login_required
-def search_products_id():
-    search_query = request.args.get('q')
-    products = Products.query.filter(Products.name.like(f'%{search_query}%')).all()
-    return jsonify([product.to_dict() for product in products])
-
-
-#   PRODUCT SEARCH by PRODUCT ID
-@dashboard.route('/dashboard/search-products-by-id')
-@login_required
-def search_products_name():
-    search_query = request.args.get('q')
-    products = Products.query.filter(Products.productid.like(f'%{search_query}%')).all()
-    return jsonify([product.to_dict() for product in products])
-
-
-#   ORDER SEARCH
-@dashboard.route('/dashboard/search-invoice')
-@login_required
-def search_orders():
-    search_query = request.args.get('q')
-    invoices = DailySells.query.filter(DailySells.invoiceid.like(f'%{search_query}%')).all()
-    return jsonify([invoice.to_dict() for invoice in invoices])
-
 #   ORDERS
 @dashboard.route('/dashboard/orders/', methods=['GET', 'POST'])
 @login_required
@@ -850,7 +910,7 @@ def orders():
     return render_template('dashboard/orders.html', title='Orders')
 
 #   CUSTOMER
-@dashboard.route('/dashboard/customer/', methods=['GET', 'POST'])
+@dashboard.route('/dashboard/customers/', methods=['GET', 'POST'])
 @login_required
 def customer():
     #   FETCHING EXISTING CUSTOMER
@@ -866,6 +926,22 @@ def customer():
         flash(f'Customer "{form.customer_name.data}" added successfully ✅', 'success')
         return redirect(url_for('dashboard.customer'))
     return render_template('dashboard/customer.html', title='Customer', form=form, customers=customers, total_customer=total_customer)
+
+
+#   CUSTOMERWISE REPORT
+@dashboard.route('/customer/<int:customer_id>/payment-history/')
+@login_required
+def customer_payment_history(customer_id):
+    page = request.args.get('page', 1, type=int)
+    customer = Customers.query.filter_by(id=customer_id).first()
+    orders = DailySells.query.filter_by(customer_id=customer_id).order_by(DailySells.pub_date.desc()).paginate(page=page, per_page=50)
+    total_payment = 0
+    pending_payment = 0
+    for order in orders.items:
+        total_payment += int(order.totalprice)
+        if order.payment_status == 'pending':
+            pending_payment += int(order.totalprice)
+    return render_template('dashboard/customer_history.html', customer=customer, orders=orders, total_payment=total_payment, pending_payment=pending_payment)
 
 
 #   EDIT CUSTOMER
@@ -898,12 +974,11 @@ def delete_customer(customer_id):
     flash(f'Customer "{customer.customer_name}" Deleted ✅', 'success')
     return redirect(url_for('dashboard.customer'))
 
-
 #   REPORT
-# @dashboard.route('/dashboard/report/', methods=['GET', 'POST'])
-# @login_required
-# def report():
-#     return render_template('dashboard/report.html', title='Report')
+@dashboard.route('/dashboard/report/', methods=['GET'])
+@login_required
+def report():
+    return render_template('dashboard/report.html')
 #   =============================
 #   END DASHBAORD FUNCTIONALITY
 #   =============================

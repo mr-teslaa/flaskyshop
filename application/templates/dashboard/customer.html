@@ -11,7 +11,7 @@
 		<span class="navbar-toggler-icon"> </span>
 	</button>
 	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
-		aria-label="Search" />
+		aria-label="Search" disabled />
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
 			<a class="nav-link px-3" href="{{ url_for('dashboard.user_logout') }}">Sign out </a>
@@ -196,8 +196,13 @@
 							<td>{{ customer.customer_contact_number }}</td>
 							<td>{{ customer.customer_address }}</td>
 							<td>
+								<a 
+									href="{{ url_for('dashboard.customer_payment_history', customer_id=customer.id) }}"
+									class="btn btn-sm btn-dark">
+									History
+								</a>
 								<div class="btn-group dropstart">
-									<button type="button" class="btn btn-dark btn-sm dropdown-toggle"
+									<button type="button" class="btn btn-info btn-sm dropdown-toggle"
 										data-bs-toggle="dropdown" aria-expanded="false">
 										More Option
 									</button>

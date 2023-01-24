@@ -35,11 +35,26 @@ class Brands(db.Model):
     logo = db.Column(db.String(), default='default.jpg')
     note = db.Column(db.String())
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "logo": self.logo,
+            "note": self.note
+        }
+
 class Categories(db.Model):
     __tablename__ = 'categories'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), nullable=False, unique=True)
     note = db.Column(db.String())
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "note": self.note
+        }
 
 class Customers(db.Model, UserMixin):
     __tablename__ = 'customers'
@@ -69,6 +84,9 @@ class Products(db.Model):
     category = db.relationship('Categories', backref=db.backref('product', lazy=True))
     image1 = db.Column(db.String(), nullable=False, default='demoproduct.jpg')
 
+    def calculate_profit(self):
+        return int(self.price) - int(self.buying_price)
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -79,15 +97,12 @@ class Products(db.Model):
             "buying_price": self.buying_price,
             "stock": self.stock,
             "description": self.description,
-            "category": self.category.name,
-            "brand": self.brand.name,
+            "category": self.category.to_dict(),
+            "brand": self.brand.to_dict(),
             "available_status": self.available_status,
             "pub_date": self.pub_date,
         }
-
-
-
-
+    
 
 class SelledProducts(db.Model):
     __tablename__ = 'selled_products'
@@ -115,12 +130,25 @@ class SelledProducts(db.Model):
             discount = 0
 
         return (selling_price - buying_price) * int(self.quantity) - discount
+
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "productname": self.productname,
+            "productid": self.productid,
+            "price": self.price,
+            "quantity": self.quantity,
+            "unittotal": self.unittotal,
+            "daily_sells_id": self.daily_sells_id,
+        }
     
 
 class DailySells(db.Model):
     __tablename__ = 'daily_sells'
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
+    customer = db.relationship("Customers", back_populates="daily_sells", overlaps="daily_sells")
 
     invoiceid = db.Column(db.String())
     selled_products = db.relationship('SelledProducts', backref=db.backref('selled_products', lazy=True))
@@ -136,10 +164,15 @@ class DailySells(db.Model):
     def to_dict(self):
         selled_products_list = []
         for selled_product in self.selled_products:
-            selled_products_list.append(selled_product.productname)
+            selled_products_list.append({
+                "productid": selled_product.productid,
+                "productname": selled_product.productname,
+                "quantity": selled_product.quantity
+            })
         return {
             "id": self.id,
             "invoice_id": self.invoiceid,
+            "customer_name": self.customer.customer_name,
             "selled_products": selled_products_list,
             "totalprice": self.totalprice,
             "payment_status": self.payment_status,

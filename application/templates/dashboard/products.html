@@ -355,13 +355,14 @@
 			<hr />
 			{% if products %}
 			<div class="table-responsive">
-				<table class="table table-striped table-sm">
+				<table class="table table-striped table-hover table-bordered table-sm">
 					<thead>
 						<tr>
-							<th scope="col" width="100">#</th>
-							<th scope="col">Product ID</th>
-							<th scope="col">ProductName</th>
-							<th scope="col">Price <small>(Taka)</small> </th>
+							<th scope="col">#</th>
+							<th scope="col" style="width: 5%;">Product ID</th>
+							<th scope="col" style="width: 50%">ProductName</th>
+							<th scope="col">Price <small class="fs-6">(Taka)</small> </th>
+							<th scope="col">Stock </th>
 							<th scope="col">Brand</th>
 							<th scope="col">Product Image</th>
 							<th scope="col">Action</th>
@@ -371,15 +372,16 @@
 					<tbody>
 						{% for product in products.items %}
 						<tr class="align-middle">
-							<td style="width: 5%;" class="counters">{{ product.id }}</td>
+							<td class="counters">{{ product.id }}</td>
 							<td>{{ product.productid }}</td>
-							<td style="width: 50%">{{ product.name }}</td>
+							<td>{{ product.name }}</td>
 							<td>
 								<small
 									class="fs-6 d-inline-flex m-2 px-2 py-1 fw-lighter text-dark bg-dark bg-opacity-10 border border-dark border-opacity-10 rounded-2">
 									{{ product.price }}
 								</small>
 							</td>
+							<td align="center">{{ product.stock }}</td>
 							<td>{{ product.brand.name }}</td>
 							<td>
 								<img src="{{ url_for('static', filename='productimages/' + product.image1) }}" alt=""
@@ -541,8 +543,6 @@
 										</div>
 									</div>
 								</div>
-
-
 							</td>
 						</tr>
 						{% endfor %}
@@ -632,6 +632,7 @@
 		fetch(url)
 			.then(response => response.json())
 			.then(data => {
+				console.log(data)
 				// Get the tbody element
 				const tbody = document.querySelector("tbody")
 
@@ -644,6 +645,7 @@
 					for (let product of data) {
 						// Create a new row
 						const row = document.createElement("tr")
+						row.classList.add('align-middle')
 
 						let producturl = `${window.location.origin}/dashboard/product/${product.id}`
 
@@ -651,9 +653,14 @@
 						row.innerHTML = `<td>${product.id}</td>
 										<td>${product.productid}</td>
 										<td>${product.name}</td>
-										<td>${product.price}</td>
-										<td>${product.brand}</td>
 										<td>
+											<small class="fs-6 d-inline-flex m-2 px-2 py-1 fw-lighter text-dark bg-dark bg-opacity-10 border border-dark border-opacity-10 rounded-2">
+												${product.price}
+											</small>
+										</td>
+										<td align="center">${product.stock}</td>
+										<td>${product.brand.name}</td>
+										<td align="center">
 											<img src="{{url_for('static', filename='productimages/')}}/${product.image1}" class="img-fluid avatar__logo">
 										</td>
 										<td>
@@ -665,7 +672,7 @@
 					}
 				} else {
 					// Show an error message
-					tbody.innerHTML = "<tr><td colspan='7' class='text-center fs-5'>Product not found</td></tr>"
+					tbody.innerHTML = "<tr><td colspan='8' class='text-center fs-5'>Product not found</td></tr>"
 				}
 			})
 	});

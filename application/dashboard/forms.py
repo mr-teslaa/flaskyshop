@@ -7,6 +7,7 @@ from wtforms import SubmitField
 from wtforms import BooleanField
 from wtforms import TextAreaField
 from wtforms import SelectField
+from wtforms import DateField
 
 from flask_wtf.file import FileField
 from flask_wtf.file import FileAllowed
@@ -392,3 +393,11 @@ class AddTodaySellForm(FlaskForm):
     note = TextAreaField('Note (Optional)')
 
     submit = SubmitField('Confirm')
+
+
+class ReportForm(FlaskForm):
+    start_date = DateField('Start Date', validators=[DataRequired()])
+    end_date = DateField('End Date', validators=[DataRequired()])
+    filter_options = SelectField('Filter Options', choices=[('all', 'All'), ('pending', 'Pending'), ('nonpending', 'Non-Pending')])
+    report_options = SelectField('Report Options', choices=[('profit', 'Profit'), ('pending', 'Pending Amount'), ('soldproducts', 'Sold Products')])
+    submit = SubmitField('Generate Report')
