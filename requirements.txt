@@ -19,6 +19,7 @@ Flask-Script==2.0.6
 Flask-SQLAlchemy==2.5.1
 Flask-Uploads==0.2.1
 Flask-WTF==0.15.1
+Flask-Moment==1.0.5
 greenlet==1.1.1
 idna==3.2
 itsdangerous==2.0.1

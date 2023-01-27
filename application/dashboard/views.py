@@ -8,6 +8,8 @@
 import os
 import json
 
+from datetime import datetime
+
 #   importing basic flask module
 from flask import Blueprint
 from flask import redirect
@@ -560,7 +562,7 @@ def newsell():
     form.customer_name.choices = [(customer.id, customer.customer_name) for customer in Customers.query.all()]
     form.product_name.choices = [(product.productid, product.name) for product in Products.query.all()]
 
-    return render_template('dashboard/newsell.html', title="New Sell", form=form, newinvoiceID=newinvoiceID)
+    return render_template('dashboard/newsell.html', title="New Sell", form=form, newinvoiceID=newinvoiceID, current_time=datetime.utcnow())
 
 
 #   NEW SELL POS
@@ -599,6 +601,8 @@ def newsell_submit():
     paymentstatus = data['customer']['payment_status']
     transactionid = data['customer']['transactionid']
     note = data['customer']['note']
+    pub_date = datetime.strptime(data['pub_date'].strip('"'), "%Y-%m-%dT%H:%M")
+
 
     print('-------->>>')
     print(f'Invoice ID: {invoice_id}')
@@ -606,9 +610,10 @@ def newsell_submit():
     print(f'Payment Status: {paymentstatus}')
     print(f'Transaction ID: {transactionid}')
     print(f'Note: {note}')
+    print(f'Pub Date: {pub_date}')
     print(";;;;;;;;;;;;;;;;;;;;;;  DONE  ;;;;;;;;;;;;;;;;;;;;;")
 
-    dailysell = DailySells(customer_id=customerid, invoiceid=invoice_id, subtotal=subtotal, discount=discount, totalprice=totalprice,payment_status=paymentstatus, trnx_id=transactionid, note=note, user_id=userid)
+    dailysell = DailySells(customer_id=customerid, invoiceid=invoice_id, subtotal=subtotal, discount=discount, totalprice=totalprice,payment_status=paymentstatus, trnx_id=transactionid, note=note, user_id=userid, pub_date=pub_date)
     
     db.session.add(dailysell)
     db.session.commit()
@@ -639,10 +644,6 @@ def newsell_submit():
     res =  make_response(jsonify({"message": "Sell Completed Successfully"}), 200)
 
     return res
-
-@dashboard.route('/dashboard/newsell/<string:data>/')
-def newsell_display(data):
-    return render_template('public/demo.html', data=data)
 
 
 @dashboard.route('/dashboard/sell/<string:invoiceid>/')
@@ -686,7 +687,6 @@ def edit_brand(brand_id):
     if form.validate_on_submit():
         if form.brand_logo.data:
             brand.name = form.brand_name.data
-            print(f'===== >>> brand logo: {brand.logo} =====')
             if brand.logo and brand.logo != 'default.jpg':
                 os.unlink(os.path.join(current_app.root_path,'static/brandlogo/' +  brand.logo))
             picture_file = save_logo(form.brand_logo.data)
@@ -838,7 +838,7 @@ def edit_product(product_id):
         productname = form.product_name.data.strip()
         productID = form.product_id.data.strip()
         productprice = int(str(form.product_price.data).strip())
-        productBuyingprice = form.product_buying_price.data.strip()
+        productBuyingprice = int(str(form.product_buying_price.data).strip())
         productquantity = int(str(form.product_quantity.data).strip())
         productdescription = form.product_description.data.strip()
         productStatus = form.product_available.data

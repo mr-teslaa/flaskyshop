@@ -62,6 +62,7 @@
             yearel.innerHTML = gettheyear;
         </script>
 
+        {{ moment.include_moment() }}
         <!-- bootstrap js -->
         <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     </body>

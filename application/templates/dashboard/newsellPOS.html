@@ -49,7 +49,7 @@
 				<form id="form-customer-info">
 					{{ form.hidden_tag() }}
 					<div class="row">
-						<div class="col-md-5 mb-3">
+						<div class="col-md-4 mb-3">
 							{{ form.customer_name.label(class="form-label") }}
 
 							{% if form.customer_name.errors %}
@@ -72,7 +72,7 @@
 							{% endif %}
 						</div>
 
-						<div class="col-md-5 mb-3 ms-auto">
+						<div class="col-md-4 mb-3">
 							{{ form.payment_status.label(class="form-label") }}
 
 							{% if form.payment_status.errors %}
@@ -89,6 +89,13 @@
 								class="form-select text-uppercase"
 							) }}
 							{% endif %}
+						</div>
+
+						<div class="col-md-4 mb-3">
+							<div class="form-group">
+								<label class="form-label">Date and Time</label>
+								<input type="datetime-local" class="form-control" id="sell-datetime" required>
+							</div>
 						</div>
 					</div>
 
