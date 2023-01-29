@@ -74,6 +74,10 @@
 
 
 <script>
+	const numberWithCommas = (x) => {
+		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
+
 	document.getElementById("report-form").addEventListener("submit", (e) => {
 		e.preventDefault();
 		let startDate = document.getElementById("start-date").value;
@@ -122,7 +126,7 @@
 					table += `</table>`;
 					if (data.total_quantity || data.total_quantity === 0) {
 						let reportTotal = `<div class="col">
-												<h3 class="fs-4">Total Product Sold: ${data.total_quantity}</h3>
+												<h3 class="fs-4">Total Product Sold: ${numberWithCommas(data.total_quantity)}</h3>
 											</div>`;
 						reportTotalContainer.innerHTML = reportTotal;
 					}
@@ -159,13 +163,13 @@
 				if (data.total_profit || data.total_profit === 0 || data.total_pending || data.total_pending === 0) {
 					let reportTotal = `<div class="col">
 												<h3 class="fs-4">
-													Total Profit: ${data.total_profit}
+													Total Profit: ${numberWithCommas(data.total_profit)}
 													<small>tk</small>
 												</h3>
 											</div>
 											<div class="col">
 												<h3 class="fs-4">
-													Total Pending: ${data.total_pending}
+													Total Pending: ${numberWithCommas(data.total_pending)}
 													<small>tk</small>	
 												</h3>
 											</div>`;
