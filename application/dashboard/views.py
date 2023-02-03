@@ -63,6 +63,8 @@ from application.dashboard.utils import invoiceID
 
 dashboard = Blueprint('dashboard', __name__)
 
+shopname = "BM GADGET & TECH"
+
 # LANDING PAGE
 @dashboard.route('/')
 def index():
@@ -320,26 +322,27 @@ def get_report():
     # added code to convert DailySells objects to json serializable dict
     invoices_json = [invoice.to_dict() for invoice in invoices]
 
-    # Get all products and their calculate_profit() values
-    products = Products.query.all()
-    product_profits = {product.name: product.calculate_profit() for product in products}
-
     # CALCULATING PROFIT
     total_profit = 0
     for invoice in invoices_json:
         if invoice['payment_status'] != 'pending':
-            for product in invoice['selled_products']:
-                total_profit += product_profits.get(product['productname'], 0)
+            for selled_product in invoice['selled_products']:
+                selled_product_obj = SelledProducts.query.filter_by(productname=selled_product['productname']).first()
+                if selled_product_obj:
+                    total_profit += selled_product_obj.calculate_profit()
 
     # CALCULATING PENDING
     total_pending = 0
     for invoice in invoices_json:
         if invoice['payment_status'] == 'pending':
-            total_pending += int(invoice['totalprice'])
+            total_pending_products = 0
+            for product in invoice['selled_products']:
+                product_info = SelledProducts.query.filter_by(productname=product['productname'], daily_sells_id=invoice['id']).first()
+                if product_info:
+                    total_pending_products += product_info.calculate_profit()
+            total_pending += total_pending_products
 
-    return jsonify(invoices=invoices_json, total_pending=total_pending,  total_profit=total_profit) 
-
-
+    return jsonify(invoices=invoices_json, total_pending=total_pending, total_profit=total_profit)
 #   =======================
 #   END API
 #   =======================
@@ -399,7 +402,7 @@ def registeradmin():
         flash('Your account has been created! You are now able to log in ✅', 'success')
         return redirect(url_for('dashboard.admin_login'))
 
-    return render_template('public/register.html', form=form)
+    return render_template('public/register.html', form=form, title='Register admin')
 
 
 @dashboard.route('/register/', methods=['GET', 'POST'])
@@ -451,14 +454,14 @@ def user_logout():
     return redirect(url_for('dashboard.admin_login'))
 
 
-
 #   USER PROFILE
 @dashboard.route('/dashboard/profile/')
 @login_required
 def user_profile():
     user = current_user
     profile_picture = url_for('static', filename='profile_picture/' + current_user.profile)
-    return render_template('dashboard/profile.html', user=user, profile_picture=profile_picture)
+    return render_template('dashboard/profile.html', user=user, title='Profile', profile_picture=profile_picture, shopname=shopname)
+
 
 #   EDIT USER PROFILE
 @dashboard.route('/dashboard/profile/update/', methods=['GET', 'POST'])
@@ -521,7 +524,7 @@ def user_profile_edit():
         form.username.data = current_user.username
         form.email.data = current_user.email
 
-    return render_template('dashboard/profile_edit.html', form=form)
+    return render_template('dashboard/profile_edit.html', title='Update Profile', form=form, shopname=shopname)
 
 #   ADMIN DASHBOARD
 @dashboard.route('/dashboard/')
@@ -539,7 +542,7 @@ def admin_dashboard():
     page = request.args.get('page', 1, type=int)
     sells = DailySells.query.order_by(DailySells.pub_date.desc()).paginate(page=page, per_page=50)
     # totalselledproduct = SelledProducts.query.all()
-    return render_template('dashboard/dashboard.html', title='Dashboard', sells=sells)
+    return render_template('dashboard/dashboard.html', title='Dashboard', sells=sells, shopname=shopname)
 
 
 #   DAILY SELL
@@ -550,7 +553,7 @@ def todaysell():
     page = request.args.get('page', 1, type=int)
     sells = DailySells.query.order_by(DailySells.pub_date.desc()).paginate(page=page, per_page=50)
 
-    return render_template('dashboard/todaysell.html', title='Today\'s Sell', sells=sells, today=today)
+    return render_template('dashboard/todaysell.html', title='Today\'s Sell', sells=sells, today=today, shopname=shopname)
 
 
 #   NEW SELL
@@ -574,7 +577,7 @@ def newsellPOS():
     form.customer_name.choices = [(customer.id, customer.customer_name) for customer in Customers.query.all()]
     # form.product_name.choices = [(product.productid, product.name) for product in Products.query.all()]
 
-    return render_template('dashboard/newsellPOS.html', title="New Sell", form=form, newinvoiceID=newinvoiceID)
+    return render_template('dashboard/newsellPOS.html', title="New Sell", form=form, newinvoiceID=newinvoiceID, shopname=shopname)
 
 @dashboard.route('/dashboard/newsell/submit/', methods=['POST'])
 @login_required
@@ -653,7 +656,7 @@ def view_sell(invoiceid):
     products = SelledProducts.query.filter_by(daily_sells_id=sell.id).all()
     customer = Customers.query.filter_by(id=sell.customer_id).first()
     user = Users.query.filter_by(id=sell.user_id).first()
-    return render_template('/dashboard/sell.html', products=products, sell=sell, customer=customer, user=user)
+    return render_template('/dashboard/sell.html', products=products, sell=sell, customer=customer, user=user, shopname=shopname)
 
 
 #   BRAND
@@ -675,7 +678,7 @@ def brand():
         db.session.commit()
         flash(f'Brand "{form.brand_name.data}" added successfully ✅', 'success')
         return redirect(url_for('dashboard.brand'))
-    return render_template('dashboard/brand.html', title='Brand', form=form, brands=brands)
+    return render_template('dashboard/brand.html', title='Brand', form=form, brands=brands, shopname=shopname)
 
 
 #   EDIT BRAND
@@ -706,7 +709,7 @@ def edit_brand(brand_id):
         form.brand_name.data = brand.name
         form.brand_logo.data = brand.logo
         form.brand_note.data = brand.note
-    return render_template('dashboard/brand_edit.html', form=form, brand=brand)
+    return render_template('dashboard/brand_edit.html', title='Edit Brand', form=form, brand=brand, shopname=shopname)
 
 
 #   DELETE BRAND
@@ -737,7 +740,7 @@ def category():
         db.session.commit()
         flash(f'Category "{form.category_name.data}" added successfully ✅', 'success')
         return redirect(url_for('dashboard.category'))
-    return render_template('dashboard/category.html', title='Category', form=form, categories=categories)
+    return render_template('dashboard/category.html', title='Category', form=form, categories=categories, shopname=shopname)
 
 
 #   EDIT CATEGORY
@@ -755,7 +758,7 @@ def edit_category(category_id):
     elif request.method == 'GET':
         form.category_name.data = category.name
         form.category_note.data = category.note
-    return render_template('dashboard/category_edit.html', form=form, category=category)
+    return render_template('dashboard/category_edit.html', form=form, category=category, shopname=shopname)
 
 
 #   DELETE CATEGORY
@@ -820,7 +823,7 @@ def products():
 
         return redirect(url_for('dashboard.products'))
 
-    return render_template('dashboard/products.html', title='Products', form=form, brands=brands, categories=categories, products=products, total_products=total_products)
+    return render_template('dashboard/products.html', title='Products', form=form, brands=brands, categories=categories, products=products, total_products=total_products, shopname=shopname)
 
 
 #   EDIT PRODUCTS
@@ -879,7 +882,7 @@ def edit_product(product_id):
         form.product_quantity.data = product.stock 
         form.product_description.data = product.description 
         form.product_available.data = product.available_status
-    return render_template('dashboard/product_edit.html', form=form, product=product)
+    return render_template('dashboard/product_edit.html', form=form, product=product, shopname=shopname)
 
 
 #   SHOW A PRODUCT INFO
@@ -887,7 +890,7 @@ def edit_product(product_id):
 @login_required
 def show_product(product_id):
     product = Products.query.get_or_404(product_id)
-    return render_template('dashboard/product_details.html', product=product)
+    return render_template('dashboard/product_details.html', product=product, shopname=shopname)
 
 
 #   DELTE A PRODUCT
@@ -907,7 +910,7 @@ def delete_product(product_id):
 @dashboard.route('/dashboard/orders/', methods=['GET', 'POST'])
 @login_required
 def orders():
-    return render_template('dashboard/orders.html', title='Orders')
+    return render_template('dashboard/orders.html', title='Orders', shopname=shopname)
 
 #   CUSTOMER
 @dashboard.route('/dashboard/customers/', methods=['GET', 'POST'])
@@ -925,7 +928,7 @@ def customer():
         db.session.commit()
         flash(f'Customer "{form.customer_name.data}" added successfully ✅', 'success')
         return redirect(url_for('dashboard.customer'))
-    return render_template('dashboard/customer.html', title='Customer', form=form, customers=customers, total_customer=total_customer)
+    return render_template('dashboard/customer.html', title='Customer', form=form, customers=customers, total_customer=total_customer, shopname=shopname)
 
 
 #   CUSTOMERWISE REPORT
@@ -941,7 +944,7 @@ def customer_payment_history(customer_id):
         total_payment += int(order.totalprice)
         if order.payment_status == 'pending':
             pending_payment += int(order.totalprice)
-    return render_template('dashboard/customer_history.html', customer=customer, orders=orders, total_payment=total_payment, pending_payment=pending_payment)
+    return render_template('dashboard/customer_history.html', customer=customer, orders=orders, total_payment=total_payment, pending_payment=pending_payment, shopname=shopname)
 
 
 #   EDIT CUSTOMER
@@ -961,7 +964,7 @@ def edit_customer(customer_id):
         form.customer_name.data = customer.customer_name
         form.customer_contact_number.data = customer.customer_contact_number
         form.customer_address.data = customer.customer_address
-    return render_template('dashboard/customer_edit.html', form=form)
+    return render_template('dashboard/customer_edit.html', form=form, shopname=shopname)
 
 
 #   DELETE CUSTOMER
@@ -978,7 +981,7 @@ def delete_customer(customer_id):
 @dashboard.route('/dashboard/report/', methods=['GET'])
 @login_required
 def report():
-    return render_template('dashboard/report.html')
+    return render_template('dashboard/report.html', title='Report', shopname=shopname)
 #   =============================
 #   END DASHBAORD FUNCTIONALITY
 #   =============================
