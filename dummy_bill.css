@@ -1,0 +1,26 @@
+body {
+    background: red;
+}
+
+.bill-container {
+    font-family: Arial, sans-serif;
+}
+
+.bill-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.bill-item-name {
+    flex-grow: 1;
+}
+
+.bill-item-quantity,
+.bill-item-price {
+    flex-shrink: 0;
+}
+
+
+.bill-total {
+    font-weight: bold;
+}

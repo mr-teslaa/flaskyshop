@@ -1,0 +1,8 @@
+@media print {
+
+    /* Set the size of the label */
+    #label {
+        width: 38mm;
+        height: 25mm;
+    }
+}

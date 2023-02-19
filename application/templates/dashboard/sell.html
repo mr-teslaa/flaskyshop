@@ -1,6 +1,12 @@
 {% extends 'layouts/root-dashboard.html' %}
 
-<!-- body -->
+
+{% block head %}
+<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+<link href="https://printjs-4de6.kxcdn.com/print.min.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
 {% block body %}
 <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
 	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
@@ -24,40 +30,56 @@
 		<!-- navigation inject -->
 		{% include 'helpers/_dashboard_side_nav.html' %}
 
-		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-			<div class="align-items-center pt-3 pb-2 mb-3 border-bottom">
+		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" id="bill">
+			<div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h1 class="h2">Invoice: <span id="invoiceid">{{ sell.invoiceid }}</span></h1>
+
+				<div>
+					<a class="btn btn-dark" href="{{ url_for('dashboard.print_pos_sell', invoiceid=sell.invoiceid) }}">POS Print</a>
+				</div>
 			</div>
 
 			<div class="row">
-				<div class="col-md-6">
-					<p>
+				<div class="col-md-6 invoicedetails">
+					<div class="my-2">
 						<b>Customer Name: </b>
-						{{ customer.customer_name }}
-					</p>
-					<p>
+						<span id="customername">
+							{{ customer.customer_name }}
+						</span>
+					</div>
+					<div class="my-2">
 						<b>Phone: </b>
-						{{ customer.customer_contact_number }}
-					</p>
-					<p>
+						<span>
+							{{ customer.customer_contact_number }}
+						</span>
+					</div>
+					<div class="my-2">
 						<b>Address: </b>
-						{{ customer.customer_address }}
-					</p>
-					<p>
+						<span>
+							{{ customer.customer_address }}
+						</span>
+					</div>
+					<div class="my-2">
 						<b>Note: </b>
-						{{ sell.note }}
-					</p>
+						<span>
+							{{ sell.note }}
+						</span>
+					</div>
 				</div>
 				<div class="col-md-6">
-					<p>
+					<div class="my-2">
 						<b>Date: </b>
-						{{ sell.pub_date.strftime('%I:%M %p - %d %b, %Y') }}
-					</p>
-					<p>
+						<span>
+							{{ sell.pub_date.strftime('%I:%M %p - %d %b, %Y') }}
+						</span>
+					</div>
+					<div class="my-2">
 						<b>Billed by: </b>
-						{{ user.username }}
-					</p>
-					<p>
+						<span id="billedby">
+							{{ user.username }}
+						</span>
+					</div>
+					<div>
 						<b>Payment Status: </b>
 						<select id="payment_status" name="payment_status">
 							<option value="cash" {% if sell.payment_status=='cash' %}selected{% endif %}>cash</option>
@@ -69,7 +91,7 @@
 							</option>
 						</select>
 						<button class="btn btn-sm btn-primary ms-2" id="savePaymentStatus">Save</button>
-					</p>
+					</div>
 
 					<!-- UPDATE PAYMENT STATUS TO SERVER -->
 					<script>
@@ -119,7 +141,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="table-responsive">
-						<table class="table table-bordered table-striped table-hover">
+						<table class="table table-bordered table-striped table-hover" id="invoicetable">
 							<thead>
 								<th>#</th>
 								<th>Product ID</th>
@@ -161,7 +183,7 @@
 									<span id="countprice">One Two Three</span>
 								</p>
 							</div>
-							<table class="ms-auto">
+							<table class="ms-auto" id="totalammount">
 								<tr>
 									<th>
 										<p class="m-auto me-2">Sub Total Ammount</p>
@@ -227,4 +249,5 @@
 		counter++;
 	});
 </script>
-{% endblock %}
+
+{% endblock %}   

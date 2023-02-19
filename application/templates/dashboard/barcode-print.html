@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Barcode Label</title>
+    <script src="{{ url_for('static', filename='js/JsBarcode.all.min.js') }}"></script>
+	<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+    <link href="https://printjs-4de6.kxcdn.com/print.min.css" rel="stylesheet" type="text/css" />
+    <style>
+    
+      @media print {
+        /* Set the size of the label */
+        #label {
+          width: 1.5in;
+          height: 1in;
+        }
+      }
+
+    * {
+      margin: 0;    
+      padding: 0;
+
+    }
+	#label {
+		width: 1.5in;
+          height: 1in;
+		
+	}
+    </style>
+  </head>
+  <body>
+    <div id="label">
+      	<img id="barcode"/>
+    </div>
+
+	<script>
+      // Print the page
+    	document.addEventListener('DOMContentLoaded', () => {
+			// Generate the barcode
+			JsBarcode("#barcode", "6886628825", {
+				height: 35,
+				width: 1.2,
+				fontSize: 15
+			});
+
+			printJS({ printable: 'label', type: 'html', css: '{{ url_for("static", filename="css/printPOS.css") }}' });
+		});
+    </script>
+  </body>
+</html>

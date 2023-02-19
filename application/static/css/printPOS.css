@@ -1,0 +1,61 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.my-4 {
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+}
+
+.my-6 {
+    margin-top: 0.6rem;
+    margin-bottom: 0.6rem;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.py-4 {
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+}
+
+.bill-container {
+    width: 50mm;
+    padding: 10px;
+}
+
+.bill-header {
+    font-size: 17px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.bill-item {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.bill-total {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.copyright {
+    margin-top: 1rem;
+    margin-bottom: 1.2rem;
+}
+
+.fs-small {
+    font-size: 0.9rem;
+}

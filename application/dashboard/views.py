@@ -61,6 +61,30 @@ from application.dashboard.utils import save_product
 from application.dashboard.utils import save_profile_picture 
 from application.dashboard.utils import invoiceID
 
+import barcode
+from barcode.writer import ImageWriter
+from io import BytesIO
+
+# =================================================
+# ===== START OF latest code for reportlab ========
+# ================================================= 
+
+# from reportlab.lib.pagesizes import A7
+# from reportlab.lib.units import mm
+# from reportlab.pdfgen import canvas
+
+# from io import BytesIO
+# from reportlab.lib.pagesizes import letter
+# from reportlab.lib.units import inch
+# from reportlab.pdfgen import canvas
+
+# ================================================ 
+# ===== END OF latest code for reportlab =========
+# ================================================ 
+
+
+
+
 dashboard = Blueprint('dashboard', __name__)
 
 shopname = "BM GADGET & TECH"
@@ -648,7 +672,7 @@ def newsell_submit():
 
     return res
 
-
+#   VIEW INVOICE
 @dashboard.route('/dashboard/sell/<string:invoiceid>/')
 @login_required
 def view_sell(invoiceid):
@@ -656,7 +680,90 @@ def view_sell(invoiceid):
     products = SelledProducts.query.filter_by(daily_sells_id=sell.id).all()
     customer = Customers.query.filter_by(id=sell.customer_id).first()
     user = Users.query.filter_by(id=sell.user_id).first()
+    
     return render_template('/dashboard/sell.html', products=products, sell=sell, customer=customer, user=user, shopname=shopname)
+
+
+#   PRINT INVOICE
+@dashboard.route('/dashboard/sell/<string:invoiceid>/print/')
+@login_required
+def print_pos_sell(invoiceid):
+    sell = DailySells.query.filter_by(invoiceid=invoiceid).first()
+    products = SelledProducts.query.filter_by(daily_sells_id=sell.id).all()
+    customer = Customers.query.filter_by(id=sell.customer_id).first()
+    user = Users.query.filter_by(id=sell.user_id).first()
+    
+    return render_template('/dashboard/sell-pos-print.html', products=products, sell=sell, customer=customer, user=user)
+
+# =====================================
+#   LATEST VERSION PRINT INVOICE
+# =====================================
+# @app.route('/dashboard/sell/<string:invoiceid>/print')
+# def print_invoice(invoiceid):
+#     # Fetch the invoice data from the database
+#     invoice = DailySells.query.filter_by(invoiceid=invoiceid).first()
+
+#     # Create a new PDF document
+#     response = make_response()
+#     response.headers['Content-Type'] = 'application/pdf'
+#     response.headers['Content-Disposition'] = 'attachment; filename=invoice.pdf'
+#     pdf = canvas.Canvas(response.stream)
+
+#     # Set the paper size to fit the thermal printer's paper width
+#     pdf.setPageSize((80 * mm, A7[1]))
+
+#     # Add the invoice data to the PDF
+#     pdf.drawString(10 * mm, A7[1] - 10 * mm, f'Invoice Number: {invoice.invoice_no}')
+#     y = A7[1] - 20 * mm
+#     for item in invoice.items:
+#         pdf.drawString(10 * mm, y, item.product.name)
+#         pdf.drawString(40 * mm, y, f'x{item.quantity}')
+#         pdf.drawString(60 * mm, y, f'${item.subtotal}')
+#         y -= 10 * mm
+#     pdf.drawString(60 * mm, 10 * mm, f'Total: ${invoice.total}')
+
+#     # Close the PDF document and return it as a response
+#     pdf.showPage()
+#     pdf.save()
+#     return response
+
+
+
+# def generate_invoice_pdf(invoice):
+#     # Create a file-like buffer to receive PDF data.
+#     buffer = BytesIO()
+
+#     # Create the PDF object, using the buffer as its "file."
+#     pdf = canvas.Canvas(buffer, pagesize=letter)
+
+#     # Draw things on the PDF. Here's where the PDF generation happens.
+#     # See the ReportLab documentation for the full list of functionality.
+#     pdf.setTitle('Invoice #{0}'.format(invoice.id))
+#     pdf.setFont('Helvetica', 12)
+#     pdf.drawString(1 * inch, 10.5 * inch, 'Invoice #{0}'.format(invoice.id))
+#     pdf.drawString(1 * inch, 10.25 * inch, 'Customer Name: {0}'.format(invoice.customer_name))
+#     pdf.drawString(1 * inch, 10 * inch, 'Customer Address: {0}'.format(invoice.customer_address))
+
+#     # Loop through the items in the invoice and add them to the PDF.
+#     y = 9.5 * inch
+#     for item in invoice.items:
+#         pdf.drawString(1 * inch, y, item.product.name)
+#         pdf.drawRightString(3.5 * inch, y, '${0:.2f}'.format(item.price))
+#         y -= 0.25 * inch
+
+#     # Add the total to the PDF.
+#     pdf.setFont('Helvetica-Bold', 12)
+#     pdf.drawString(1 * inch, y, 'Total:')
+#     pdf.drawRightString(3.5 * inch, y, '${0:.2f}'.format(invoice.total))
+
+#     # Close the PDF object cleanly, and we're done.
+#     pdf.save()
+
+#     # File response
+#     pdf_file = buffer.getvalue()
+#     buffer.close()
+#     return pdf_file
+
 
 
 #   BRAND
@@ -825,6 +932,21 @@ def products():
 
     return render_template('dashboard/products.html', title='Products', form=form, brands=brands, categories=categories, products=products, total_products=total_products, shopname=shopname)
 
+#   GENERATE BARCODE FOR PRODUCTS
+@dashboard.route('/barcode/<int:product_id>/')
+def generate_barcode(product_id):
+    # Generate a Code 128 barcode for the given product ID
+    code = barcode.get('code128', str(product_id), writer=ImageWriter())
+    output = BytesIO()
+    code.write(output)
+    response = make_response(output.getvalue())
+    response.headers['Content-Type'] = 'image/png'
+    return response
+
+@dashboard.route('/barcode/<int:product_id>/print')
+def print_barcode(product_id):
+    # Generate a Code 128 barcode for the given product ID
+    return render_template('dashboard/barcode-print.html')
 
 #   EDIT PRODUCTS
 @dashboard.route("/dashboard/product/<int:product_id>/update/", methods=['GET', 'POST'])

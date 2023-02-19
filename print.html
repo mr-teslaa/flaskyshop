@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Dummy Bill</title>
+    <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+    <link href="https://printjs-4de6.kxcdn.com/print.min.css" rel="stylesheet" type="text/css" />
+    <style>
+      .bill-container {
+        width: 80mm;
+        padding: 10px;
+        border: 1px solid black;
+      }
+      .bill-header {
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+      }
+      .bill-item {
+        font-size: 14px;
+        margin-bottom: 5px;
+      }
+      .bill-total {
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 10px;
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bill-container" id="bill">
+      <div class="bill-header">Dummy Bill</div>
+      <div class="bill-item">
+        <span class="bill-item-name">Item 1</span>
+        <span class="bill-item-quantity">x1</span>
+        <span class="bill-item-price">$10</span>
+      </div>
+      <div class="bill-item">
+        <span class="bill-item-name">Item 2</span>
+        <span class="bill-item-quantity">x2</span>
+        <span class="bill-item-price">$20</span>
+      </div>
+      <div class="bill-total">Total: $50</div>
+    </div>
+    <button onclick="printBill()">Print Bill</button>
+    <script>
+      function printBill() {
+        printJS({ printable: 'bill', type: 'html', css: 'dummy_bill.css' });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{{ sell.invoiceid }} - Bill Recipt</title>
+    <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+    <link href="https://printjs-4de6.kxcdn.com/print.min.css" rel="stylesheet" type="text/css" />
+    <style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {display:none}
+
+		.my-4 {
+			margin-top: 0.4rem;
+			margin-bottom: 0.4rem;
+		}
+
+		.my-6 {
+			margin-top: 0.6rem;
+			margin-bottom: 0.6rem;
+		}
+
+		.mt-2 {
+			margin-top: 0.5rem;
+		}
+
+		.py-4 {
+			padding-top: 0.4rem;
+			padding-bottom: 0.4rem;
+		}
+
+		.bill-container {
+			width: 50mm;
+			padding: 10px;
+			border: 1px solid black;
+		}
+		.bill-header {
+			font-size: 17px;
+			font-weight: bold;
+			text-align: center; 
+			margin-bottom: 0.5rem;
+		}
+		.bill-item {
+			font-size: 14px;
+			margin-bottom: 5px;
+		}
+		.bill-total {
+			font-size: 16px;
+			font-weight: bold;
+			margin-top: 10px;
+			text-align: right;
+		}
+		.text-center {
+			text-align: center;
+		}
+		.copyright {
+			margin-top: 1rem;
+			margin-bottom: 1.2rem;
+		}
+		.fs-small {
+			font-size: 0.9rem;
+		}
+    </style>
+  </head>
+  <body>
+		<main class="bill-container" id="bill">
+			<header class="text-center">
+				<h3>BM Gadget & Tech</h3>
+				<address class="my-4">
+					Powro Biponi Bitan, Lakshmipur
+					<br>
+					+880 1742-839556
+				</address>
+
+				<h5 class="bill-header">
+					Sales Invoice
+					<br> 
+					<span id="invoiceid">{{ sell.invoiceid }}</span>
+				</h5>
+			</header>
+
+			<div class="my-4">
+				<div>
+					<div>
+						<b>Customer: </b>
+						<span id="customername">
+							{{ customer.customer_name }}
+						</span>
+					</div>
+				</div>
+				<div>
+					<div>
+						<b>Time: </b>
+						<span>
+							{{ sell.pub_date.strftime('%I:%M %p') }}
+						</span>
+					</div>
+					<div>
+						<b>Date: </b>
+						<span>
+							{{ sell.pub_date.strftime('%d %b, %Y') }}
+						</span>
+					</div>
+					<div>
+						<b>Billed by: </b>
+						<span id="billedby">
+							{{ user.username }}
+						</span>
+					</div>
+					
+				</div>
+			</div>
+
+			<div>
+				<table id="invoicetable" style="width:'100%'">
+					<thead>
+						<th>QTY</th>
+						<th>Product</th>
+						<th>Total</th>
+					</thead>
+					<tbody>
+						{% for product in products %}
+						<tr>
+							<td align="left">
+								x{{ product.quantity }}
+							</td>
+							<td class="py-4">
+								{{ product.productname }}
+							</td>
+							<td align="right">
+								{{ product.unittotal }}
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+					<tfoot>
+						<tr>
+							<th colspan="2" align="left">Subtotal</th>
+							<th  align="right" id="subtotal">{{ sell.subtotal }}</th>
+						</tr>
+						<tr>
+							<th colspan="2" align="left">Discount</th>
+							<th  align="right" id="discount">{{ sell.discount }}</th>
+						</tr>
+						<tr>
+							<th colspan="2" align="left">Payable ammount</th>
+							<th  align="right" id="total">{{ sell.totalprice }}</th>
+						</tr>
+					</tfoot>
+				</table>
+				<p class="text-center">----------------------------</p>
+				
+				<div class="mt-2">
+					<p>
+						In Words:
+						<b id="countprice">One Two Three</b>
+					</p>
+					<p class="text-center my-6 fs-small">
+						Thanks for staying with us
+					</p>
+				</div>
+
+				<div class="copyright text-center">
+					<p>
+						Developed by: www.BinoMatrix.com 
+					</p>
+					<p>
+						Contact: +8801884020619
+					</p>
+				</div>
+			</div>
+		</main>
+		<button class="btn__dark" id="printbtn">Print</button>
+
+		<script src="{{ url_for('static', filename='js/numberToWords.min.js') }}"></script>
+		<script>
+			const numberWithCommas = (x) => {
+				return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			}
+
+			let subtotal = document.querySelector('#subtotal');
+			let discount = document.querySelector('#discount');
+			let total = document.querySelector('#total');
+
+			let countprice = document.querySelector('#countprice');
+			countprice.innerText = `${numberToWords.toWords(parseFloat(total.innerText)).toUpperCase()} Taka Only.`;
+
+			// ADD COMMAS TO PIRCE
+			subtotal.innerText = numberWithCommas(subtotal.innerText);
+			discount.innerText = numberWithCommas(discount.innerText);
+			total.innerText = numberWithCommas(total.innerText);
+		</script>
+
+		<script>
+			let counter = 1;
+			const serialnos = document.querySelectorAll('.counters');
+			console.log(serialnos);
+			serialnos.forEach(serial => {
+				serial.innerText = counter;
+				counter++;
+			});
+		</script>
+		
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				printJS({ printable: 'bill', type: 'html', css: '{{ url_for("static", filename="css/printPOS.css") }}' });
+			})
+		</script>
+	</body>
+</html>
