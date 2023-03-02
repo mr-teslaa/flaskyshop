@@ -277,12 +277,6 @@
 		let totalpendingprice = document.querySelector('#totalpendingprice');
 		let totalprofit = document.querySelector('#totalprofit');
 
-		// CURRENT MONTH EARNING CONTAINER
-		let currentMonthEarning = document.querySelector('#currentMonthEarning');
-		let currentMonthPending = document.querySelector('#currentMonthPending');
-		let currentMonthSelledProduct = document.querySelector('#currentMonthSelledProduct');
-		let currentMonthProfit = document.querySelector('#currentmonthprofit');
-
 		// GET ALL SELL INFO
 		fetch(`${window.origin}/api/allsell/info/get/`, {
 			method: "POST",
@@ -303,7 +297,32 @@
 			});
 		});
 
-		// GET THIS MONTH SELL INFO 
+		
+
+		// ADDING COMMA TO ALL PRICE
+		allprices.forEach((price) => {
+			let pricevalue = price.innerText;
+			let pricewithcomma = numberWithCommas(pricevalue)
+
+			price.innerText = pricewithcomma
+		})
+	})
+
+</script>
+
+
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+	const numberWithCommas = (x) => {
+			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		}
+	// CURRENT MONTH EARNING CONTAINER
+		let currentMonthEarning = document.querySelector('#currentMonthEarning');
+		let currentMonthPending = document.querySelector('#currentMonthPending');
+		let currentMonthSelledProduct = document.querySelector('#currentMonthSelledProduct');
+		let currentMonthProfit = document.querySelector('#currentmonthprofit');
+
+	// GET THIS MONTH SELL INFO 
 		fetch(`${window.origin}/api/sell/currentmonth/info/get/`, {
 			method: "POST",
 		}).then((response) => {
@@ -320,18 +339,8 @@
 				currentMonthProfit.innerText = numberWithCommas(data.profit);
 			});
 		});
-
-		// ADDING COMMA TO ALL PRICE
-		allprices.forEach((price) => {
-			let pricevalue = price.innerText;
-			let pricewithcomma = numberWithCommas(pricevalue)
-
-			price.innerText = pricewithcomma
-		})
 	})
-
 </script>
-
 
 <script>
 	// SEARCH INVOICE

@@ -363,18 +363,48 @@ sellcompletebtn.addEventListener("click", () => {
 		},
 		cache: "no-cache",
 		body: JSON.stringify(getsell),
-	}).then((response) => {
-		if (response.status !== 200) {
-			console.log(
-				`Something went wrong! Reload the page. Status: ${response.status}`
-			);
-			return;
-		}
+	})
+		.then((response) => {
+			if (response.status === 400) {
+				alert("No products added yet");
+				return;
+			}
 
-		response.json().then((data) => {
-			window.location.href = `${window.origin}/dashboard/todaysell/`;
+			if (response.status !== 200) {
+				alert(
+					`Something went wrong! Reload the page. Status: ${response.status}`
+				);
+				return;
+			}
+
+			response.json().then((data) => {
+				window.location.href = `${window.origin}/dashboard/todaysell/`;
+			});
+		})
+		.catch((error) => {
+			alert("An error occurred while submitting the sell:", error);
 		});
-	});
+	
+	// fetch(`${window.origin}/dashboard/newsell/submit/`, {
+	// 	method: "POST",
+	// 	credentials: "include",
+	// 	headers: {
+	// 		"Content-Type": "application/json",
+	// 	},
+	// 	cache: "no-cache",
+	// 	body: JSON.stringify(getsell),
+	// }).then((response) => {
+	// 	if (response.status !== 200) {
+	// 		console.log(
+	// 			`Something went wrong! Reload the page. Status: ${response.status}`
+	// 		);
+	// 		return;
+	// 	}
+
+	// 	response.json().then((data) => {
+	// 		window.location.href = `${window.origin}/dashboard/todaysell/`;
+	// 	});
+	// });
 });
 
 document.addEventListener("DOMContentLoaded", () => {

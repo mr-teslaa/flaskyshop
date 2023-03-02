@@ -128,7 +128,7 @@ class SelledProducts(db.Model):
             discount = int(daily_sell.discount)
         else:
             discount = 0
-
+            
         return (selling_price - buying_price) * int(self.quantity) - discount
 
     

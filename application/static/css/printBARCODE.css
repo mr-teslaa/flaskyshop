@@ -1,8 +1,32 @@
-@media print {
+ @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap');
 
-    /* Set the size of the label */
-    #label {
-        width: 38mm;
-        height: 25mm;
-    }
-}
+ * {
+     margin: 0;
+     padding: 0;
+     font-family: 'Roboto Condensed', Arial, sans-serif !important;
+ }
+
+ #label {
+     text-align: center;
+     width: 1.5in;
+     height: 1in;
+ }
+
+ #barcode {
+     border: 1px solid #eee;
+ }
+
+ .label-text {
+     font-size: 12px;
+     line-height: 1.2em;
+     padding-top: 2px;
+     text-align: center;
+ }
+
+ .label-text-price {
+     font-size: 13px;
+     font-weight: bold;
+     /* line-height: 1.2em; */
+     padding-top: 2px;
+     text-align: center;
+ }

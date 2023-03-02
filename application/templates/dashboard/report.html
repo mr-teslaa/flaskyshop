@@ -1,5 +1,11 @@
 {% extends 'layouts/root-dashboard.html' %}
 
+{% block head %}
+{% for css_file in datatable_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename=css_file) }}">
+{% endfor %}
+{% endblock %}
+
 <!-- body -->
 {% block body %}
 <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
@@ -54,7 +60,7 @@
 						<select id="filter" name="filter" class="form-select">
 							<option value="all">All Invoices</option>
 							<option value="pending">Pending Invoices</option>
-							<option value="non-pending">Paid Invoices</option>
+							<option value="paid">Paid Invoices</option>
 							<option value="products">Products</option>
 						</select>
 					</div>
@@ -66,17 +72,182 @@
 
 			<div class="row py-4" id="report-total-container"></div>
 
-			<div id="report-table"></div>
+			<!-- <div>
+				<table id="report-table" class="display" style="width:100%">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Date</th>
+							<th>Invoice ID</th>
+							<th>Customer</th>
+							<th>Total Price</th>
+						</tr>
+					</thead>
+				</table>
+			</div> -->
 
+			<div id="report-table"></div>
+			
 		</main>
 	</div>
 </div>
 
-
+{% for js_file in datatable_js %}
+<script src="{{ url_for('static', filename=js_file) }}"></script>
+{% endfor %}
 <script>
 	const numberWithCommas = (x) => {
 		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	}
+
+	// document.getElementById("report-form").addEventListener("submit", (e) => {
+    // e.preventDefault();
+    // console.log("Generating report...");
+
+    // let data = {
+    //     startDate: $('#start-date').val(),
+    //     endDate: $('#end-date').val(),
+    //     filter: $('#filter').val()
+    // };
+
+    // console.log("Data: ", data);
+
+    // $.ajax({
+    //     url: '/dashboard/report/submit/',
+    //     type: 'POST',
+    //     contentType: 'application/json',
+		
+    //     data: JSON.stringify(data),
+		
+    //     success: function (response) {
+    //         // console.log("Response: ", response);
+
+			
+	// 		if (response.invoices) {
+	// 			console.log("Response: ", response.invoices);
+	// 			$('#report-table').DataTable({
+	// 				"data": data,
+	// 				"columns": [
+	// 					{ "data": 'customer_name' },
+	// 					{ "data": 'id' },
+	// 					{ "data": 'invoice_id' },
+	// 					{ "data": 'pub_date' },
+	// 					{ "data": 'totalprice' },
+	// 				],
+	// 			});
+	// 		} 
+			
+	// 		if (response.products) {
+	// 			alert("Response: ", response.products);
+	// 		}
+
+			// $('#report-table').DataTable({
+			// 	columns: [
+			// 		{ data: 'id' },
+			// 		{ data: 'hr.position' },
+			// 		{ data: 'contact.0' },
+			// 		{ data: 'contact.1' },
+			// 		{ data: 'hr.start_date' },
+			// 		{ data: 'hr.salary' },
+			// 	],
+			// });
+
+            // // ADD CODE HERE TO POPULATE THE DATA TABLE WITH THE RESPONSE
+            // let dataTable = $('#report-table').DataTable();
+
+            // // Clear existing data from the table
+            // dataTable.clear().draw();
+
+            // // Populate the table with the new data
+            // $.each(response.invoices, function (index, invoice) {
+            //     dataTable.row.add([
+            //         invoice.id,
+            //         invoice.pub_date,
+            //         invoice.totalprice,
+            //         invoice.payment_status,
+            //         '<a href="/dashboard/report/invoice/' + invoice.id + '/" class="btn btn-sm btn-primary">View Invoice</a>'
+            //     ]).draw();
+            // });
+
+            // Update the total profit and total pending fields
+            // $('#total-profit').text(response.total_profit);
+            // $('#total-pending').text(response.total_pending);
+            // $('#total-products').text(response.total_quantity);
+
+            // // If the filter option was "products", update the table headers
+            // if (data.filter === "products") {
+            //     dataTable.columns([0, 1, 2, 3]).visible(false);
+            //     dataTable.columns([4]).header().text("Product");
+            // } else {
+            //     dataTable.columns([0, 1, 2, 3]).visible(true);
+            //     dataTable.columns([4]).header().text("Action");
+            // }
+
+    //     },
+    //     error: function (xhr, status, error) {
+    //         console.error(error);
+    //     }
+    // });
+// });
+
+
+
+
+	// document.getElementById("report-form").addEventListener("submit", (e) => {
+	// 	e.preventDefault();
+	// 	$('#report-table').DataTable({
+	// 		ajax: {
+	// 			url: '/dashboard/report/submit/',
+	// 			dataSrc: function (data) {
+	// 				// transform data to match DataTables expected format
+	// 				let transformedData = [];
+	// 				if (data.filter === 'products') {
+	// 					data.products.forEach(function (product, index) {
+	// 						transformedData.push([
+	// 							index + 1,
+	// 							product.productid,
+	// 							product.productname,
+	// 							product.quantity
+	// 						]);
+	// 					});
+	// 				} else {
+	// 					data.invoices.forEach(function (invoice, index) {
+	// 						transformedData.push([
+	// 							index + 1,
+	// 							invoice.pub_date,
+	// 							invoice.invoice_id,
+	// 							invoice.customer_name,
+	// 							invoice.totalprice,
+	// 							invoice.payment_status,
+	// 							'<a class="btn btn-sm btn-outline-dark" href="' + window.origin + '/dashboard/sell/' + invoice.invoice_id + '/">Details</a>'
+	// 						]);
+	// 					});
+	// 				}
+	// 				return transformedData;
+	// 			},
+	// 			data: function (d) {
+	// 				// set parameters to send to server
+	// 				d.startDate = $('#start-date').val();
+	// 				d.endDate = $('#end-date').val();
+	// 				d.filter = $('#filter').val();
+	// 			},
+	// 			type: 'POST',
+	// 			dataType: 'json'
+	// 		},
+	// 		columns: [
+	// 			{ title: '#' },
+	// 			{ title: 'Product ID' },
+	// 			{ title: 'Product Name' },
+	// 			{ title: 'Quantity' },
+	// 			{ title: 'Date' },
+	// 			{ title: 'Invoice ID' },
+	// 			{ title: 'Customer Name' },
+	// 			{ title: 'Total Amount' },
+	// 			{ title: 'Payment Status' },
+	// 			{ title: 'Details' }
+	// 		]
+	// 	});
+	// });
 
 	document.getElementById("report-form").addEventListener("submit", (e) => {
 		e.preventDefault();
@@ -103,6 +274,7 @@
 
 
 			response.json().then((data) => {
+				console.log(data);
 				let reportTable = document.getElementById("report-table");
 				let reportTotalContainer = document.querySelector('#report-total-container');
 				let table = "";

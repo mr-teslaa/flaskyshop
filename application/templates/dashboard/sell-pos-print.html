@@ -3,6 +3,9 @@
   <head>
     <meta charset="UTF-8">
     <title>{{ sell.invoiceid }} - Bill Recipt</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">
     <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
     <link href="https://printjs-4de6.kxcdn.com/print.min.css" rel="stylesheet" type="text/css" />
     <style>
@@ -10,6 +13,8 @@
 			margin: 0;
 			padding: 0;
 			box-sizing: border-box;
+			font-family: 'Roboto Condensed', Arial, sans-serif !important;
+			font-size: 12px;
 		}
 
 		body {display:none}
@@ -33,23 +38,25 @@
 			padding-bottom: 0.4rem;
 		}
 
+		.header-title {
+			font-size: 16px;
+		}
+		
 		.bill-container {
 			width: 50mm;
 			padding: 10px;
 			border: 1px solid black;
 		}
 		.bill-header {
-			font-size: 17px;
+			/* font-size: 12px; */
 			font-weight: bold;
 			text-align: center; 
 			margin-bottom: 0.5rem;
 		}
 		.bill-item {
-			font-size: 14px;
 			margin-bottom: 5px;
 		}
 		.bill-total {
-			font-size: 16px;
 			font-weight: bold;
 			margin-top: 10px;
 			text-align: right;
@@ -61,15 +68,12 @@
 			margin-top: 1rem;
 			margin-bottom: 1.2rem;
 		}
-		.fs-small {
-			font-size: 0.9rem;
-		}
     </style>
   </head>
   <body>
 		<main class="bill-container" id="bill">
 			<header class="text-center">
-				<h3>BM Gadget & Tech</h3>
+				<h3 class="header-title">BM Gadget & Tech</h3>
 				<address class="my-4">
 					Powro Biponi Bitan, Lakshmipur
 					<br>
@@ -116,7 +120,7 @@
 			</div>
 
 			<div>
-				<table id="invoicetable" style="width:'100%'">
+				<table id="invoicetable" style="width:100%">
 					<thead>
 						<th>QTY</th>
 						<th>Product</th>
@@ -128,7 +132,7 @@
 							<td align="left">
 								x{{ product.quantity }}
 							</td>
-							<td class="py-4">
+							<td class="py-4 text-center">
 								{{ product.productname }}
 							</td>
 							<td align="right">
@@ -143,8 +147,8 @@
 							<th  align="right" id="subtotal">{{ sell.subtotal }}</th>
 						</tr>
 						<tr>
-							<th colspan="2" align="left">Discount</th>
-							<th  align="right" id="discount">{{ sell.discount }}</th>
+							<td colspan="2" align="left">Discount</td>
+							<td  align="right" id="discount">{{ sell.discount }}</td>
 						</tr>
 						<tr>
 							<th colspan="2" align="left">Payable ammount</th>
@@ -152,7 +156,9 @@
 						</tr>
 					</tfoot>
 				</table>
-				<p class="text-center">----------------------------</p>
+				<p class="text-center">
+					-------------------------------------------------------
+				</p>
 				
 				<div class="mt-2">
 					<p>
@@ -173,8 +179,7 @@
 					</p>
 				</div>
 			</div>
-		</main>
-		<button class="btn__dark" id="printbtn">Print</button>
+		</main>	
 
 		<script src="{{ url_for('static', filename='js/numberToWords.min.js') }}"></script>
 		<script>

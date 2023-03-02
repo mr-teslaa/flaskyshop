@@ -4,7 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>BM Shop</title>
+		<title>{{ shopname }}</title>
 
 		<!-- fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -27,9 +27,7 @@
 	</head>
 	<body>
 		<main class="container mt-5">
-			<img class="img-thumbnail" height="100" width="100" src="{{ url_for('static', filename='default.jpg') }}"
-				alt="">
-			<h1 class="my-4">BM Gadget and Technology</h1>
+			<h1 class="my-4">{{ shopname }}</h1>
 
 			<a href="{{ url_for('dashboard.register') }}" class="btn btn-primary">
 				Register

@@ -1,7 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Roboto Condensed', Arial, sans-serif !important;
+    font-size: 12px;
 }
 
 .my-4 {
@@ -23,25 +27,26 @@
     padding-bottom: 0.4rem;
 }
 
+.header-title {
+    font-size: 16px;
+}
+
 .bill-container {
     width: 50mm;
     padding: 10px;
 }
 
 .bill-header {
-    font-size: 17px;
     font-weight: bold;
     text-align: center;
     margin-bottom: 0.5rem;
 }
 
 .bill-item {
-    font-size: 14px;
     margin-bottom: 5px;
 }
 
 .bill-total {
-    font-size: 16px;
     font-weight: bold;
     margin-top: 10px;
     text-align: right;
@@ -54,8 +59,4 @@
 .copyright {
     margin-top: 1rem;
     margin-bottom: 1.2rem;
-}
-
-.fs-small {
-    font-size: 0.9rem;
 }

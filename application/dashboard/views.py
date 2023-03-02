@@ -9,6 +9,7 @@ import os
 import json
 
 from datetime import datetime
+from datetime import time
 
 #   importing basic flask module
 from flask import Blueprint
@@ -82,8 +83,12 @@ from io import BytesIO
 # ===== END OF latest code for reportlab =========
 # ================================================ 
 
-
-
+datatable_css = ['datatable/DataTables-1.13.2/css/dataTables.bootstrap5.min.css']
+datatable_js = [
+    'datatable/jQuery-3.6.0/jquery-3.6.0.min.js',
+    'datatable/DataTables-1.13.2/js/jquery.dataTables.min.js',
+    'datatable/DataTables-1.13.2/js/dataTables.bootstrap5.min.js'
+]
 
 dashboard = Blueprint('dashboard', __name__)
 
@@ -92,7 +97,7 @@ shopname = "BM GADGET & TECH"
 # LANDING PAGE
 @dashboard.route('/')
 def index():
-    return render_template('public/index.html')
+    return render_template('public/index.html', shopname=shopname)
 
 
 #   ===========================
@@ -317,12 +322,13 @@ def get_report():
 
     start_date = datetime.strptime(start_date, '%Y-%m-%d')
     end_date = datetime.strptime(end_date, '%Y-%m-%d')
+    end_date = datetime.combine(end_date, time.max)
 
     if filter == 'all':
         invoices = DailySells.query.filter(DailySells.pub_date.between(start_date, end_date)).all()
     elif filter == 'pending':
         invoices = DailySells.query.filter(DailySells.pub_date.between(start_date, end_date), DailySells.payment_status == 'pending').all()
-    elif filter == 'non-pending':
+    elif filter == 'paid':
         invoices = DailySells.query.filter(DailySells.pub_date.between(start_date, end_date), DailySells.payment_status != 'pending').all()
     elif filter == 'products':
         # Query all products sold in the given date range
@@ -351,20 +357,18 @@ def get_report():
     for invoice in invoices_json:
         if invoice['payment_status'] != 'pending':
             for selled_product in invoice['selled_products']:
-                selled_product_obj = SelledProducts.query.filter_by(productname=selled_product['productname']).first()
+                selled_product_obj = SelledProducts.query.filter_by(productname=selled_product['productname'], daily_sells_id=invoice['id']).first()
+
                 if selled_product_obj:
                     total_profit += selled_product_obj.calculate_profit()
+    
 
     # CALCULATING PENDING
     total_pending = 0
+
     for invoice in invoices_json:
         if invoice['payment_status'] == 'pending':
-            total_pending_products = 0
-            for product in invoice['selled_products']:
-                product_info = SelledProducts.query.filter_by(productname=product['productname'], daily_sells_id=invoice['id']).first()
-                if product_info:
-                    total_pending_products += product_info.calculate_profit()
-            total_pending += total_pending_products
+            total_pending += int(invoice['totalprice'])
 
     return jsonify(invoices=invoices_json, total_pending=total_pending, total_profit=total_profit)
 #   =======================
@@ -573,9 +577,9 @@ def admin_dashboard():
 @dashboard.route('/dashboard/todaysell/', methods=['GET', 'POST'])
 @login_required
 def todaysell():
-    today = datetime.utcnow().strftime('%d %b, %Y')
     page = request.args.get('page', 1, type=int)
-    sells = DailySells.query.order_by(DailySells.pub_date.desc()).paginate(page=page, per_page=50)
+    today = datetime.utcnow().strftime('%Y-%m-%d')
+    sells = DailySells.query.filter(DailySells.pub_date.startswith(today)).order_by(DailySells.id.desc()).paginate(page=page, per_page=50)
 
     return render_template('dashboard/todaysell.html', title='Today\'s Sell', sells=sells, today=today, shopname=shopname)
 
@@ -589,7 +593,7 @@ def newsell():
     form.customer_name.choices = [(customer.id, customer.customer_name) for customer in Customers.query.all()]
     form.product_name.choices = [(product.productid, product.name) for product in Products.query.all()]
 
-    return render_template('dashboard/newsell.html', title="New Sell", form=form, newinvoiceID=newinvoiceID, current_time=datetime.utcnow())
+    return render_template('dashboard/newsell.html', title="New Sell", shopname=shopname, form=form, newinvoiceID=newinvoiceID, current_time=datetime.utcnow())
 
 
 #   NEW SELL POS
@@ -611,6 +615,10 @@ def newsell_submit():
     strreq = request.get_json()
     data = json.loads(strreq)
    
+    products = data['products']
+    if not products:
+        return make_response(jsonify({'message': 'Cart is empty! Please add some items to your cart.'}), 400)
+
     print("==================")
     print(data)
     print("==================")
@@ -648,7 +656,6 @@ def newsell_submit():
     print(f'daily sell id ---->> {dailysell.id}')
     print('Showing all products ---->>')
 
-    products = data['products']
     for product in products:
         print(f"Product Name: {product['productname']}")
         print(f"Product id: {product['productid']}")
@@ -887,8 +894,9 @@ def products():
     form.product_brand.choices = [(brand.id, brand.name) for brand in Brands.query.all()]
     form.product_category.choices = [(category.id, category.name) for category in Categories.query.all()]
     
-    page = request.args.get('page', 1, type=int)
-    products = Products.query.order_by(Products.pub_date.desc()).paginate(page=page, per_page=50)
+    # page = request.args.get('page', 1, type=int)
+    # products = Products.query.order_by(Products.pub_date.desc()).paginate(page=page, per_page=50)
+    products = Products.query.order_by(Products.pub_date.desc()).all()
     brands = Brands.query.all()
     categories = Categories.query.all()
 
@@ -930,10 +938,15 @@ def products():
 
         return redirect(url_for('dashboard.products'))
 
-    return render_template('dashboard/products.html', title='Products', form=form, brands=brands, categories=categories, products=products, total_products=total_products, shopname=shopname)
+    return render_template(
+        'dashboard/products.html', title='Products', form=form, brands=brands, 
+        categories=categories, products=products, total_products=total_products, 
+        shopname=shopname, datatable_css=datatable_css, datatable_js=datatable_js
+    )
 
 #   GENERATE BARCODE FOR PRODUCTS
 @dashboard.route('/barcode/<int:product_id>/')
+@login_required
 def generate_barcode(product_id):
     # Generate a Code 128 barcode for the given product ID
     code = barcode.get('code128', str(product_id), writer=ImageWriter())
@@ -944,9 +957,11 @@ def generate_barcode(product_id):
     return response
 
 @dashboard.route('/barcode/<int:product_id>/print')
+@login_required
 def print_barcode(product_id):
     # Generate a Code 128 barcode for the given product ID
-    return render_template('dashboard/barcode-print.html')
+    product = Products.query.get_or_404(product_id)
+    return render_template('dashboard/barcode-print.html', product=product)
 
 #   EDIT PRODUCTS
 @dashboard.route("/dashboard/product/<int:product_id>/update/", methods=['GET', 'POST'])
@@ -1103,7 +1118,9 @@ def delete_customer(customer_id):
 @dashboard.route('/dashboard/report/', methods=['GET'])
 @login_required
 def report():
-    return render_template('dashboard/report.html', title='Report', shopname=shopname)
+    return render_template(
+        'dashboard/report.html', title='Report', shopname=shopname,  
+        datatable_css=datatable_css, datatable_js=datatable_js)
 #   =============================
 #   END DASHBAORD FUNCTIONALITY
 #   =============================

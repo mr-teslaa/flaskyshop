@@ -1,6 +1,9 @@
 {% extends 'layouts/root-dashboard.html' %}
 
 {% block head %}
+{% for css_file in datatable_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename=css_file) }}">
+{% endfor %}
 <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
 {% endblock %}
 
@@ -356,10 +359,28 @@
 
 			<!-- PRODUCTS DETAILS -->
 			<h2>All Products</h2>
+			<div class="d-flex align-items-center gap-3">
+				<div> Filter: </div>
+				<div class="d-flex align-items-center gap-3">
+					<select class="form-select" id="filtercategory">
+						<option value="">All Category</option>
+						{% for category in categories %}
+						<option value="{{ category.name }}">{{ category.name }}</option>
+						{% endfor %}
+					</select>
+
+					<select class="form-select" id="filterbrand">
+						<option value="">All Brand</option>
+						{% for brand in brands %}
+						<option value="{{ brand.name }}">{{ brand.name }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
 			<hr />
 			{% if products %}
 			<div class="table-responsive">
-				<table class="table table-striped table-hover table-bordered table-sm">
+				<table class="table table-striped table-hover table-bordered table-sm" id="productstable">
 					<thead>
 						<tr>
 							<th scope="col">#</th>
@@ -368,29 +389,26 @@
 							<th scope="col">Price <small class="fs-6">(Taka)</small> </th>
 							<th scope="col">Stock </th>
 							<th scope="col">Brand</th>
-							<th scope="col">Product Image</th>
+							<th scope="col">Category</th>
 							<th scope="col">Action</th>
 						</tr>
 					</thead>
 
 					<tbody>
-						{% for product in products.items %}
+						{% for product in products %}
 						<tr class="align-middle">
 							<td class="counters">{{ product.id }}</td>
 							<td>{{ product.productid }}</td>
 							<td>{{ product.name }}</td>
 							<td>
 								<small
-									class="fs-6 d-inline-flex m-2 px-2 py-1 fw-lighter text-dark bg-dark bg-opacity-10 border border-dark border-opacity-10 rounded-2">
+									class="fs-6 d-inline-flex m-2 px-2 py-1 fw-lighter text-dark bg-dark bg-opacity-10 border border-dark border-opacity-10 rounded-2 productprice">
 									{{ product.price }}
 								</small>
 							</td>
-							<td align="center">{{ product.stock }}</td>
-							<td>{{ product.brand.name }}</td>
-							<td>
-								<img src="{{ url_for('static', filename='productimages/' + product.image1) }}" alt=""
-									class="img-fluid avatar__logo" />
-							</td>
+							<td align="center"> {{ product.stock }} </td>
+							<td align="center"> {{ product.brand.name }} </td>
+							<td align="center"> {{ product.category.name }} </td>
 							<td>
 								<a class="btn btn-sm btn-dark" data-bs-toggle="modal" href="#detailsModal{{product.id}}"
 									role="button">
@@ -497,7 +515,7 @@
 											<div class="modal-footer">
 												<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 													<a class="btn btn-sm m-1 btn-dark me-md-2" 
-													href="{{ url_for('dashboard.generate_barcode', product_id=product.productid) }}">
+													href="{{ url_for('dashboard.print_barcode', product_id=product.id) }}">
 														Print Barcode
 													</a>
 
@@ -558,20 +576,7 @@
 				</table>
 			</div>
 
-			<!-- PAGINATE FOR LARGE AMMOUNT OF DATA -->
-			{% for page_num in products.iter_pages(left_edge=2, right_edge=2, left_current=1, right_current=1) %}
-			{% if page_num %}
-			{% if products.page == page_num %}
-			<a class="btn btn-sm btn-primary mb-4" href="{{ url_for('dashboard.products', page=page_num) }}">
-				{{ page_num }} </a>
-			{% else %}
-			<a class="btn btn-sm btn-outline-primary mb-4" href="{{ url_for('dashboard.products', page=page_num) }}">
-				{{ page_num }} </a>
-			{% endif %}
-			{% else %}
-			<a class="btn btn-sm mb-4" href="#"> .... </a>
-			{% endif %}
-			{% endfor %}
+		
 
 			{% else %}
 			<h5>
@@ -587,6 +592,61 @@
 	</div>
 </div>
 
+{% for js_file in datatable_js %}
+<script src="{{ url_for('static', filename=js_file) }}"></script>
+{% endfor %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    let table = new DataTable('#productstable');
+
+	let categorySelect = document.getElementById('filtercategory');
+    let brandSelect = document.getElementById('filterbrand');
+
+    categorySelect.addEventListener('change', function () {
+        let category = categorySelect.value;
+        let brand = brandSelect.value;
+
+        table.search('').columns().search('');
+
+        if (category !== '') {
+            table.column('6').search(category).draw();
+        } else {
+			table.search('').draw();
+		}
+
+        if (brand !== '') {
+            table.column('5').search(brand).draw();
+        } else {
+			table.search('').draw();
+		}
+    });
+
+    brandSelect.addEventListener('change', function () {
+        let category = categorySelect.value;
+        let brand = brandSelect.value;
+
+        table.search('').columns().search('');
+
+        if (category !== '') {
+            table.column('6').search(category).draw();
+        } else {
+			table.search('').draw();
+		}
+
+        if (brand !== '') {
+            table.column('5').search(brand).draw();
+        } else {
+			table.search('').draw();
+		}
+
+		// if (category === '' && brand === '') {
+        //     table.search('').draw();
+        // }
+    });
+});
+</script>
+
 <script>
 	let error = document.querySelector('.invalid-feedback');
 	let buttonaddproduct = document.querySelector(".btn.btn-sm.btn-outline-secondary")
@@ -596,6 +656,31 @@
 			buttonaddproduct.click();
 		})
 	}
+
+	// ADD COMMA IN NUMBER
+	const numberWithCommas = (x) => {
+		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
+
+	let products = document.querySelectorAll('.productprice');
+	products.forEach((product) => {
+		let pricevalue = product.innerText;
+		let pricewithcomma = numberWithCommas(pricevalue)
+
+		product.innerText = pricewithcomma
+	})
+	
+	document.addEventListener('change', () => {
+		let products = document.querySelectorAll('.productprice');
+		products.forEach((product) => {
+			let pricevalue = product.innerText;
+			let pricewithcomma = numberWithCommas(pricevalue)
+
+			product.innerText = pricewithcomma
+		})
+	})
+
+				
 </script>
 
 <script src="{{ url_for('static', filename='js/dselect.js') }}"></script>
@@ -662,7 +747,7 @@
 										<td>${product.productid}</td>
 										<td>${product.name}</td>
 										<td>
-											<small class="fs-6 d-inline-flex m-2 px-2 py-1 fw-lighter text-dark bg-dark bg-opacity-10 border border-dark border-opacity-10 rounded-2">
+											<small class="fs-6 d-inline-flex m-2 px-2 py-1 fw-lighter text-dark bg-dark bg-opacity-10 border border-dark border-opacity-10 rounded-2 productprice">
 												${product.price}
 											</small>
 										</td>
