@@ -1,6 +1,7 @@
 # ////////////////////////////////
 # 0. API  
-# 1. REALTIME SEARCH   
+# 1. REALTIME SEARCH
+# 2. EMPLOYEE MANAGEMENT   
 # 2. DASHBOARD
 # ////////////////////////////////
 
@@ -47,6 +48,7 @@ from application.models import SelledProducts
 
 from application.dashboard.forms import LoginForm 
 from application.dashboard.forms import RegistrationForm
+from application.dashboard.forms import UpdateEmployeeProfileForm
 from application.dashboard.forms import AddCustomerForm
 from application.dashboard.forms import AddBrandForm
 from application.dashboard.forms import AddCategoryForm 
@@ -134,11 +136,11 @@ def todaysell_price_get():
 
     obj = {
         "message": "GET Sell Successfully",
-        "selledtk": sell_price,
-        "pendingtk": pending_price,
-        "todaydate": today.strftime('%d %b, %Y'),
-        "totalsellproduct": total_sell_product,
-        "todayprofit": today_profit
+        "today_selledtk": sell_price,
+        "today_pendingtk": pending_price,
+        "today_date": today.strftime('%d %b, %Y'),
+        "today_sellproduct": total_sell_product,
+        "today_profit": today_profit
     }
     res =  make_response(jsonify(obj), 200)
     return res
@@ -201,12 +203,13 @@ def allsell_info_get():
     obj = {
         "message": "GET Sell Successfully",
         "todaydate": today,
-        "stock": stock,
-        "selledtk": sellprice,
-        "pendingtk": pendingprice,
-        "totalselledproduct": totalselleproduct,
-        "totalprofit": total_profit
+        "stock": stock if stock is not None else 0,
+        "selledtk": sellprice if sellprice is not None else 0,
+        "pendingtk": pendingprice if pendingprice is not None else 0,
+        "totalselledproduct": totalselleproduct if totalselleproduct is not None else 0,
+        "totalprofit": total_profit if total_profit is not None else 0
     }
+
     res =  make_response(jsonify(obj), 200)
     return res
 
@@ -241,12 +244,13 @@ def current_month_sell_info_get():
 
     obj = {
         "message": "GET Sell Successfully",
-        "selledtk": sell_price,
-        "pendingtk": pending_price,
+        "selledtk": sell_price if sell_price is not None else 0,
+        "pendingtk": pending_price if pending_price is not None else 0,
         "todaydate": today,
-        "totalsellproduct": total_selled_products,
-        "profit": total_profit
+        "totalsellproduct": total_selled_products if total_selled_products is not None else 0,
+        "profit": total_profit if total_profit is not None else 0
     }
+
     return make_response(jsonify(obj), 200)
 
 
@@ -371,6 +375,19 @@ def get_report():
             total_pending += int(invoice['totalprice'])
 
     return jsonify(invoices=invoices_json, total_pending=total_pending, total_profit=total_profit)
+
+
+@dashboard.route('/check-product-id-availability', methods=['POST'])
+@login_required
+def check_product_id_availability():
+    data = request.json
+    product = Products.query.filter_by(productid=data['productId']).first()
+    if product is None:
+        # Product ID is available
+        return jsonify({'message': 'Product ID is available'}), 200
+    else:
+        # Product ID is already in the database
+        return jsonify({'message': 'Product ID is already in use'}), 400
 #   =======================
 #   END API
 #   =======================
@@ -482,6 +499,103 @@ def user_logout():
     return redirect(url_for('dashboard.admin_login'))
 
 
+#   =============================
+#   START EMPLOYEE FUNCTIONALITY
+#   =============================
+@dashboard.route('/check_availability/<string:input_type>/<string:input_value>')
+@login_required
+def check_availability(input_type, input_value):
+    # Check if the given input value is available or not
+    if input_type == 'username':
+        user = Users.query.filter_by(username=input_value).first()
+    elif input_type == 'email':
+        user = Users.query.filter_by(email=input_value).first()
+    elif input_type == 'phone':
+        user = Users.query.filter_by(phone=input_value).first()
+    else:
+        return jsonify({'error': 'Invalid input type'})
+
+    # Return the availability status as JSON
+    if user:
+        return jsonify({'available': False})
+    else:
+        return jsonify({'available': True})
+
+
+@dashboard.route('/dashboard/employees/', methods=['GET', 'POST'])
+@login_required
+def employees():
+    employees = Users.query.filter_by(user_role='employee').all()
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = Users(phone=form.phone.data, username=form.username.data, email=form.email.data, password=hashed_password, user_role='employee')
+        db.session.add(user)
+        db.session.commit()
+        flash(f"Employee '{form.username.data}' account has been created ✅", 'success')
+        return redirect(url_for('dashboard.employees'))
+    return render_template('dashboard/employees.html', employees=employees, form=form, shopname=shopname)
+
+
+#   EDIT EMPLOYEE PROFILE
+@dashboard.route('/dashboard/employee/<int:employee_id>/update/', methods=['GET', 'POST'])
+@login_required
+def employee_profile_edit(employee_id):
+    employee = Users.query.get_or_404(employee_id)
+    form = UpdateEmployeeProfileForm()
+    updated_fields = []
+
+    # Check if form is submitted and valid
+    if form.validate_on_submit():
+
+        # Get form data
+        new_password = form.new_password.data
+        confirm_new_password = form.confirm_password.data
+        
+        if new_password != confirm_new_password:
+            flash('New Password and Confirm Password Doesn\'t Matched ⚠️', 'danger')
+            return redirect(url_for('dashboard.employee_profile_edit'))
+            
+        if employee.username != form.username.data:
+            employee.username = form.username.data
+            updated_fields.append("username")
+
+        if employee.email != form.email.data:
+            employee.email = form.email.data
+            updated_fields.append("email")
+        
+        if employee.phone != form.phone.data:
+            employee.phone = form.phone.data
+            updated_fields.append("phone")
+        
+        db.session.commit()
+        
+        if len(updated_fields) > 0:
+            flash(f'Employee\'s {", ".join(updated_fields)} has been updated', 'success')
+        return redirect(url_for('dashboard.employees'))
+    
+    if request.method == 'GET':
+        form.phone.data = employee.phone
+        form.username.data = employee.username
+        form.email.data = employee.email
+
+    return render_template('dashboard/employee_edit.html', title='Update Employee', form=form, shopname=shopname, employee=employee)
+
+
+#   DELETE EMPLOYEE
+@dashboard.route("/dashboard/employee/<int:employee_id>/delete/", methods=['POST'])
+@login_required
+def delete_employee(employee_id):
+    user = Users.query.get_or_404(employee_id)
+    db.session.delete(user)
+    db.session.commit()
+    flash(f'Employee "{user.username}" Deleted ✅', 'success')
+    return redirect(url_for('dashboard.employees'))
+#   =============================
+#   END EMPLOYEE FUNCTIONALITY
+#   =============================
+
+
 #   USER PROFILE
 @dashboard.route('/dashboard/profile/')
 @login_required
@@ -567,21 +681,36 @@ def admin_dashboard():
     #     daily_sell.invoiceid = new_invoice_id
     #     db.session.commit()
 
-    page = request.args.get('page', 1, type=int)
-    sells = DailySells.query.order_by(DailySells.pub_date.desc()).paginate(page=page, per_page=50)
+    # sells = DailySells.query.all()
+    sells = DailySells.query.order_by(DailySells.pub_date.desc()).all()
+    for sell in sells:
+        print(sell.pub_date)
     # totalselledproduct = SelledProducts.query.all()
-    return render_template('dashboard/dashboard.html', title='Dashboard', sells=sells, shopname=shopname)
+    return render_template(
+        'dashboard/dashboard.html', sells=sells, 
+        shopname=shopname, datatable_css=datatable_css, datatable_js=datatable_js 
+    )
 
 
 #   DAILY SELL
 @dashboard.route('/dashboard/todaysell/', methods=['GET', 'POST'])
 @login_required
 def todaysell():
-    page = request.args.get('page', 1, type=int)
     today = datetime.utcnow().strftime('%Y-%m-%d')
-    sells = DailySells.query.filter(DailySells.pub_date.startswith(today)).order_by(DailySells.id.desc()).paginate(page=page, per_page=50)
+    sells = DailySells.query.filter(DailySells.pub_date.startswith(today)).order_by(DailySells.id.desc()).all()
 
-    return render_template('dashboard/todaysell.html', title='Today\'s Sell', sells=sells, today=today, shopname=shopname)
+    return render_template(
+        'dashboard/todaysell.html', title='Today\'s Sell', sells=sells, 
+        today=today, shopname=shopname, datatable_css=datatable_css, datatable_js=datatable_js
+    )
+
+
+#   OVERVIEW
+@dashboard.route('/dashboard/overview/', methods=['GET'])
+@login_required
+def overview():
+    return render_template(
+        'dashboard/overview.html', title='Overview', shopname=shopname)
 
 
 #   NEW SELL
@@ -675,7 +804,7 @@ def newsell_submit():
         db.session.add(selled_product)
     db.session.commit()
 
-    res =  make_response(jsonify({"message": "Sell Completed Successfully"}), 200)
+    res =  make_response(jsonify({"message": "Sell Completed Successfully", "invoice_id": dailysell.invoiceid}), 200)
 
     return res
 
@@ -690,6 +819,45 @@ def view_sell(invoiceid):
     
     return render_template('/dashboard/sell.html', products=products, sell=sell, customer=customer, user=user, shopname=shopname)
 
+
+# DELETE INVOICE
+@dashboard.route("/delete-invoice/", methods=["POST"])
+@login_required
+def delete_invoice():
+    data = request.get_json()
+    option = data["option"]
+    invoice_id = data["invoice_id"]
+    invoice = DailySells.query.filter_by(invoiceid=invoice_id).first()
+    if invoice is None:
+        return jsonify({"error": "Invoice not found."})
+    
+    # Delete the invoice from the database
+    db.session.delete(invoice)
+    db.session.commit()
+
+    # Handle the selected option
+    if option == "add":
+        print(f'You select option ADD')
+        print(f'selled product: {invoice.selled_products}')
+        # Add the deleted products back to the Product table and increase the stock
+        for item in invoice.selled_products:
+            product = Products.query.filter_by(productid=item.productid).first()
+            product.stock += int(item.quantity)
+            db.session.add(product)
+            db.session.delete(item)
+        db.session.commit()
+        flash('Invoice deleted and products added back to stock.', 'success')
+        return jsonify({"message": "Invoice deleted and products added back to stock."})
+    elif option == "delete":
+        # Delete the products from the Product table
+        for item in invoice.selled_products:
+            db.session.delete(item)
+        db.session.commit()
+        flash('Invoice deleted and products deleted from database', 'success')
+        return jsonify({"message": "Invoice deleted and products deleted from database."}, 200)
+    else:
+        flash('Invalid option selected.', 'danger')
+        return jsonify({"error": "Invalid option selected."})
 
 #   PRINT INVOICE
 @dashboard.route('/dashboard/sell/<string:invoiceid>/print/')
@@ -905,7 +1073,7 @@ def products():
 
     if form.validate_on_submit():
         productname = form.product_name.data.strip()
-        productID = form.product_id.data.strip()
+        productID = form.product_id.data
         productprice = int(str(form.product_price.data).strip())
         productBuyingprice = int(str(form.product_buying_price.data).strip())
         productquantity = int(str(form.product_quantity.data).strip())
@@ -976,9 +1144,10 @@ def edit_product(product_id):
     
     if form.validate_on_submit():
         productname = form.product_name.data.strip()
-        productID = form.product_id.data.strip()
+        productID = form.product_id.data
         productprice = int(str(form.product_price.data).strip())
-        productBuyingprice = int(str(form.product_buying_price.data).strip())
+        if form.product_buying_price.data:
+            productBuyingprice = int(str(form.product_buying_price.data).strip())
         productquantity = int(str(form.product_quantity.data).strip())
         productdescription = form.product_description.data.strip()
         productStatus = form.product_available.data
@@ -1000,7 +1169,8 @@ def edit_product(product_id):
         product.name = productname
         product.productid = productID
         product.price = productprice
-        product.buying_price = productBuyingprice
+        if form.product_buying_price.data:
+            product.buying_price = productBuyingprice
         product.stock = productquantity
         product.description = productdescription
         product.brand_id = productbrand

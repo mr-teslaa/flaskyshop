@@ -1,0 +1,232 @@
+{% extends 'layouts/root-dashboard.html' %}
+
+<!-- body -->
+{% block body %}
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
+        BM Gadget & Tech
+    </a>
+    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"> </span>
+    </button>
+    <input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
+        aria-label="Search" disabled />
+    <div class="navbar-nav">
+        <div class="nav-item text-nowrap">
+            <a class="nav-link px-3" href="{{ url_for('dashboard.user_logout') }}">Sign out </a>
+        </div>
+    </div>
+</header>
+<div class="container-fluid">
+    <div class="row">
+        <!-- navigation inject -->
+        {% include 'helpers/_dashboard_side_nav.html' %}
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Employee Information</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group me-2">
+                        <!-- <button type="button" class="btn bg__anakiwa">
+                            Edit Profile
+                        </button> -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUMMERY -->
+            <div class="container">
+                <div class="form-profile-update mb-5">
+                    <form method="POST" action="" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <h5 class="my-3"> Profile information </h5>
+                                <div class="form-floating mb-3">
+                                    {% if form.username.errors %}
+                                    {{ form.username(
+                                        id="username",
+                                        oninput="checkAvailability('username')",
+                                        class="form-control is-invalid",
+                                        placeholder="username number"
+                                    ) }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.username.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="text-danger" id="username-status"></div>
+                                    {% else %}
+                                    {{ form.username(
+                                        id="username",
+                                        oninput="checkAvailability('username')",
+                                        class="form-control",
+                                        placeholder="username number"
+                                    ) }}
+                                    <div class="text-danger" id="username-status"></div>
+                                    {% endif %}
+
+                                    {{ form.username.label() }}
+                                </div>
+
+                                <div class="form-floating mb-3">
+                                    {% if form.phone.errors %}
+                                    {{ form.phone(
+                                        id="phone",
+                                        oninput="checkAvailability('phone')",
+                                        class="form-control is-invalid",
+                                        placeholder="Phone number"
+                                    ) }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.phone.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="text-danger" id="phone-status"></div>
+                                    {% else %}
+                                    {{ form.phone(
+                                        id="phone",
+                                        oninput="checkAvailability('phone')",
+                                        class="form-control",
+                                        placeholder="Phone number"
+                                    ) }}
+                                    <div class="text-danger" id="phone-status"></div>
+                                    {% endif %}
+
+                                    {{ form.phone.label() }}
+                                </div>
+
+                                <div class="form-floating mb-3">
+                                    {% if form.email.errors %}
+                                    {{ form.email(
+                                        id="email",
+                                        oninput="checkAvailability('email')",
+                                        class="form-control is-invalid",
+                                        placeholder="email number"
+                                    ) }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.email.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="text-danger" id="email-status"></div>
+                                    {% else %}
+                                    {{ form.email(
+                                        id="email",
+                                        oninput="checkAvailability('email')",
+                                        class="form-control",
+                                        placeholder="email number"
+                                    ) }}
+                                    <div class="text-danger" id="email-status"></div>
+                                    {% endif %}
+
+                                    {{ form.email.label() }}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h5 class="my-3"> Change Password </h5>
+                            
+                                <!-- NEW PASSWORD -->
+                                <div class="form-floating mb-3">
+                                    {% if form.new_password.errors %}
+                                    {{ form.new_password(
+                                        class="form-control is-invalid",
+                                        placeholder="New Password"
+                                    ) }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.new_password.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.new_password(
+                                        class="form-control",
+                                        placeholder="New Password"
+                                    ) }}
+                                    {% endif %}
+
+                                    {{ form.new_password.label() }}
+                                </div>
+
+                                <!-- CONFIRM NEW PASSOWRD -->
+                                <div class="form-floating mb-3">
+                                    {% if form.confirm_password.errors %}
+                                    {{ form.confirm_password(
+                                        class="form-control is-invalid",
+                                        placeholder="Confirm New Password"
+                                    ) }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.confirm_password.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.confirm_password(
+                                        class="form-control",
+                                        placeholder="Confirm New Password"
+                                    ) }}
+                                    {% endif %}
+
+                                    {{ form.confirm_password.label() }}
+                                </div>
+
+                                <div class="my-3">
+                                    <input type="checkbox" id="show-password">
+                                    <label for="show-password">Show Password</label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('dashboard.employees') }}"
+                                class="btn btn-lg btn-dark w-100 mx-0 mb-2">Cancel</a>
+                            {{ form.submit(class="btn btn-lg btn-primary w-100 mx-0 mb-2", id='submit') }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    const checkbox = document.getElementById("show-password");
+    const passwordFields = document.querySelectorAll('input[type="password"]');
+
+    checkbox.addEventListener('change', function () {
+        if (this.checked) {
+            passwordFields.forEach(field => field.type = 'text');
+        } else {
+            passwordFields.forEach(field => field.type = 'password');
+        }
+    });
+
+    function checkAvailability(inputType) {
+        // Get the input value
+        let inputValue = document.getElementById(inputType).value;
+
+        // Send an AJAX request to the server to check if the input value is available
+        fetch('/check_availability/' + inputType + '/' + inputValue)
+            .then(response => response.json())
+            .then(data => {
+            if (data.available) {
+                // Input value is available, update the UI
+                document.getElementById(inputType + '-status').innerHTML = '';
+                document.getElementById('submit').disabled = false;
+            } else {
+                // Input value is not available, update the UI
+                document.getElementById(inputType + '-status').innerHTML = 'This ' + inputType + ' is not available';
+                document.getElementById('submit').disabled = true;
+            }
+            })
+            .catch(error => console.error(error));
+    }
+
+</script>
+
+{% endblock %}

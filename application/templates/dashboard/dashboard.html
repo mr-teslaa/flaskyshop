@@ -1,6 +1,11 @@
 {% extends 'layouts/root-dashboard.html' %}
 
-<!-- body -->
+{% block head %}
+	{% for css_file in datatable_css %}
+	<link rel="stylesheet" href="{{ url_for('static', filename=css_file) }}">
+	{% endfor %}
+{% endblock %}
+
 {% block body %}
 <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
 	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
@@ -11,7 +16,7 @@
 		<span class="navbar-toggler-icon"> </span>
 	</button>
 	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" id="searchInvoice"
-		placeholder="Search by Invoice ID" aria-label="Search" />
+		placeholder="Search by Invoice ID" aria-label="Search" disabled />
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
 			<a class="nav-link px-3" href="{{ url_for('dashboard.user_logout') }}">Sign out </a>
@@ -43,74 +48,6 @@
 
 			<!-- SUMMERY OF PRODUCTS -->
 			<div class="container">
-
-				<!-- ALL SELL CARD -->
-				<div class="row mb-3">
-
-					<!-- PROFIT - THIS MONTH -->
-					<div class="col">
-						<div class="border summery__box bg-success bg-gradient text-white p-2">
-							<h3 id="currentmonthprofit" class="summery__box-title fs-1 fw-bolder">
-								000
-							</h3>
-							<p class="summery__subtitle">This month Profit</p>
-						</div>
-					</div>
-
-					<!-- PROFIT - TOTAL -->
-					<div class="col">
-						<div class="border summery__box bg-success bg-gradient text-white p-2">
-							<h3 id="totalprofit" class="summery__box-title fs-1 fw-bolder">
-								000
-							</h3>
-							<p class="summery__subtitle">Total Profit</p>
-						</div>
-					</div>
-				</div>
-
-				<div class="row mb-3">
-					<!-- EARNING - THIS MONTH -->
-					<div class="col">
-						<div class="border summery__box bg__mintgreen p-2">
-							<h3 id='currentMonthEarning' class="summery__box-title fs-1 fw-bolder">
-								000
-							</h3>
-							<p class="summery__subtitle">This Month Earning</p>
-						</div>
-					</div>
-
-					<!-- EARNING - TOTAL -->
-					<div class="col">
-						<div class="border summery__box bg__mintgreen p-2">
-							<h3 id="totalearning" class="summery__box-title fs-1 fw-bolder">
-								000
-							</h3>
-							<p class="summery__subtitle">Total TK Earning</p>
-						</div>
-					</div>
-				</div>
-
-				<div class="row gap-2 mb-3">
-					<!-- PENDING - THIS MONTH -->
-					<div class="col">
-						<div class="border summery__box bg__goldenpoppy p-2">
-							<h3 id="currentMonthPending" class="summery__box-title fs-1 fw-bolder">
-								000
-							</h3>
-							<p class="summery__subtitle">This Month TK Pending</p>
-						</div>
-					</div>
-
-					<!-- PENDING - TOTAL -->
-					<div class="col">
-						<div class="border summery__box bg__goldenpoppy p-2">
-							<h3 id="totalpendingprice" class="summery__box-title fs-1 fw-bolder">
-								000
-							</h3>
-							<p class="summery__subtitle">Total TK Pending</p>
-						</div>
-					</div>
-				</div>
 
 				<div class="row gap-2 mb-3">
 					<!-- STOCK - TOTAL PRODUCT -->
@@ -153,10 +90,22 @@
 
 			<!-- PRODUCTS DETAILS -->
 			<h2>All Sells</h2>
+			<div class="d-flex align-items-center gap-3">
+				<div> Filter: </div>
+				<div class="d-flex align-items-center gap-3">
+					<select class="form-select" id="filterpayment">
+						<option value="">All Invoices</option>
+						<option value="cash">Cash</option>
+						<option value="bkash/nagad">bKash/nagad</option>	
+						<option value="card">Card</option>	
+						<option value="pending">Pending</option>	
+					</select>
+				</div>
+			</div>
 			<hr />
 			{% if sells %}
 			<div class="table-responsive">
-				<table class="table table-hover table-striped table-bordered table-sm">
+				<table class="table table-hover table-striped table-bordered table-sm" id="invoicetable">
 					<thead>
 						<tr>
 							<th scope="col">#</th>
@@ -169,7 +118,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						{% for sell in sells.items %}
+						{% for sell in sells %}
 						<tr class="align-middle">
 							<td class="text-center counters">{{ sell.id }}</td>
 							<td>
@@ -214,22 +163,6 @@
 				</table>
 			</div>
 
-			<!-- PAGINATE FOR LARGE AMMOUNT OF DATA -->
-			{% for page_num in sells.iter_pages(left_edge=2, right_edge=2, left_current=1, right_current=1) %}
-			{% if page_num %}
-			{% if sells.page == page_num %}
-			<a class="btn btn-sm btn-primary mb-4" href="{{ url_for('dashboard.admin_dashboard', page=page_num) }}">
-				{{ page_num }} </a>
-			{% else %}
-			<a class="btn btn-sm btn-outline-primary mb-4"
-				href="{{ url_for('dashboard.admin_dashboard', page=page_num) }}">
-				{{ page_num }} </a>
-			{% endif %}
-			{% else %}
-			<a class="btn btn-sm mb-4" href="#"> .... </a>
-			{% endif %}
-			{% endfor %}
-
 			{% else %}
 			<h5>
 				No product sells yet.
@@ -252,18 +185,37 @@
 	}
 </script> -->
 
-<script>
-	let counter = 1;
-	const serialnos = document.querySelectorAll('.counters');
-	serialnos.forEach(serial => {
-		serial.innerText = counter;
-		counter++;
-	});
-</script>
+{% for js_file in datatable_js %}
+<script src="{{ url_for('static', filename=js_file) }}"></script>
+{% endfor %}
 
-<!-- ADD COMMA TO PRICE -->
 <script>
 	document.addEventListener('DOMContentLoaded', () => {
+		let table = new DataTable('#invoicetable', {
+			order: [[0, 'desc']]
+		});
+
+		let counter = 1;
+		const serialnos = document.querySelectorAll('.counters');
+		serialnos.forEach(serial => {
+			serial.innerText = counter;
+			counter++;
+		});
+
+		let paymentSelect = document.getElementById('filterpayment');
+
+		paymentSelect.addEventListener('change', function () {
+			let paymentvalue = paymentSelect.value;
+
+			table.search('').columns().search('');
+
+			if (paymentvalue !== '') {
+				table.column('4').search(paymentvalue).draw();
+			} else {
+				table.search('').draw();
+			}
+		});
+			
 		const numberWithCommas = (x) => {
 			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 		}
@@ -273,9 +225,8 @@
 		let allprices = document.querySelectorAll('.totalprices');
 		let stock = document.querySelector('#stock');
 		let totalselleproduct = document.querySelector('#totalsellproduct');
-		let totalearning = document.querySelector('#totalearning');
-		let totalpendingprice = document.querySelector('#totalpendingprice');
-		let totalprofit = document.querySelector('#totalprofit');
+		let current_month_selleproduct = document.querySelector('#currentMonthSelledProduct');
+
 
 		// GET ALL SELL INFO
 		fetch(`${window.origin}/api/allsell/info/get/`, {
@@ -290,14 +241,23 @@
 				// ADDING COMMA TO TOTAL EARNING
 				stock.innerText = numberWithCommas(data.stock);
 				totalselleproduct.innerText = numberWithCommas(data.totalselledproduct);
-				totalearning.innerText = numberWithCommas(data.selledtk);
-				totalprofit.innerText = numberWithCommas(data.totalprofit);
-				totalpendingprice.innerText = numberWithCommas(data.pendingtk);
 				today.innerText = data.todaydate
 			});
 		});
 
-		
+		// GET THIS MONTH SELL INFO 
+		fetch(`${window.origin}/api/sell/currentmonth/info/get/`, {
+			method: "POST",
+		}).then((response) => {
+			if (response.status !== 200) {
+				alert(`Something went wrong! Reload the page. Status: ${response.status}`);
+				return;
+			}
+
+			response.json().then((data) => {
+				current_month_selleproduct.innerText = numberWithCommas(data.totalsellproduct);
+			});
+		});
 
 		// ADDING COMMA TO ALL PRICE
 		allprices.forEach((price) => {
@@ -310,39 +270,7 @@
 
 </script>
 
-
-<script>
-	document.addEventListener('DOMContentLoaded', () => {
-	const numberWithCommas = (x) => {
-			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-		}
-	// CURRENT MONTH EARNING CONTAINER
-		let currentMonthEarning = document.querySelector('#currentMonthEarning');
-		let currentMonthPending = document.querySelector('#currentMonthPending');
-		let currentMonthSelledProduct = document.querySelector('#currentMonthSelledProduct');
-		let currentMonthProfit = document.querySelector('#currentmonthprofit');
-
-	// GET THIS MONTH SELL INFO 
-		fetch(`${window.origin}/api/sell/currentmonth/info/get/`, {
-			method: "POST",
-		}).then((response) => {
-			if (response.status !== 200) {
-				alert(`Something went wrong! Reload the page. Status: ${response.status}`);
-				return;
-			}
-
-			response.json().then((data) => {
-				// ADDING COMMA TO TOTAL EARNING
-				currentMonthEarning.innerText = numberWithCommas(data.selledtk);
-				currentMonthPending.innerText = numberWithCommas(data.pendingtk);
-				currentMonthSelledProduct.innerText = numberWithCommas(data.totalsellproduct);
-				currentMonthProfit.innerText = numberWithCommas(data.profit);
-			});
-		});
-	})
-</script>
-
-<script>
+<!-- <script>
 	// SEARCH INVOICE
 	const searchInput = document.getElementById('searchInvoice');
 
@@ -401,5 +329,5 @@
 				}
 			})
 	});
-</script>
+</script> -->
 {% endblock %}

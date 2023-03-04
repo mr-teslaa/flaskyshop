@@ -50,6 +50,14 @@
 					Products
 				</a>
 			</li>
+			{% if current_user.user_role != 'employee' %}
+			<li class="nav-item">
+				<a class="nav-link nav__icon" href="{{ url_for('dashboard.employees') }}">
+					<i class="bx bx-group"></i>
+					Employees
+				</a>
+			</li>
+			{% endif %}
 			<li class="nav-item">
 				<a class="nav-link nav__icon" href="{{ url_for('dashboard.customer') }}">
 					<i class="bx bx-group"></i>
@@ -62,6 +70,14 @@
 					Reports
 				</a>
 			</li>
+			{% if current_user.user_role != 'employee' %}
+			<li class="nav-item">
+				<a class="nav-link nav__icon" href="{{ url_for('dashboard.overview') }}">
+					<i class='bx bxs-report'></i>
+					Overview
+				</a>
+			</li>
+			{% endif %}
 			<li class="nav-item">
 				<a class="nav-link nav__icon" href="{{ url_for('dashboard.user_profile') }}">
 					<i class='bx bx-user-circle'></i>

@@ -147,6 +147,11 @@ class UpdateProfileForm(FlaskForm):
 
     submit = SubmitField('Save')
 
+    def validate_phone(self, phone):
+        user_phone = Users.query.filter_by(phone=phone.data).first()
+        if user_phone:
+            raise ValidationError('This Phone is alredy registerd. Please choose a different one.')
+
     def validate_username(self, username):
         if username.data != current_user.username:
             user = Users.query.filter_by(username=username.data).first()
@@ -198,7 +203,7 @@ class AddProductForm(FlaskForm):
         validators=[DataRequired()]
     )
 
-    product_id = StringField(
+    product_id = IntegerField(
         'Product ID',
         validators=[DataRequired()]
     )
@@ -267,11 +272,10 @@ class EditProductForm(FlaskForm):
         validators=[DataRequired()] 
     )
 
-    product_id = StringField(
+    product_id = IntegerField(
         'Product ID',
         validators=[
-            DataRequired(),
-            Length(min=1)
+            DataRequired()
         ] 
     )
 
@@ -282,7 +286,6 @@ class EditProductForm(FlaskForm):
 
     product_buying_price = StringField(
         'Buying Price',
-        validators=[DataRequired()] 
     )
 
     product_quantity = IntegerField(
@@ -321,10 +324,10 @@ class EditProductForm(FlaskForm):
     submit = SubmitField('Save')
 
     def validate_product_id(self, product_id):
-        current_produdct_id = product_id.data.strip()
+        current_produdct_id = product_id.data
         if current_produdct_id:
             product = Products.query.filter_by(productid=current_produdct_id).first()
-            if str(product.productid) != str(current_produdct_id):
+            if product is not None and str(product.productid) != str(current_produdct_id):
                 raise ValidationError('Product already added.')
 
 
@@ -401,3 +404,51 @@ class ReportForm(FlaskForm):
     filter_options = SelectField('Filter Options', choices=[('all', 'All'), ('pending', 'Pending'), ('nonpending', 'Non-Pending')])
     report_options = SelectField('Report Options', choices=[('profit', 'Profit'), ('pending', 'Pending Amount'), ('soldproducts', 'Sold Products')])
     submit = SubmitField('Generate Report')
+
+
+# UPDATE PROFILE FORM
+class UpdateEmployeeProfileForm(FlaskForm):
+
+    username = StringField(
+        'Username',
+        validators = [ 
+            Length(min=2, max=20)
+        ]
+    )
+
+    email = StringField(
+        'Email',
+        validators = [
+            DataRequired(),
+            Email()
+        ]
+    )
+
+    phone = StringField(
+        'Phone',
+        validators=[
+            DataRequired(),
+            Length(min=1, max=11)
+        ]
+    )
+
+    picture = FileField(
+        'Update Profile Picture', 
+        validators = [
+            FileAllowed(['jpg','jpeg','png'])
+        ]
+    )
+
+    current_password = PasswordField(
+        'Current Password'
+    )
+
+    new_password = PasswordField(
+        'New Password'
+    )
+
+    confirm_password = PasswordField(
+        'Confirm New Password'
+    )
+
+    submit = SubmitField('Save')

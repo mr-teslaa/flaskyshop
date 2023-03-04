@@ -95,6 +95,7 @@
 {% for js_file in datatable_js %}
 <script src="{{ url_for('static', filename=js_file) }}"></script>
 {% endfor %}
+
 <script>
 	const numberWithCommas = (x) => {
 		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -274,7 +275,6 @@
 
 
 			response.json().then((data) => {
-				console.log(data);
 				let reportTable = document.getElementById("report-table");
 				let reportTotalContainer = document.querySelector('#report-total-container');
 				let table = "";
@@ -333,12 +333,14 @@
 				}
 				reportTable.innerHTML = table;
 				if (data.total_profit || data.total_profit === 0 || data.total_pending || data.total_pending === 0) {
-					let reportTotal = `<div class="col">
+					let reportTotal = `{% if current_user.user_role != 'employee' %}
+											<div class="col">
 												<h3 class="fs-4">
 													Total Profit: ${numberWithCommas(data.total_profit)}
 													<small>tk</small>
 												</h3>
 											</div>
+										{% endif %}
 											<div class="col">
 												<h3 class="fs-4">
 													Total Pending: ${numberWithCommas(data.total_pending)}
@@ -350,5 +352,8 @@
 			});
 		});
 	});
+
+
+	
 </script>
 {% endblock %}

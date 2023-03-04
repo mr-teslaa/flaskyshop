@@ -1,0 +1,337 @@
+{% extends 'layouts/root-dashboard.html' %}
+
+{% block head %}
+{% for css_file in datatable_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename=css_file) }}">
+{% endfor %}
+{% endblock %}
+
+<!-- body -->
+{% block body %}
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+	<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
+		{{ shopname }}
+	</a>
+	<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+		data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"> </span>
+	</button>
+	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search"
+		aria-label="Search" disabled />
+	<div class="navbar-nav">
+		<div class="nav-item text-nowrap">
+			<a class="nav-link px-3" href="{{ url_for('dashboard.user_logout') }}">Sign out </a>
+		</div>
+	</div>
+</header>
+
+<div class="container-fluid">
+	<div class="row">
+		<!-- navigation inject -->
+		{% include 'helpers/_dashboard_side_nav.html' %}
+
+		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+			{% if current_user.user_role != 'employee' %}
+			<!-- SUMMERY OF PRODUCTS -->
+			<div class="container my-2">
+				<h2>Today</h2>
+				<hr>
+                <div class="row mb-3">
+					<div class="col">
+						<div class="border summery__box bg-success text-white p-2">
+							<h3 id='todayprofit' class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">Today Profit</p>
+						</div>
+					</div>
+
+					<div class="col">
+						<div class="border summery__box bg__mintgreen p-2">
+							<h3 id='todayearning' class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">Today Earning</p>
+						</div>
+					</div>
+				</div>
+
+                <div class="row mb-3">
+					<div class="col">
+						<div class="border summery__box bg__goldenpoppy p-2">
+							<h3 id="todapending" class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">Today Pending</p>
+						</div>
+					</div>
+
+					<div class="col">
+						<div class="border summery__box bg__anakiwa p-2">
+							<h3 id="todaysellproduct" class="summery__box-title fs-1 fw-bolder">
+								00
+							</h3>
+							<p class="summery__subtitle">
+								Today Selled Product
+							</p>
+						</div>
+					</div>
+				</div>
+
+				<h2>This Month</h2>
+				<hr>
+				<div class="row mb-3">
+					<!-- PROFIT - THIS MONTH -->
+					<div class="col">
+						<div class="border summery__box bg-success bg-gradient text-white p-2">
+							<h3 id="currentmonthprofit" class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">This month Profit</p>
+						</div>
+					</div>
+
+					<!-- EARNING - THIS MONTH -->
+					<div class="col">
+						<div class="border summery__box bg__mintgreen p-2">
+							<h3 id='currentMonthEarning' class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">This Month Earning</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="row mb-3">
+					<!-- PENDING - THIS MONTH -->
+					<div class="col">
+						<div class="border summery__box bg__goldenpoppy p-2">
+							<h3 id="currentMonthPending" class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">This Month TK Pending</p>
+						</div>
+					</div>
+
+					<!-- SELLED - THIS MONTH -->
+					<div class="col">
+						<div class="border summery__box bg__anakiwa p-2">
+							<h3 id="currentMonthSelledProduct" class="summery__box-title fs-1 fw-bolder">
+								00
+							</h3>
+							<p class="summery__subtitle">
+								This Month Selled Product
+							</p>
+						</div>
+					</div>
+				</div>
+
+				<h2>Total Overview</h2>
+				<hr>
+				<div class="row gap-2 mb-3">
+					<!-- PROFIT - TOTAL -->
+					<div class="col">
+						<div class="border summery__box bg-success bg-gradient text-white p-2">
+							<h3 id="totalprofit" class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">Total Profit</p>
+						</div>
+					</div>
+
+					<!-- EARNING - TOTAL -->
+					<div class="col">
+						<div class="border summery__box bg__mintgreen p-2">
+							<h3 id="totalearning" class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">Total Earning</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="row mb-3">
+					<!-- PENDING - TOTAL -->
+					<div class="col">
+						<div class="border summery__box bg__goldenpoppy p-2">
+							<h3 id="totalpendingprice" class="summery__box-title fs-1 fw-bolder">
+								000
+							</h3>
+							<p class="summery__subtitle">Total TK Pending</p>
+						</div>
+					</div>
+
+					<!-- STOCK - TOTAL PRODUCT -->
+					<div class="col">
+						<div class="border summery__box bg__anakiwa p-2">
+							<h3 id="stock" class="summery__box-title fs-1 fw-bolder">
+								00
+							</h3>
+							<p class="summery__subtitle">
+								Products in Stock
+							</p>
+						</div>
+					</div>
+
+					<!-- SELLED - TOTAL PRODUCT -->
+					<div class="col">
+						<div class="border summery__box bg__anakiwa p-2">
+							<h3 id="totalsellproduct" class="summery__box-title fs-1 fw-bolder">
+								00
+							</h3>
+							<p class="summery__subtitle">
+								Total Selled Product
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% else %}
+			<div class="container my-3">
+				<h1>You don't have permission to view this page 😥</h1>
+				<h3>Only your shop owner can see this page 😎</h3>
+			</div>
+			{% endif %}
+		</main>
+	</div>
+</div>
+
+<!-- <script>
+	document.addEventListener('DOMContentLoaded', () => {
+		const numberWithCommas = (x) => {
+			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		}
+
+		let allprices = document.querySelectorAll('.totalprices');
+		let totalsellprice = document.querySelector('#totalsellprice');
+		let totalpendingprice = document.querySelector('#totalpendingprice');
+		let totalsellproduct = document.querySelector('#totalsellproduct')
+		let totalprofit = document.querySelector('#totalprofit')
+
+		fetch(`${window.origin}/api/todaysell/price/get/`, {
+			method: "POST",
+		}).then((response) => {
+			if (response.status !== 200) {
+				alert(`Something went wrong! Reload the page. Status: ${response.status}`);
+				return;
+			}
+
+			response.json().then((data) => {
+				console.log(data)
+				// ADDING COMMA TO TOTAL EARNING
+				totalsellprice.innerText = numberWithCommas(data.selledtk);
+				totalpendingprice.innerText = numberWithCommas(data.pendingtk);
+				totalsellproduct.innerText = data.totalsellproduct
+				totalprofit.innerText = numberWithCommas(data.todayprofit)
+			});
+		});
+
+		// ADDING COMMA TO ALL PRICE
+		allprices.forEach((price) => {
+			let pricevalue = price.innerText;
+			let pricewithcomma = numberWithCommas(pricevalue)
+
+			price.innerText = pricewithcomma
+		})
+	})
+
+</script> -->
+
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		const numberWithCommas = (x) => {
+			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		}
+
+		// TODAY CONTAINER
+		let today_profit = document.querySelector('#todayprofit');
+		let today_earning = document.querySelector('#todayearning');
+		let today_pending = document.querySelector('#todapending');
+		let today_selleproduct = document.querySelector('#todaysellproduct');
+
+		// ALL SELL CONTAINER
+		let today = document.querySelector('#today');
+		let allprices = document.querySelectorAll('.totalprices');
+		let stock = document.querySelector('#stock');
+		let totalselleproduct = document.querySelector('#totalsellproduct');
+		let totalearning = document.querySelector('#totalearning');
+		let totalpendingprice = document.querySelector('#totalpendingprice');
+		let totalprofit = document.querySelector('#totalprofit');
+
+		// CURRENT MONTH EARNING CONTAINER
+		let currentMonthEarning = document.querySelector('#currentMonthEarning');
+		let currentMonthPending = document.querySelector('#currentMonthPending');
+		let currentMonthSelledProduct = document.querySelector('#currentMonthSelledProduct');
+		let currentMonthProfit = document.querySelector('#currentmonthprofit');
+
+		// TODAY SELL
+		fetch(`${window.origin}/api/todaysell/price/get/`, {
+			method: "POST",
+		}).then((response) => {
+			if (response.status !== 200) {
+				alert(`Something went wrong! Reload the page. Status: ${response.status}`);
+				return;
+			}
+
+			response.json().then((data) => {
+				console.log(data)
+				// ADDING COMMA TO TOTAL EARNING
+				today_profit.innerText = numberWithCommas(data.today_profit)
+				today_earning.innerText = numberWithCommas(data.today_selledtk);
+				today_pending.innerText = numberWithCommas(data.today_pendingtk);
+				today_selleproduct.innerText = data.today_sellproduct
+			});
+		});
+
+
+		// GET ALL SELL INFO
+		fetch(`${window.origin}/api/allsell/info/get/`, {
+			method: "POST",
+		}).then((response) => {
+			if (response.status !== 200) {
+				alert(`Something went wrong! Reload the page. Status: ${response.status}`);
+				return;
+			}
+
+			response.json().then((data) => {
+				// ADDING COMMA TO TOTAL EARNING
+				stock.innerText = numberWithCommas(data.stock);
+				totalselleproduct.innerText = numberWithCommas(data.totalselledproduct);
+				totalearning.innerText = numberWithCommas(data.selledtk);
+				totalprofit.innerText = numberWithCommas(data.totalprofit);
+				totalpendingprice.innerText = numberWithCommas(data.pendingtk);
+				today.innerText = data.todaydate
+			});
+		});
+
+		// GET THIS MONTH SELL INFO 
+		fetch(`${window.origin}/api/sell/currentmonth/info/get/`, {
+			method: "POST",
+		}).then((response) => {
+			if (response.status !== 200) {
+				alert(`Something went wrong! Reload the page. Status: ${response.status}`);
+				return;
+			}
+
+			response.json().then((data) => {
+				console.log(data)
+				// ADDING COMMA TO TOTAL EARNING
+				currentMonthEarning.innerText = numberWithCommas(data.selledtk);
+				currentMonthPending.innerText = numberWithCommas(data.pendingtk);
+				currentMonthSelledProduct.innerText = numberWithCommas(data.totalsellproduct);
+				currentMonthProfit.innerText = numberWithCommas(data.profit);
+			});
+		});
+
+		// ADDING COMMA TO ALL PRICE
+		allprices.forEach((price) => {
+			let pricevalue = price.innerText;
+			let pricewithcomma = numberWithCommas(pricevalue)
+
+			price.innerText = pricewithcomma
+		})
+	})
+
+</script>
+
+{% endblock %}

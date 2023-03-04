@@ -60,7 +60,7 @@
 							</div>
 
 							<div class="col-md-6">
-								<div class="form-floating mb-3">
+								<div class="form-floating mb-3 check-space-input">
 									{% if form.product_id.errors %}
 									{{ form.product_id(
 										class="form-control is-invalid",
@@ -71,11 +71,13 @@
 										<span>{{ error }}</span>
 										{% endfor %}
 									</div>
+									<p class="error-message text-danger"></p>
 									{% else %}
 									{{ form.product_id(
 											class="form-control",
 											placeholder="Product Description"
 										) }}
+									<p class="error-message text-danger"></p>
 									{% endif %}
 
 									{{ form.product_id.label(class="form-control-label") }}
@@ -85,7 +87,7 @@
 
 						<div class="row">
 							<div class="col-md-4">
-								<div class="form-floating mb-3">
+								<div class="form-floating mb-3 check-space-input">
 									{% if form.product_price.errors %}
 									{{ form.product_price(
 										class="form-control is-invalid",
@@ -96,19 +98,22 @@
 										<span>{{ error }}</span>
 										{% endfor %}
 									</div>
+									<p class="error-message text-danger"></p>
 									{% else %}
 									{{ form.product_price(
-											class="form-control",
-											placeholder="Product Price"
-										) }}
+										class="form-control",
+										placeholder="Product Price"
+									) }}
+									<p class="error-message text-danger"></p>
 									{% endif %}
 
 									{{ form.product_price.label(class="form-control-label") }}
 								</div>
 							</div>
 
+							{% if current_user.user_role != 'employee' %}
 							<div class="col-md-4">
-								<div class="form-floating mb-3">
+								<div class="form-floating mb-3 check-space-input">
 									{% if form.product_buying_price.errors %}
 									{{ form.product_buying_price(
 										class="form-control is-invalid",
@@ -119,11 +124,13 @@
 										<span>{{ error }}</span>
 										{% endfor %}
 									</div>
+									<p class="error-message text-danger"></p>
 									{% else %}
 									{{ form.product_buying_price(
 										class="form-control",
 										placeholder="Product Price"
 									) }}
+									<p class="error-message text-danger"></p>
 									{% endif %}
 
 									{{ form.product_buying_price.label(class="form-control-label") }}
@@ -131,7 +138,7 @@
 							</div>
 
 							<div class="col-md-4">
-								<div class="form-floating mb-3">
+								<div class="form-floating mb-3 check-space-input">
 									{% if form.product_quantity.errors %}
 									{{ form.product_quantity(
 										class="form-control is-invalid",
@@ -142,16 +149,44 @@
 										<span>{{ error }}</span>
 										{% endfor %}
 									</div>
+									<p class="error-message text-danger"></p>
 									{% else %}
 									{{ form.product_quantity(
-											class="form-control",
-											placeholder="Product Quantity"
-										) }}
+										class="form-control",
+										placeholder="Product Quantity"
+									) }}
+									<p class="error-message text-danger"></p>
 									{% endif %}
 
 									{{ form.product_quantity.label(class="form-control-label") }}
 								</div>
 							</div>
+							{% else %}
+							<div class="col-md-8">
+								<div class="form-floating mb-3 check-space-input">
+									{% if form.product_quantity.errors %}
+									{{ form.product_quantity(
+										class="form-control is-invalid",
+										placeholder="Product Quantity"
+									) }}
+									<div class="invalid-feedback">
+										{% for error in form.product_quantity.errors %}
+										<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+									<p class="error-message text-danger"></p>
+									{% else %}
+									{{ form.product_quantity(
+										class="form-control",
+										placeholder="Product Quantity"
+									) }}
+									<p class="error-message text-danger"></p>
+									{% endif %}
+
+									{{ form.product_quantity.label(class="form-control-label") }}
+								</div>
+							</div>
+							{% endif %}
 						</div>
 
 						<div class="row">
@@ -306,7 +341,7 @@
 					<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 						<a href="{{ url_for('dashboard.products') }}"
 							class="btn btn-lg btn-dark w-100 mx-0 mb-2">Cancel</a>
-						{{ form.submit(class="btn btn-lg btn-primary w-100 mx-0 mb-2") }}
+						{{ form.submit(class="btn btn-lg btn-primary w-100 mx-0 mb-2", id="submit-button") }}
 					</div>
 				</form>
 			</div>
@@ -318,19 +353,26 @@
 
 <script src="{{ url_for('static', filename='js/dselect.js') }}"></script>
 
-<!-- <script>
-	const searchbrand = document.querySelector("#selectbrand");
-	const selectcategory = document.querySelector("#selectcategory");
-	dselect(searchbrand, {
-		search: true,
-		value: `{{ product.brand_id }}`
-	});
+<script>
+const inputGroups = document.querySelectorAll(".check-space-input");
 
-	dselect(selectcategory, {
-		search: true,
-	});
+for (let i = 0; i < inputGroups.length; i++) {
+  const inputField = inputGroups[i].querySelector(".form-control");
+  const errorMessage = inputGroups[i].querySelector(".error-message");
 
-</script> -->
+  inputField.addEventListener("input", function () {
+    const submitButton = document.getElementById("submit-button");
+    const isValid = /^\d+$/.test(this.value);
+    if (!isValid || this.value.trim() === "") {
+      errorMessage.textContent = "Space not allowed, Please enter a valid number.";
+      submitButton.disabled = true;
+    } else {
+      errorMessage.textContent = "";
+      submitButton.disabled = false;
+    }
+  });
+}
+</script>
 
 
 {% endblock %}

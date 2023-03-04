@@ -34,9 +34,49 @@
 			<div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom">
 				<h1 class="h2">Invoice: <span id="invoiceid">{{ sell.invoiceid }}</span></h1>
 
-				<div>
-					<a class="btn btn-dark" href="{{ url_for('dashboard.print_pos_sell', invoiceid=sell.invoiceid) }}">POS Print</a>
+				<div class="d-flex gap-2">
+					{% if current_user.user_role != 'employee' %}
+					<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+						data-bs-target="#deleteInvoiceModal">
+						Delete
+					</button>
+					{% endif %}
+
+					<div>
+						<a class="btn btn-dark"
+							href="{{ url_for('dashboard.print_pos_sell', invoiceid=sell.invoiceid) }}">POS Print</a>
+					</div>
 				</div>
+
+				{% if current_user.user_role != 'employee' %}
+				<!-- INVOICE DELETE CONFIRMATION -->
+				<div class="modal fade" id="deleteInvoiceModal" tabindex="-1" aria-labelledby="deleteInvoiceModalLabel"
+					aria-hidden="true">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h1 class="modal-title fs-5" id="deleteInvoiceModalLabel">Modal title</h1>
+								<button type="button" class="btn-close" data-bs-dismiss="modal"
+									aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								Are you sure you want to delete this invoice?
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-sm btn-dark" data-bs-dismiss="modal">
+									Close
+								</button>
+								<button type="button" class="btn btn-sm btn-primary" onclick="deleteInvoice('add')">
+									Add product back to stock
+								</button>
+								<button type="button" class="btn btn-sm btn-danger" onclick="deleteInvoice('delete')">
+									Delete product without adding to stock
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endif %}
 			</div>
 
 			<div class="row">
@@ -250,4 +290,33 @@
 	});
 </script>
 
-{% endblock %}   
+{% if current_user.user_role != 'employee' %}
+<script>
+	// DELETE INVOICE
+	function deleteInvoice(option) {
+		const invoiceId = document.querySelector('#invoiceid').innerText
+   		const url = "/delete-invoice/";
+
+		fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				option: option,
+				invoice_id: invoiceId
+			})
+		})
+			.then(response => response.json())
+			.then(data => {
+				// Redirect to the invoice list page after the invoice is deleted
+				window.location.href = "/dashboard/";
+			})
+			.catch(error => {
+				alert('Error:', error);
+			});
+	}
+</script>
+{% endif %}
+
+{% endblock %}

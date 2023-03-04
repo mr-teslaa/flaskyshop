@@ -18,7 +18,7 @@
 		<span class="navbar-toggler-icon"> </span>
 	</button>
 	<input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" id="searchProduct"
-		placeholder="Search Product by id or name" aria-label="Search" />
+		placeholder="Search Product by id or name" aria-label="Search" disabled/>
 	<div class="navbar-nav">
 		<div class="nav-item text-nowrap">
 			<a class="nav-link px-3" href="{{ url_for('dashboard.user_logout') }}">Sign out </a>
@@ -36,11 +36,13 @@
 				<h1 class="h2">Products</h1>
 				<div class="btn-toolbar mb-2 mb-md-0">
 					<div class="btn-group me-2">
+						{% if current_user.user_role != 'employee' %}
 						<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
 							data-bs-target="#addProduct">
 							<i class="bx bx-plus"></i>
 							Add Products
 						</button>
+						{% endif %}
 						<!-- <button
                             type="button"
                             class="btn btn-sm btn-outline-secondary"
@@ -92,9 +94,10 @@
 									</div>
 
 									<div class="col-md-6">
-										<div class="form-floating mb-3">
+										<div class="form-floating mb-3 check-space-input">
 											{% if form.product_id.errors %}
 											{{ form.product_id(
+												id="productID",
 												class="form-control is-invalid",
 												placeholder="Product Description"
 											) }}
@@ -103,11 +106,14 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
+											<p class="error-message text-danger"></p>
 											{% else %}
 											{{ form.product_id(
+													id="productID",
 													class="form-control",
 													placeholder="Product Description"
 												) }}
+											<p class="error-message text-danger"></p>
 											{% endif %}
 
 											{{ form.product_id.label(class="form-control-label") }}
@@ -117,7 +123,7 @@
 
 								<div class="row">
 									<div class="col-md-4">
-										<div class="form-floating mb-3">
+										<div class="form-floating mb-3 check-space-input">
 											{% if form.product_price.errors %}
 											{{ form.product_price(
 												class="form-control is-invalid",
@@ -128,11 +134,13 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
+											<p class="error-message text-danger"></p>
 											{% else %}
 											{{ form.product_price(
 													class="form-control",
 													placeholder="Product Price"
 												) }}
+											<p class="error-message text-danger"></p>
 											{% endif %}
 
 											{{ form.product_price.label(class="form-control-label") }}
@@ -140,7 +148,7 @@
 									</div>
 
 									<div class="col-md-4">
-										<div class="form-floating mb-3">
+										<div class="form-floating mb-3 check-space-input">
 											{% if form.product_buying_price.errors %}
 											{{ form.product_buying_price(
 												class="form-control is-invalid",
@@ -151,11 +159,13 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
+											<p class="error-message text-danger"></p>
 											{% else %}
 											{{ form.product_buying_price(
 												class="form-control",
 												placeholder="Product Price"
 											) }}
+											<p class="error-message text-danger"></p>
 											{% endif %}
 
 											{{ form.product_buying_price.label(class="form-control-label") }}
@@ -163,7 +173,7 @@
 									</div>
 
 									<div class="col-md-4">
-										<div class="form-floating mb-3">
+										<div class="form-floating mb-3 check-space-input">
 											{% if form.product_quantity.errors %}
 											{{ form.product_quantity(
 												class="form-control is-invalid",
@@ -174,11 +184,13 @@
 												<span>{{ error }}</span>
 												{% endfor %}
 											</div>
+											<p class="error-message text-danger"></p>
 											{% else %}
 											{{ form.product_quantity(
-													class="form-control",
-													placeholder="Product Quantity"
-												) }}
+												class="form-control",
+												placeholder="Product Quantity"
+											) }}
+											<p class="error-message text-danger"></p>
 											{% endif %}
 
 											{{ form.product_quantity.label(class="form-control-label") }}
@@ -458,12 +470,14 @@
 																<th>Category</th>
 																<td>{{ product.category.name }}</td>
 															</tr>
+															{% if current_user.user_role != 'employee' %}
 															<tr>
 																<th>Buying Price <small>(Taka)</small></th>
 																<td>
 																	{{ product.buying_price }} Taka
 																</td>
 															</tr>
+															{% endif %}
 															<tr>
 																<th>Price <small>(Taka)</small></th>
 																<td
@@ -519,11 +533,14 @@
 														Print Barcode
 													</a>
 
+													{% if current_user.user_role != 'employee' %}
 													<button class="btn btn-sm m-1 btn-danger me-md-2"
 														data-bs-target="#deleteConfirmModalToggle{{product.id}}"
 														data-bs-toggle="modal">
 														Delete Product
 													</button>
+													{% endif %}
+													
 													<a href="{{ url_for('dashboard.edit_product', product_id=product.id) }}"
 														class="btn btn-sm m-1 btn-primary me-md-2">
 														Edit Product
@@ -581,11 +598,13 @@
 			{% else %}
 			<h5>
 				No product added yet.
+				{% if current_user.user_role != 'employee' %}
 				<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
 					data-bs-target="#addProduct">
 					<i class="bx bx-plus"></i>
 					Add Products
 				</button>
+				{% endif %}
 			</h5>
 			{% endif %}
 		</main>
@@ -598,6 +617,38 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+	function generateProductId() {
+		// Generate a random 8-digit number
+		const productId = Math.floor(Math.random() * 100000000);
+		
+		// Pad the number with leading zeros if necessary
+		return productId.toString().padStart(8, '0');
+	}
+
+
+	const checkProductIdAvailability = () => {
+		const productID_inputField = document.getElementById('productID');
+		let productId = generateProductId();
+		
+		fetch('/check-product-id-availability', {
+			method: 'POST',
+			body: JSON.stringify({ productId }),
+			headers: { 'Content-Type': 'application/json' }
+		})
+		.then(response => {
+			if (response.ok) {
+			// Product ID is available, assign it to the input field
+			productID_inputField.value = productId;
+			} else {
+			// Product ID is not available, generate a new one and try again
+			checkProductIdAvailability();
+			}
+		})
+		.catch(error => console.error(error));
+	}
+
+	checkProductIdAvailability()
+
     let table = new DataTable('#productstable');
 
 	let categorySelect = document.getElementById('filtercategory');
@@ -662,6 +713,12 @@ document.addEventListener('DOMContentLoaded', function () {
 		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	}
 
+	let box_titles = document.querySelectorAll('.summery__box-title')
+	box_titles.forEach((box_title) => {
+		box_title.innerText = numberWithCommas(box_title.innerText)
+	})
+
+
 	let products = document.querySelectorAll('.productprice');
 	products.forEach((product) => {
 		let pricevalue = product.innerText;
@@ -704,71 +761,91 @@ document.addEventListener('DOMContentLoaded', function () {
 		serial.innerText = counter;
 		counter++;
 	});
+	
+	// VALIDATE INPUT FIELD DO NOT HAVE SPACE
+	const inputGroups = document.querySelectorAll(".check-space-input");
+
+	for (let i = 0; i < inputGroups.length; i++) {
+	const inputField = inputGroups[i].querySelector(".form-control");
+	const errorMessage = inputGroups[i].querySelector(".error-message");
+
+	inputField.addEventListener("input", function () {
+		const submitButton = document.getElementById("submit-button");
+		const isValid = /^\d+$/.test(this.value);
+		if (!isValid || this.value.trim() === "") {
+		errorMessage.textContent = "Space not allowed, Please enter a valid number.";
+		submitButton.disabled = true;
+		} else {
+		errorMessage.textContent = "";
+		submitButton.disabled = false;
+		}
+	});
+	}
 
 
 	// SEARCH PRODUCTS
-	const searchInput = document.getElementById('searchProduct');
+	// const searchInput = document.getElementById('searchProduct');
 
-	searchInput.addEventListener('input', (e) => {
-		const searchValue = e.target.value;
+	// searchInput.addEventListener('input', (e) => {
+	// 	const searchValue = e.target.value;
 
-		let url = '';
-		if (!isNaN(searchValue)) {
-			// search by ID
-			url = `/dashboard/search-products-by-id?q=${searchValue}`;
-		} else {
-			// search by name
-			url = `/dashboard/search-products-by-name?q=${searchValue}`;
-		}
+	// 	let url = '';
+	// 	if (!isNaN(searchValue)) {
+	// 		// search by ID
+	// 		url = `/dashboard/search-products-by-id?q=${searchValue}`;
+	// 	} else {
+	// 		// search by name
+	// 		url = `/dashboard/search-products-by-name?q=${searchValue}`;
+	// 	}
 
-		// Make a fetch request to your endpoint
-		fetch(url)
-			.then(response => response.json())
-			.then(data => {
-				console.log(data)
-				// Get the tbody element
-				const tbody = document.querySelector("tbody")
+	// 	// Make a fetch request to your endpoint
+	// 	fetch(url)
+	// 		.then(response => response.json())
+	// 		.then(data => {
+	// 			console.log(data)
+	// 			// Get the tbody element
+	// 			const tbody = document.querySelector("tbody")
 
-				// Clear the existing rows
-				tbody.innerHTML = ""
+	// 			// Clear the existing rows
+	// 			tbody.innerHTML = ""
 
-				// Check if there are any products
-				if (data.length) {
-					// Loop through the products
-					for (let product of data) {
-						// Create a new row
-						const row = document.createElement("tr")
-						row.classList.add('align-middle')
+	// 			// Check if there are any products
+	// 			if (data.length) {
+	// 				// Loop through the products
+	// 				for (let product of data) {
+	// 					// Create a new row
+	// 					const row = document.createElement("tr")
+	// 					row.classList.add('align-middle')
 
-						let producturl = `${window.location.origin}/dashboard/product/${product.id}`
+	// 					let producturl = `${window.location.origin}/dashboard/product/${product.id}`
 
-						// Add the product information to the row
-						row.innerHTML = `<td>${product.id}</td>
-										<td>${product.productid}</td>
-										<td>${product.name}</td>
-										<td>
-											<small class="fs-6 d-inline-flex m-2 px-2 py-1 fw-lighter text-dark bg-dark bg-opacity-10 border border-dark border-opacity-10 rounded-2 productprice">
-												${product.price}
-											</small>
-										</td>
-										<td align="center">${product.stock}</td>
-										<td>${product.brand.name}</td>
-										<td align="center">
-											<img src="{{url_for('static', filename='productimages/')}}/${product.image1}" class="img-fluid avatar__logo">
-										</td>
-										<td>
-											<a class="btn btn-sm btn-dark" href="${producturl}" role="button">Details</a>
-										</td>`
+	// 					// Add the product information to the row
+	// 					row.innerHTML = `<td>${product.id}</td>
+	// 									<td>${product.productid}</td>
+	// 									<td>${product.name}</td>
+	// 									<td>
+	// 										<small class="fs-6 d-inline-flex m-2 px-2 py-1 fw-lighter text-dark bg-dark bg-opacity-10 border border-dark border-opacity-10 rounded-2 productprice">
+	// 											${product.price}
+	// 										</small>
+	// 									</td>
+	// 									<td align="center">${product.stock}</td>
+	// 									<td>${product.brand.name}</td>
+	// 									<td align="center">
+	// 										<img src="{{url_for('static', filename='productimages/')}}/${product.image1}" class="img-fluid avatar__logo">
+	// 									</td>
+	// 									<td>
+	// 										<a class="btn btn-sm btn-dark" href="${producturl}" role="button">Details</a>
+	// 									</td>`
 
-						// Add the row to the table
-						tbody.appendChild(row)
-					}
-				} else {
-					// Show an error message
-					tbody.innerHTML = "<tr><td colspan='8' class='text-center fs-5'>Product not found</td></tr>"
-				}
-			})
-	});
+	// 					// Add the row to the table
+	// 					tbody.appendChild(row)
+	// 				}
+	// 			} else {
+	// 				// Show an error message
+	// 				tbody.innerHTML = "<tr><td colspan='8' class='text-center fs-5'>Product not found</td></tr>"
+	// 			}
+	// 		})
+	// });
 
 </script>
 

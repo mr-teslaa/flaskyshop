@@ -1,76 +1,83 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>{{ sell.invoiceid }} - Bill Recipt</title>
-	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<head>
+		<meta charset="UTF-8">
+		<title>{{ sell.invoiceid }} - Bill Recipt</title>
+		<!-- <link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">
-    <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
-    <link href="https://printjs-4de6.kxcdn.com/print.min.css" rel="stylesheet" type="text/css" />
-    <style>
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-			font-family: 'Roboto Condensed', Arial, sans-serif !important;
-			font-size: 12px;
-		}
+	<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet"> -->
+		<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+		<link href="https://printjs-4de6.kxcdn.com/print.min.css" rel="stylesheet" type="text/css" />
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+				font-family: 'Roboto Condensed', sans-serif !important;
+				font-size: 12px;
+			}
 
-		body {display:none}
+			/* body {
+				display: none
+			} */
 
-		.my-4 {
-			margin-top: 0.4rem;
-			margin-bottom: 0.4rem;
-		}
+			.my-4 {
+				margin-top: 0.4rem;
+				margin-bottom: 0.4rem;
+			}
 
-		.my-6 {
-			margin-top: 0.6rem;
-			margin-bottom: 0.6rem;
-		}
+			.my-6 {
+				margin-top: 0.6rem;
+				margin-bottom: 0.6rem;
+			}
 
-		.mt-2 {
-			margin-top: 0.5rem;
-		}
+			.mt-2 {
+				margin-top: 0.5rem;
+			}
 
-		.py-4 {
-			padding-top: 0.4rem;
-			padding-bottom: 0.4rem;
-		}
+			.py-4 {
+				padding-top: 0.4rem;
+				padding-bottom: 0.4rem;
+			}
 
-		.header-title {
-			font-size: 16px;
-		}
-		
-		.bill-container {
-			width: 50mm;
-			padding: 10px;
-			border: 1px solid black;
-		}
-		.bill-header {
-			/* font-size: 12px; */
-			font-weight: bold;
-			text-align: center; 
-			margin-bottom: 0.5rem;
-		}
-		.bill-item {
-			margin-bottom: 5px;
-		}
-		.bill-total {
-			font-weight: bold;
-			margin-top: 10px;
-			text-align: right;
-		}
-		.text-center {
-			text-align: center;
-		}
-		.copyright {
-			margin-top: 1rem;
-			margin-bottom: 1.2rem;
-		}
-    </style>
-  </head>
-  <body>
+			.header-title {
+				font-size: 16px;
+			}
+
+			.bill-container {
+				width: 50mm;
+				padding: 10px;
+				border: 1px solid black;
+			}
+
+			.bill-header {
+				/* font-size: 12px; */
+				font-weight: bold;
+				text-align: center;
+				margin-bottom: 0.5rem;
+			}
+
+			.bill-item {
+				margin-bottom: 5px;
+			}
+
+			.bill-total {
+				font-weight: bold;
+				margin-top: 10px;
+				text-align: right;
+			}
+
+			.text-center {
+				text-align: center;
+			}
+
+			.copyright {
+				margin-top: 1rem;
+				margin-bottom: 1.2rem;
+			}
+		</style>
+	</head>
+	<body>
 		<main class="bill-container" id="bill">
 			<header class="text-center">
 				<h3 class="header-title">BM Gadget & Tech</h3>
@@ -82,7 +89,7 @@
 
 				<h5 class="bill-header">
 					Sales Invoice
-					<br> 
+					<br>
 					<span id="invoiceid">{{ sell.invoiceid }}</span>
 				</h5>
 			</header>
@@ -115,7 +122,7 @@
 							{{ user.username }}
 						</span>
 					</div>
-					
+
 				</div>
 			</div>
 
@@ -144,22 +151,22 @@
 					<tfoot>
 						<tr>
 							<th colspan="2" align="left">Subtotal</th>
-							<th  align="right" id="subtotal">{{ sell.subtotal }}</th>
+							<th align="right" id="subtotal">{{ sell.subtotal }}</th>
 						</tr>
 						<tr>
 							<td colspan="2" align="left">Discount</td>
-							<td  align="right" id="discount">{{ sell.discount }}</td>
+							<td align="right" id="discount">{{ sell.discount }}</td>
 						</tr>
 						<tr>
 							<th colspan="2" align="left">Payable ammount</th>
-							<th  align="right" id="total">{{ sell.totalprice }}</th>
+							<th align="right" id="total">{{ sell.totalprice }}</th>
 						</tr>
 					</tfoot>
 				</table>
 				<p class="text-center">
 					-------------------------------------------------------
 				</p>
-				
+
 				<div class="mt-2">
 					<p>
 						In Words:
@@ -172,14 +179,14 @@
 
 				<div class="copyright text-center">
 					<p>
-						Developed by: www.BinoMatrix.com 
+						Developed by: www.BinoMatrix.com
 					</p>
 					<p>
 						Contact: +8801884020619
 					</p>
 				</div>
 			</div>
-		</main>	
+		</main>
 
 		<script src="{{ url_for('static', filename='js/numberToWords.min.js') }}"></script>
 		<script>
@@ -209,11 +216,47 @@
 				counter++;
 			});
 		</script>
-		
+
 		<script>
-			document.addEventListener('DOMContentLoaded', () => {
-				printJS({ printable: 'bill', type: 'html', css: '{{ url_for("static", filename="css/printPOS.css") }}' });
-			})
+			// Create a new link element for the font
+			const fontLink = document.createElement('link');
+			fontLink.href = 'https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap';
+			fontLink.rel = 'stylesheet';
+			document.head.appendChild(fontLink);
+
+			// Attach an onload event listener to the link element
+			fontLink.onload = function () {
+				function redirectToDashboard() {
+					window.location.href = '/dashboard/';
+				}
+
+				// Execute the printJS function once the font is loaded
+				printJS({
+					printable: 'bill',
+					type: 'html',
+					css: '{{ url_for("static", filename="css/printPOS.css") }}',
+					onPrintDialogClose: redirectToDashboard
+				});
+			};
+
+			// Add the link element to the document head
 		</script>
+
+		<!-- <script>
+			document.addEventListener('DOMContentLoaded', () => {
+				function redirectToDashboard() {
+					window.location.href = '/dashboard/';
+				}
+
+				setTimeout(() => {
+					printJS({ 
+						printable: 'bill', 
+						type: 'html', 
+						css: '{{ url_for("static", filename="css/printPOS.css") }}', 
+						onPrintDialogClose: redirectToDashboard
+					});
+				}, 2000); // 2-second delay
+			});
+		</script> -->
 	</body>
 </html>

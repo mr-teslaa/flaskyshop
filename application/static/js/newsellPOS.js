@@ -355,6 +355,9 @@ sellcompletebtn.addEventListener("click", () => {
 
 	let getsell = localStorage.getItem("sell");
 
+	sellcompletebtn.disabled = true;
+	sellcompletebtn.innerHTML = "Loading...";
+
 	fetch(`${window.origin}/dashboard/newsell/submit/`, {
 		method: "POST",
 		credentials: "include",
@@ -378,13 +381,14 @@ sellcompletebtn.addEventListener("click", () => {
 			}
 
 			response.json().then((data) => {
-				window.location.href = `${window.origin}/dashboard/todaysell/`;
+				console.log(data.invoice_id);
+				window.location.href = `${window.origin}/dashboard/sell/${data.invoice_id}/print/`;
 			});
 		})
 		.catch((error) => {
 			alert("An error occurred while submitting the sell:", error);
 		});
-	
+
 	// fetch(`${window.origin}/dashboard/newsell/submit/`, {
 	// 	method: "POST",
 	// 	credentials: "include",
